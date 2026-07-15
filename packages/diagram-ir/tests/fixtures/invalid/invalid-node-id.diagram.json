@@ -1,0 +1,27 @@
+{
+  "irVersion": "0.1a",
+  "id": "invalid-node-id",
+  "title": "Invalid Node ID",
+  "kind": "dataflow",
+  "direction": "left-to-right",
+  "nodes": [
+    {
+      "id": "source data",
+      "label": "Source Data",
+      "role": "source"
+    },
+    {
+      "id": "report-output",
+      "label": "Report Output",
+      "role": "output"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-source-output",
+      "from": "source data",
+      "to": "report-output"
+    }
+  ],
+  "metadata": {}
+}

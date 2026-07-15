@@ -1,5 +1,8 @@
 # PPT Master — AI generates natively editable PPTX from any document
 
+> [!NOTE]
+> This is the Hedgehog Master integration workspace based on [hugohe3/ppt-master](https://github.com/hugohe3/ppt-master). It keeps the upstream harness at the repository root and adds the deterministic Diagram IR compiler under [`packages/diagram-ir`](./packages/diagram-ir). See [`HEDGEHOG_MASTER.md`](./HEDGEHOG_MASTER.md) for the local architecture and development workflow.
+
 [![Version](https://img.shields.io/github/v/release/hugohe3/ppt-master?label=version&color=blue)](https://github.com/hugohe3/ppt-master/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub stars](https://img.shields.io/github/stars/hugohe3/ppt-master.svg)](https://github.com/hugohe3/ppt-master/stargazers)

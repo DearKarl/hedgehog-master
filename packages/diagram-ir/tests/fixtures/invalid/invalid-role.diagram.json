@@ -1,0 +1,16 @@
+{
+  "irVersion": "0.1a",
+  "id": "invalid-role",
+  "title": "Invalid Role",
+  "kind": "dataflow",
+  "direction": "left-to-right",
+  "nodes": [
+    {
+      "id": "node-a",
+      "label": "Node A",
+      "role": "database"
+    }
+  ],
+  "edges": [],
+  "metadata": {}
+}

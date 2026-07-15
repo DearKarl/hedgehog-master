@@ -1,0 +1,57 @@
+{
+  "irVersion": "0.1a",
+  "id": "multi-parent-dataflow",
+  "title": "Multi Parent Dataflow",
+  "kind": "dataflow",
+  "direction": "left-to-right",
+  "nodes": [
+    {
+      "id": "source-a",
+      "label": "Source A",
+      "role": "source"
+    },
+    {
+      "id": "source-b",
+      "label": "Source B",
+      "role": "source"
+    },
+    {
+      "id": "transform-a",
+      "label": "Transform A",
+      "role": "transform"
+    },
+    {
+      "id": "model-a",
+      "label": "Model A",
+      "role": "model"
+    },
+    {
+      "id": "output-a",
+      "label": "Output A",
+      "role": "output"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-source-a-transform",
+      "from": "source-a",
+      "to": "transform-a"
+    },
+    {
+      "id": "edge-transform-model",
+      "from": "transform-a",
+      "to": "model-a"
+    },
+    {
+      "id": "edge-source-b-model",
+      "from": "source-b",
+      "to": "model-a"
+    },
+    {
+      "id": "edge-model-output",
+      "from": "model-a",
+      "to": "output-a"
+    }
+  ],
+  "metadata": {}
+}

@@ -1,0 +1,32 @@
+{
+  "irVersion": "0.1a",
+  "id": "duplicate-edge-id",
+  "title": "Duplicate Edge ID",
+  "kind": "dataflow",
+  "direction": "left-to-right",
+  "nodes": [
+    {
+      "id": "node-a",
+      "label": "Node A",
+      "role": "source"
+    },
+    {
+      "id": "node-b",
+      "label": "Node B",
+      "role": "output"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-a-b",
+      "from": "node-a",
+      "to": "node-b"
+    },
+    {
+      "id": "edge-a-b",
+      "from": "node-a",
+      "to": "node-b"
+    }
+  ],
+  "metadata": {}
+}
