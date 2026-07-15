@@ -62,7 +62,6 @@
             overlap_caption: "Overlapping here — pick one",
             err_empty_svg: "Slide loaded but the canvas is empty. The SVG may be malformed or missing a root <svg> element.",
             warn_icon_inline: "{count} icon(s) failed to render: {names}",
-            warn_svg_no_dims: "SVG is missing width/height attributes. Please ask the AI to strictly follow shared-standards.md §4 and include width & height in the SVG root element.",
             warn_matrix_transform: "This geometry edit is stored as a transform matrix. Preview is exact; PPTX export depends on matrix-aware conversion.",
             modal_matrix_transform_note: "\n\nNote: at least one staged geometry edit uses a transform matrix. Re-export with the current PPTX exporter so the matrix is applied.",
             slide_error_tooltip: "Failed to parse this slide: ",
@@ -80,6 +79,81 @@
             nav_prev: "Previous slide (←)",
             nav_next: "Next slide (→)",
             nav_last: "Last slide (End)",
+            nav_counter: "{current} / {total}",
+            nav_empty: "— / —"
+        },
+        ja: {
+            page_title: "PPT Master - ライブプレビュー",
+            panel_slides: "スライド",
+            panel_annotations: "注釈",
+            panel_edit_annotate: "編集 / 注釈",
+            placeholder_select_slide: "左のスライドを選択して開始",
+            label_selected_element: "選択中の要素",
+            empty_selected_element: "スライド上の要素をクリックして選択",
+            btn_select_group: "親グループを選択",
+            label_batch_edit: "一括編集",
+            label_group_edit: "グループ編集",
+            section_geometry: "位置・サイズ",
+            section_style: "スタイル",
+            section_text_style: "テキスト",
+            section_raw_attrs: "生の属性",
+            label_edit_instruction: "編集指示",
+            pending_none: "未適用の変更はありません",
+            pending_summary: "直接編集{edits}件、AI注釈のあるページ{annotations}件が未適用",
+            pending_pages: "対象ページ：{pages}",
+            quick_align: "整列 / 移動",
+            quick_resize: "サイズ変更",
+            quick_replace_image: "画像を差し替え",
+            quick_copy: "文言を修正",
+            quick_relayout: "この領域を再レイアウト",
+            placeholder_annotation: "この要素をAIにどう修正してほしいか記述…",
+            placeholder_annotation_multi: "選択した{count}個の要素をどう修正するか記述…",
+            btn_add_annotation: "注釈を追加",
+            label_annotations_on_slide: "このスライドの注釈",
+            btn_submit_annotations: "変更を適用",
+            btn_exit_preview: "プレビューを終了",
+            modal_submit: "送信",
+            modal_cancel: "キャンセル",
+            empty_waiting_slides: "スライドの生成を待っています…",
+            empty_no_slides: "スライドが見つかりません",
+            placeholder_live_ready: "ライブプレビュー準備完了。生成されたスライドがここに表示されます。",
+            placeholder_slide_writing: "スライドはまだ書き込み中です。次の更新を待っています…",
+            empty_annotations: "注釈はまだありません",
+            tooltip_remove_annotation: "注釈を削除",
+            multi_selected: "{count}個の要素を選択中",
+            multi_mixed: "混在",
+            err_load_slides: "スライド一覧の読み込みに失敗: ",
+            err_load_slide: "スライドの読み込みに失敗: ",
+            err_add_annotation: "注釈の追加に失敗: ",
+            err_remove_annotation: "注釈の削除に失敗: ",
+            err_save: "保存に失敗: ",
+            err_edit: "編集に失敗: ",
+            label_direct_edit: "オブジェクト属性（「変更を適用」までは保留）",
+            prop_multiline_hint: "複数行テキストです — 文字を編集するには1行（tspan）を選択してください",
+            edit_saved_hint: "変更を一時保存しました。「変更を適用」で svg_output に書き込まれます。",
+            btn_undo: "元に戻す",
+            undo_done: "直前の一時保存済み編集を取り消しました",
+            undo_empty: "取り消せる編集はありません",
+            overlap_caption: "要素が重なっています — 1つ選択してください",
+            err_empty_svg: "スライドは読み込めましたがキャンバスが空です。SVGが不正か、ルート<svg>要素がない可能性があります。",
+            warn_icon_inline: "{count}個のアイコンを描画できませんでした: {names}",
+            warn_matrix_transform: "このジオメトリ編集は transform matrix として保存されます。プレビューは正確ですが、PPTX出力にはmatrix対応の現行エクスポーターが必要です。",
+            modal_matrix_transform_note: "\n\n注意：一時保存済みのジオメトリ編集に transform matrix を使うものがあります。matrixが反映されるよう、現行のPPTXエクスポーターで再エクスポートしてください。",
+            slide_error_tooltip: "このスライドの解析に失敗: ",
+            reload_banner: "このスライドはディスク上で更新されました。クリックで再読み込み。",
+            modal_confirm_submit: "一時保存済みの直接編集とAI注釈をディスクに書き込みますか？\n\nプレビューサービスは動き続けます。止めたいときは「プレビューを終了」を押してください。",
+            modal_success_submit: "変更を svg_output に保存しました。\n\nプレビューサービスは引き続き動作中です。",
+            modal_success_direct_only: "変更を svg_output に保存しました。\n\n直接編集はSVGソースに反映済みです。PPTXを更新したいときは、チャットに戻って再エクスポートを依頼してください。プレビューサービスは引き続き動作中です。",
+            modal_success_annotations_only: "注釈を svg_output に保存しました。\n\nAIに注釈を解釈・反映させたいときは、チャットに戻って注釈の適用を依頼してください。プレビューサービスは引き続き動作中です。",
+            modal_success_mixed: "直接編集と注釈を svg_output に保存しました。\n\nチャットに戻ってAI判断が必要な注釈の適用を先に依頼し、確認できたらPPTXを再エクスポートしてください。プレビューサービスは引き続き動作中です。",
+            modal_confirm_exit: "プレビューを終了してローカルサーバーを停止しますか？\n\n未適用の編集と注釈は破棄されます。",
+            modal_success_exit: "プレビューを停止しました。\n\nこのタブを閉じてチャットに戻れます。",
+            modal_stopping: "プレビューサーバーを停止しています…",
+            lang_toggle_title: "言語を切り替え",
+            nav_first: "最初のスライド (Home)",
+            nav_prev: "前のスライド (←)",
+            nav_next: "次のスライド (→)",
+            nav_last: "最後のスライド (End)",
             nav_counter: "{current} / {total}",
             nav_empty: "— / —"
         },
@@ -138,7 +212,6 @@
             overlap_caption: "此处重叠元素——点击选择",
             err_empty_svg: "幻灯片已加载但画布为空。SVG 可能损坏或缺少根 <svg> 元素。",
             warn_icon_inline: "{count} 个图标渲染失败:{names}",
-            warn_svg_no_dims: "SVG 缺少 width/height 属性，预览可能异常。请让 AI 严格遵守 shared-standards.md §4 规范，在 SVG 根元素中补全 width 和 height。",
             warn_matrix_transform: "本次几何修改会以 transform matrix 保存。预览是准确的；PPTX 导出需要使用支持 matrix 的当前导出器。",
             modal_matrix_transform_note: "\n\n提示：至少有一条暂存几何修改使用了 transform matrix。请用当前 PPTX 导出器重新导出，确保 matrix 被应用。",
             slide_error_tooltip: "该幻灯片解析失败:",
@@ -164,10 +237,12 @@
     var LANG = (function () {
         try {
             var stored = window.localStorage.getItem("ppt_lang");
-            if (stored === "zh" || stored === "en") return stored;
+            if (stored === "zh" || stored === "en" || stored === "ja") return stored;
         } catch (e) { /* ignore */ }
         var nav = (navigator.language || navigator.userLanguage || "en").toLowerCase();
-        return nav.indexOf("zh") === 0 ? "zh" : "en";
+        if (nav.indexOf("zh") === 0) return "zh";
+        if (nav.indexOf("ja") === 0) return "ja";
+        return "en";
     })();
 
     function t(key, params) {
@@ -184,7 +259,7 @@
     }
 
     function applyI18n() {
-        document.documentElement.setAttribute("lang", LANG === "zh" ? "zh-CN" : "en");
+        document.documentElement.setAttribute("lang", LANG === "zh" ? "zh-CN" : (LANG === "ja" ? "ja" : "en"));
         document.title = t("page_title");
         document.querySelectorAll("[data-i18n]").forEach(function (el) {
             el.textContent = t(el.getAttribute("data-i18n"));
@@ -198,16 +273,27 @@
         updateNavLabel();
     }
 
+    var LANG_NAMES = { zh: "中文", en: "English", ja: "日本語" };
+
+    function refreshLangUI(lang) {
+        // Custom dropdown (OS-independent): button shows the CURRENT language.
+        var cur = document.getElementById("lang-current");
+        if (cur) cur.textContent = LANG_NAMES[lang] || lang;
+        var btn = document.getElementById("btn-lang-toggle");
+        if (btn) btn.title = t("lang_toggle_title");
+        document.querySelectorAll("#lang-menu li").forEach(function (li) {
+            var selected = li.getAttribute("data-lang") === lang;
+            li.classList.toggle("selected", selected);
+            li.setAttribute("aria-selected", selected ? "true" : "false");
+        });
+    }
+
     function setLang(lang) {
-        if (lang !== "zh" && lang !== "en") return;
+        if (lang !== "zh" && lang !== "en" && lang !== "ja") return;
         LANG = lang;
         try { window.localStorage.setItem("ppt_lang", lang); } catch (e) { /* ignore */ }
         applyI18n();
-        var toggleBtn = document.getElementById("btn-lang-toggle");
-        if (toggleBtn) {
-            toggleBtn.textContent = lang === "zh" ? "EN" : "中";
-            toggleBtn.title = t("lang_toggle_title");
-        }
+        refreshLangUI(lang);
         // Re-render dynamic regions so they pick up the new language
         updateSelectionPanel();
         updateAnnotationList();
@@ -336,7 +422,7 @@
             btn.textContent = t(action.key);
             btn.addEventListener("click", function () {
                 var label = t(action.key);
-                var prefix = LANG === "zh" ? label + "：" : label + ": ";
+                var prefix = (LANG === "zh" || LANG === "ja") ? label + "：" : label + ": ";
                 if (!annotationText.value.trim()) {
                     annotationText.value = prefix;
                 } else if (annotationText.value.indexOf(prefix) === -1) {
@@ -510,10 +596,6 @@
         // Selecting a slide implicitly dismisses any stale "page updated" banner.
         hideReloadBanner();
 
-        // Remove any stale spec-violation banner from a previous load.
-        var oldSpecBanner = document.getElementById("spec-banner");
-        if (oldSpecBanner) oldSpecBanner.remove();
-
         fetch("/api/slide/" + encodeURIComponent(name))
             .then(function (res) { return res.json(); })
             .then(function (data) {
@@ -536,16 +618,24 @@
                 // Empty-canvas guard: surface a clear error if the SVG parsed
                 // to nothing renderable (issue #115's silent-blank scenario).
                 var rootSvg = svgContent.querySelector("svg");
-                // Spec observability: missing width/height → red banner only
-                if (rootSvg && (!rootSvg.hasAttribute("width") || !rootSvg.hasAttribute("height"))) {
-                    var specBanner = document.createElement("div");
-                    specBanner.id = "spec-banner";
-                    specBanner.style.cssText = "position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);"
-                        + "background:#fee2e2;color:#b91c1c;border:2px solid #f87171;border-radius:8px;"
-                        + "padding:24px 36px;font-size:16px;font-weight:bold;text-align:center;z-index:9999;"
-                        + "width:420px;line-height:1.6;box-shadow:0 4px 12px rgba(0,0,0,0.15);";
-                    specBanner.textContent = t("warn_svg_no_dims");
-                    document.body.appendChild(specBanner);
+                // viewBox is the PPT Master canvas authority. Normalize the
+                // preview DOM from it so stale or missing root width/height
+                // cannot shrink the slide. View-layer only — the file on disk
+                // is never touched.
+                if (rootSvg) {
+                    var vb = (rootSvg.getAttribute("viewBox") || "").trim().split(/[\s,]+/);
+                    var vbWidth = Number(vb[2]);
+                    var vbHeight = Number(vb[3]);
+                    if (
+                        vb.length === 4 &&
+                        Number.isFinite(vbWidth) &&
+                        Number.isFinite(vbHeight) &&
+                        vbWidth > 0 &&
+                        vbHeight > 0
+                    ) {
+                        rootSvg.setAttribute("width", vb[2]);
+                        rootSvg.setAttribute("height", vb[3]);
+                    }
                 }
                 var hasContent = false;
                 if (rootSvg) {
@@ -811,7 +901,48 @@
         applyElementAttrs(el, sa);
     }
 
+    var INLINE_GEOMETRY_STYLE_PROPERTIES = {
+        rect: new Set(["x", "y", "width", "height", "rx", "ry"]),
+        circle: new Set(["cx", "cy", "r"]),
+        ellipse: new Set(["cx", "cy", "rx", "ry"]),
+        image: new Set(["x", "y", "width", "height"]),
+        svg: new Set(["x", "y", "width", "height"]),
+        use: new Set(["x", "y", "width", "height"])
+    };
+
+    function stripEditedInlineGeometry(el, attrs) {
+        var style = el.getAttribute("style");
+        var supported = INLINE_GEOMETRY_STYLE_PROPERTIES[localName(el)];
+        if (!style || !supported) return;
+        var edited = new Set(Object.keys(attrs || {}).map(function (key) {
+            return String(key).toLowerCase();
+        }).filter(function (key) { return supported.has(key); }));
+        if (edited.size === 0) return;
+
+        var retained = [];
+        var changed = false;
+        style.split(";").forEach(function (rawDeclaration) {
+            var declaration = rawDeclaration.trim();
+            if (!declaration) return;
+            var colon = declaration.indexOf(":");
+            if (colon < 0) {
+                retained.push(declaration);
+                return;
+            }
+            var name = declaration.slice(0, colon).trim().toLowerCase();
+            if (edited.has(name)) {
+                changed = true;
+                return;
+            }
+            retained.push(declaration);
+        });
+        if (!changed) return;
+        if (retained.length > 0) el.setAttribute("style", retained.join("; "));
+        else el.removeAttribute("style");
+    }
+
     function applyElementAttrs(el, attrs) {
+        stripEditedInlineGeometry(el, attrs);
         if (localName(el) === "g" && el.hasAttribute("data-icon") &&
                 attrs.x !== undefined && attrs.y !== undefined) {
             // The preview expands <use data-icon> into a <g>, but disk still owns
@@ -1599,10 +1730,10 @@
             Array.from(el.attributes).forEach(function (attr) {
                 if (attr.name.indexOf("on") === 0) el.removeAttribute(attr.name);
                 // Strip dangerous URI protocols from href/xlink:href
-                if ((attr.name === "href" || attr.name === "xlink:href") &&
+                if (attr.localName === "href" &&
                     (/^\s*javascript\s*:/i.test(attr.value) ||
                      /^\s*data\s*:/i.test(attr.value))) {
-                    el.removeAttribute(attr.name);
+                    el.removeAttributeNode(attr);
                 }
             });
         });
@@ -2530,7 +2661,7 @@
         var attrs = {};
         attrs[key] = value;
         stageEditRequest(eid, { attrs: attrs })
-            .then(function () { el.setAttribute(key, value); })
+            .then(function () { applyElementAttrs(el, attrs); })
             .catch(function (err) { showError(t("err_edit") + err.message); });
     }
 
@@ -2766,7 +2897,7 @@
             var attrs = {};
             attrs[key] = value;
             return stageEditRequest(el.id, { attrs: attrs }).then(function () {
-                el.setAttribute(key, value);
+                applyElementAttrs(el, attrs);
             });
         });
         Promise.all(jobs)
@@ -2781,11 +2912,73 @@
     initAnnotationQuickActions();
     updatePendingStatus();
     var langToggleBtn = document.getElementById("btn-lang-toggle");
-    if (langToggleBtn) {
-        langToggleBtn.textContent = LANG === "zh" ? "EN" : "中";
-        langToggleBtn.title = t("lang_toggle_title");
-        langToggleBtn.addEventListener("click", function () {
-            setLang(LANG === "zh" ? "en" : "zh");
+    var langMenu = document.getElementById("lang-menu");
+    if (langToggleBtn && langMenu) {
+        refreshLangUI(LANG);
+        var setMenuOpen = function (open) {
+            langMenu.hidden = !open;
+            langToggleBtn.setAttribute("aria-expanded", open ? "true" : "false");
+            if (open) {
+                var sel = langMenu.querySelector("li.selected") || langMenu.querySelector("li[data-lang]");
+                if (sel) sel.focus();
+            }
+        };
+        var chooseLang = function (v) {
+            setMenuOpen(false);
+            langToggleBtn.focus();
+            if (v) setLang(v);
+        };
+        langToggleBtn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            setMenuOpen(langMenu.hidden);
+        });
+        langToggleBtn.addEventListener("keydown", function (e) {
+            if (e.key === "Escape" && !langMenu.hidden) {
+                e.stopPropagation();
+                setMenuOpen(false);
+            } else if ((e.key === "ArrowDown" || e.key === "ArrowUp") && langMenu.hidden) {
+                e.preventDefault();
+                e.stopPropagation();
+                setMenuOpen(true);
+            }
+        });
+        langMenu.addEventListener("click", function (e) {
+            e.stopPropagation();
+            var li = e.target && e.target.closest ? e.target.closest("li[data-lang]") : null;
+            if (li) chooseLang(li.getAttribute("data-lang"));
+            else setMenuOpen(false);
+        });
+        langMenu.addEventListener("keydown", function (e) {
+            e.stopPropagation();   // keep nudge / slide-nav shortcuts away while the menu is open
+            var items = Array.prototype.slice.call(langMenu.querySelectorAll("li[data-lang]"));
+            var idx = items.indexOf(document.activeElement);
+            if (e.key === "Escape") {
+                setMenuOpen(false);
+                langToggleBtn.focus();
+            } else if (e.key === "ArrowDown") {
+                e.preventDefault();
+                (items[idx + 1] || items[0]).focus();
+            } else if (e.key === "ArrowUp") {
+                e.preventDefault();
+                (items[idx - 1] || items[items.length - 1]).focus();
+            } else if (e.key === "Home") {
+                e.preventDefault();
+                items[0].focus();
+            } else if (e.key === "End") {
+                e.preventDefault();
+                items[items.length - 1].focus();
+            } else if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+                e.preventDefault();
+            } else if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                if (idx >= 0) chooseLang(items[idx].getAttribute("data-lang"));
+            }
+        });
+        langToggleBtn.parentElement.addEventListener("focusout", function (e) {
+            if (!langMenu.hidden && !langToggleBtn.parentElement.contains(e.relatedTarget)) setMenuOpen(false);
+        });
+        document.addEventListener("click", function () {
+            if (!langMenu.hidden) setMenuOpen(false);
         });
     }
 

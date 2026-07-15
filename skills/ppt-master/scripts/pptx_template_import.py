@@ -5,6 +5,8 @@ Reads OOXML directly via `pptx_to_svg` and writes a reusable reference workspace
 
 - `manifest.json` — single source of truth for slide size, theme colors, fonts,
   asset inventory, and per-slide / per-layout / per-master metadata
+- `native_structure.json` + `source_template.pptx` — source-structure facts and
+  a byte-identical analysis copy used to rebuild explicit SVG structure
 - `summary.md` — short human-readable digest derived from manifest.json
 - `assets/` — extracted reusable image assets
 - `svg/` — primary view: by default the layered template view (every master
@@ -21,9 +23,12 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+from xml.etree import ElementTree as ET
+from zipfile import BadZipFile
 
 from console_encoding import configure_utf8_stdio
 from template_import.manifest import build_manifest
+from template_import.native_structure import write_native_structure_bundle
 
 configure_utf8_stdio()
 
@@ -42,14 +47,17 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--skip-manifest",
         action="store_true",
-        help="Skip PPTX metadata extraction and asset inventory generation",
+        help=(
+            "Skip metadata, asset inventory, native structure contract, and "
+            "preserved source-package generation"
+        ),
     )
     parser.add_argument(
         "--manifest-only",
         action="store_true",
         help=(
-            "Only extract manifest.json + summary.md + reusable assets, "
-            "without exporting slides to SVG"
+            "Only extract manifest.json + summary.md + reusable assets + the "
+            "native structure/source pair, without exporting slides to SVG"
         ),
     )
     parser.add_argument(
@@ -98,6 +106,7 @@ def main() -> int:
         return 1
 
     manifest = None
+    native_structure = None
     manifest_path = output_dir / "manifest.json"
     if not args.skip_manifest:
         try:
@@ -110,12 +119,28 @@ def main() -> int:
             json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
         )
+        try:
+            native_structure = write_native_structure_bundle(
+                pptx_path,
+                output_dir,
+                manifest,
+            )
+        except (OSError, ValueError) as exc:
+            print(f"Error: failed to write native structure bundle: {exc}")
+            return 1
 
     if args.manifest_only:
         print(f"Imported PPTX template source: {pptx_path.name}")
         print(f"Output directory: {output_dir}")
         if manifest is not None:
             print(f"Manifest: {manifest_path.name}")
+            print("Native structure: native_structure.json")
+            print("Source package analysis copy: source_template.pptx")
+            print(
+                "Source structure assessment: "
+                f"{native_structure['strategy']['recommendedMode']}"
+            )
+            print("Template output mode: explicit SVG structure")
             print("Summary: summary.md")
             print(f"Assets exported: {len(manifest['assets']['allAssets'])}")
             print(f"Common assets: {len(manifest['assets']['commonAssets'])}")
@@ -134,7 +159,11 @@ def main() -> int:
         inheritance_mode=args.inheritance_mode,
         asset_name_map=manifest.get("assets", {}).get("assetMap", {}) if manifest else {},
     )
-    result = convert_pptx_to_svg(pptx_path, output_dir, options)
+    try:
+        result = convert_pptx_to_svg(pptx_path, output_dir, options)
+    except (BadZipFile, ET.ParseError, OSError, RuntimeError, ValueError) as exc:
+        print(f"Error: failed to convert PPTX template source: {exc}")
+        return 1
     total_bytes = sum(len(art.svg.encode("utf-8")) for art in result.slides)
 
     print(f"Inheritance mode: {args.inheritance_mode}")
@@ -145,8 +174,19 @@ def main() -> int:
         print("Inheritance graph: svg/inheritance.json")
     if result.flat_slides:
         print(f"Flat companion slides: {len(result.flat_slides)} (svg-flat/)")
+    if result.diagnostics:
+        print(
+            f"Source recovery warnings: {len(result.diagnostics)} "
+            "(conversion-report.json)"
+        )
     print(f"SVG bytes (primary): {total_bytes}")
     print(f"Output directory: {output_dir}")
+    if native_structure is not None:
+        print(
+            "Source structure assessment: "
+            f"{native_structure['strategy']['recommendedMode']}; "
+            "create-template rebuilds explicit SVG structure"
+        )
     return 0
 
 

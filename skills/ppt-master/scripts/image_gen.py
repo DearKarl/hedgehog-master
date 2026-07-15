@@ -39,6 +39,7 @@ Supported keys:
 
 Usage:
   python3 image_gen.py "prompt" --aspect_ratio 16:9 --image_size 1K -o images/
+  python3 image_gen.py "edit instruction" --reference-image src.png -o images/
   python3 image_gen.py --manifest project/images/image_prompts.json -o project/images/
   python3 image_gen.py --list-backends
 """
@@ -484,7 +485,9 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
       - On any rate-limit error in a batch, halve concurrency (min 1) and
         requeue the rate-limited items.
       - Per-item failures are recorded as `status: Failed` + `last_error`
-        and not retried within this run.
+        and not retried within this run. `Failed` remains retryable and
+        non-terminal; the Step 5 gate must resolve it by rerunning this
+        manifest or marking the item `Needs-Manual`.
       - Status is written back to the manifest file after each completion;
         a Ctrl-C in the middle still preserves done items.
       - `Needs-Manual` items are skipped (user processes them externally).
@@ -563,7 +566,10 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
                         item["status"] = STATUS_FAILED
                         item["last_error"] = str(exc)[:500]
                         fail_count += 1
-                        print(f"  [FAIL] {item['filename']}: {exc}")
+                        print(
+                            f"  [FAIL] {item['filename']}: {exc} "
+                            "(status=Failed; retry or mark Needs-Manual before Executor)"
+                        )
                     save_manifest(manifest_path, manifest)
 
         if rate_limited and current > 1:
@@ -581,6 +587,12 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
         f"\n[Manifest] Done: {ok_count} ok / {fail_count} failed "
         f"({skipped} pre-skipped). Manifest written to {manifest_path}"
     )
+    if fail_count:
+        print(
+            "[Manifest] Failed is retryable and non-terminal. "
+            "Resolve failed item(s) by rerunning this manifest or marking them "
+            "Needs-Manual before entering Executor."
+        )
     return ok_count, fail_count, skipped
 
 
@@ -679,8 +691,11 @@ def main() -> None:
         description="Generate images using AI image model providers."
     )
     parser.add_argument(
-        "prompt", nargs="?", default="a beautiful landscape",
-        help="The text prompt for image generation."
+        "prompt", nargs="?", default=None,
+        help=(
+            "The text prompt for image generation. With --reference-image, "
+            "this is the edit instruction (required in that mode)."
+        )
     )
     parser.add_argument(
         "--aspect_ratio", default="1:1", choices=ALL_ASPECT_RATIOS,
@@ -732,8 +747,41 @@ def main() -> None:
             "next to the manifest, then exit. No backend / network needed."
         ),
     )
+    parser.add_argument(
+        "--reference-image", dest="reference_image", default=None, metavar="PATH",
+        help=(
+            "Source image for image-to-image editing (single-image mode only). "
+            "When set, the prompt is used as the edit instruction. Only backends "
+            "that support editing accept this (currently: openai). Not valid with "
+            "--manifest / --render-md / --list-backends."
+        ),
+    )
 
     args = parser.parse_args()
+
+    if args.reference_image is not None:
+        # Reference editing is a single-image-only enhancement; keep it out of
+        # the manifest / sidecar / list surfaces entirely.
+        conflicting = [
+            name for name, val in (
+                ("--manifest", args.manifest),
+                ("--render-md", args.render_md),
+                ("--list-backends", args.list_backends),
+            ) if val
+        ]
+        if conflicting:
+            parser.error(
+                "--reference-image is single-image mode only and cannot be "
+                f"combined with {', '.join(conflicting)}."
+            )
+        if not args.prompt or not args.prompt.strip():
+            parser.error(
+                "--reference-image requires a prompt to use as the edit instruction."
+            )
+        if not os.path.isfile(args.reference_image):
+            parser.error(
+                f"--reference-image file not found: {args.reference_image}"
+            )
 
     if args.list_backends:
         _print_backend_list()
@@ -795,15 +843,30 @@ def main() -> None:
         print(f"Rendered Markdown sidecar: {md_path}")
         sys.exit(1 if failed else 0)
 
+    # Single-image mode. Backfill the historical default prompt only here, so
+    # plain generation is byte-for-byte unchanged while edit mode still requires
+    # an explicit instruction (enforced above).
+    prompt = args.prompt if args.prompt is not None else "a beautiful landscape"
+
+    gen_kwargs = {
+        "prompt": prompt,
+        "aspect_ratio": args.aspect_ratio,
+        "image_size": args.image_size,
+        "output_dir": args.output,
+        "filename": args.filename,
+        "model": args.model,
+    }
+    if args.reference_image is not None:
+        if not getattr(backend, "SUPPORTS_REFERENCE_IMAGE", False):
+            print(
+                f"Error: backend '{backend_name}' does not support image editing "
+                "(--reference-image). Use a backend that does (currently: openai)."
+            )
+            sys.exit(1)
+        gen_kwargs["reference_image"] = args.reference_image
+
     try:
-        backend.generate(
-            prompt=args.prompt,
-            aspect_ratio=args.aspect_ratio,
-            image_size=args.image_size,
-            output_dir=args.output,
-            filename=args.filename,
-            model=args.model,
-        )
+        backend.generate(**gen_kwargs)
     except (ValueError, FileNotFoundError) as e:
         print(f"Error: {e}")
         sys.exit(1)

@@ -13,6 +13,11 @@ from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 
 from console_encoding import configure_utf8_stdio
+from svg_to_pptx.canvas_contract import (
+    CanvasContractError,
+    parse_project_viewbox,
+    read_project_viewbox,
+)
 
 configure_utf8_stdio()
 
@@ -323,37 +328,39 @@ def validate_svg_viewbox(svg_files: List[Path], expected_format: Optional[str] =
         List of warnings
     """
     warnings = []
-    viewbox_pattern = re.compile(r'viewBox="([^"]+)"')
-    viewboxes = set()
+    viewboxes = {}
 
     # Determine expected viewBox
     expected_viewbox = None
     if expected_format and expected_format in CANVAS_FORMATS:
-        expected_viewbox = CANVAS_FORMATS[expected_format]['viewbox']
+        expected_viewbox = parse_project_viewbox(
+            CANVAS_FORMATS[expected_format]['viewbox'],
+            context=f"canvas format {expected_format!r}",
+        )
 
-    for svg_file in svg_files[:10]:  # Check first 10 files
+    for svg_file in svg_files:
         try:
-            with open(svg_file, 'r', encoding='utf-8') as f:
-                content = f.read(2000)  # Only read first 2000 characters
-                match = viewbox_pattern.search(content)
-                if match:
-                    viewbox = match.group(1)
-                    viewboxes.add(viewbox)
-
-                    # If expected format is specified, check for match
-                    if expected_viewbox and viewbox != expected_viewbox:
-                        warnings.append(
-                            f"{svg_file.name}: viewBox '{viewbox}' does not match expected format "
-                            f"'{expected_format}' (expected: '{expected_viewbox}')"
-                        )
-                else:
-                    warnings.append(f"{svg_file.name}: viewBox attribute not found")
-        except Exception as e:
-            warnings.append(f"{svg_file.name}: Failed to read - {e}")
+            viewbox = read_project_viewbox(svg_file)
+        except CanvasContractError as exc:
+            warnings.append(str(exc))
+            continue
+        viewboxes[svg_file.name] = viewbox
+        if expected_viewbox and viewbox != expected_viewbox:
+            warnings.append(
+                f"{svg_file.name}: root viewBox '{viewbox.canonical}' must match "
+                f"project format '{expected_format}' ({expected_viewbox.canonical})"
+            )
 
     # Check for multiple different viewBoxes
-    if len(viewboxes) > 1:
-        warnings.append(f"Multiple different viewBox settings detected: {viewboxes}")
+    distinct = {viewbox for viewbox in viewboxes.values()}
+    if len(distinct) > 1:
+        details = ", ".join(
+            f"{name}={viewbox.canonical}"
+            for name, viewbox in sorted(viewboxes.items())
+        )
+        warnings.append(
+            "All project SVG root viewBoxes must match; found " + details
+        )
 
     return warnings
 

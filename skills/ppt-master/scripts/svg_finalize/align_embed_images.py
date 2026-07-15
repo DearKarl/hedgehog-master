@@ -9,12 +9,12 @@ Replaces the previous three independent finalize_svg steps:
                      reference points to a pre-cropped asset.
     fix-aspect    →  for each <image>, read the source bitmap dimensions and
                      adjust x/y/width/height so the rendered box matches the
-                     image aspect ratio (PowerPoint's "Convert to Shape"
-                     ignores preserveAspectRatio and stretches otherwise).
-    embed-images  →  Base64-inline every external image reference so the
-                     legacy/preview pptx (which packages the SVG verbatim)
-                     can resolve them — pptx-internal SVG cannot follow
-                     ``../images/…`` relative URIs.
+                     image aspect ratio in PowerPoint SVG rendering paths that
+                     do not honor preserveAspectRatio consistently.
+    embed-images  →  Base64-inline every embeddable external image reference
+                     so ``svg_final/`` remains portable when opened or manually
+                     inserted as an SVG image. EMF/WMF keep the documented
+                     external-reference exception.
 
 Why merge: each step independently parsed + serialized the SVG, each step
 re-read the same bitmap from disk, and the two spatial transforms (crop and
@@ -127,6 +127,21 @@ def _resolve_image_path(href: str, svg_dir: Path) -> Path | None:
     else:
         candidate = (svg_dir / decoded).resolve()
     return candidate if candidate.exists() else None
+
+
+def _is_svg_image(img_path: Path, raw_bytes: bytes) -> bool:
+    """Return True when an image reference is an SVG document."""
+    if img_path.suffix.lower() == '.svg':
+        return True
+    head = raw_bytes.lstrip()[:512].lower()
+    return head.startswith(b'<svg') or (head.startswith(b'<?xml') and b'<svg' in head)
+
+
+def _embed_raw_image(image: ET.Element, img_path: Path, raw_bytes: bytes) -> None:
+    """Embed raw image bytes without PIL transforms."""
+    mime_type = get_mime_type(img_path.name, raw_bytes)
+    b64 = base64.b64encode(raw_bytes).decode('ascii')
+    _set_href(image, f'data:{mime_type};base64,{b64}')
 
 
 def _load_pil_image(img_path: Path) -> 'PILImage' | None:
@@ -309,9 +324,33 @@ def _process_one_image(
             print(f'   [INFO] {img_path.name}: Office vector left external for native PPTX passthrough')
         return False, None
 
+    if _is_svg_image(img_path, raw_bytes):
+        _embed_raw_image(image, img_path, raw_bytes)
+        if verbose:
+            print(f'   [OK] {img_path.name} (svg, embedded as-is)')
+        return True, None
+
     img = _load_pil_image(img_path)
     if img is None:
         return False, 'PIL open failed'
+
+    # Multi-frame images (animated GIF / WebP / APNG): every PIL transform
+    # and re-save below operates on frame 0 only, silently flattening the
+    # animation — and the "original bytes are smaller" fallback never fires
+    # because one frame is always smaller than all frames. Embed the raw
+    # bytes untouched and keep the geometry attributes (including
+    # preserveAspectRatio, which the native converter maps to srcRect
+    # non-destructively). Animated assets skip re-encode, resize, and the
+    # size cap.
+    if getattr(img, 'is_animated', False):
+        _embed_raw_image(image, img_path, raw_bytes)
+        if max_dimension and max(img.size) > max_dimension:
+            print(f'   [WARN] {img_path.name}: animated image kept as-is '
+                  f'({img.size[0]}x{img.size[1]} exceeds max dimension '
+                  f'{max_dimension}px); animations are exempt from size limits')
+        if verbose:
+            print(f'   [OK] {img_path.name} (animated, embedded as-is)')
+        return True, None
 
     box_x = _parse_float(image.get('x'))
     box_y = _parse_float(image.get('y'))

@@ -5,11 +5,10 @@
 
 ## 0. 上游规范引用
 
-本文档是 **图表模板专用** 的美学与实现规范。所有图表同时必须遵守项目级通用技术约束：
-
-> **[`references/shared-standards.md`](../../references/shared-standards.md)** — SVG 禁用特性黑名单、PPT 兼容性替代、Canvas 格式、tspan 内联规则、分组规范、阴影/叠加技术、后处理管线
-
-以下章节摘录了 shared-standards 中与图表模板最密切相关的条目。完整细节（如 marker 条件约束、clipPath 条件约束、弧线路径计算公式等）请查阅上游文档。
+本文档只定义 **图表模板专用** 的美学与实现配方。项目级 SVG
+创作、兼容性例外与条件映射统一以
+[`references/shared-standards.md`](../../references/shared-standards.md)
+为权威；本指南不摘录、不放宽该合同。
 
 ---
 
@@ -75,38 +74,27 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 ```
 
 - 纯英文场景可省略 `'PingFang SC', 'Microsoft YaHei'`
-- **禁止** 使用 `@font-face`、外部字体、`<style>` 标签
 
 ### 2.2 字号层级
 
-| 层级 | 字号 | font-weight | 用途 |
-|------|------|-------------|------|
-| H1 | `34px` | `bold` (700) | 图表主标题 |
-| H2 | `22px` | `600` | 区域标题（如"详细数据"） |
-| Body L | `18-20px` | `600` | 关键数值、百分比 |
-| Body M | `15-16px` | `600` | 数据标签、分类名 |
-| Body S | `14px` | 正常 | 副标题、图例、来源 |
-| Caption | `12-13px` | 正常 | 坐标轴刻度、注释 |
+| 层级 | 字号（SVG px 语义） | font-weight | 用途 |
+|------|---------------------|-------------|------|
+| H1 | `30–36` | `700–800` | 图表主标题，按信息密度选择 |
+| H2 | `20–24` | `600–700` | 区域标题（如"详细数据"） |
+| Body L | `18–20` | `600–700` | 关键数值、百分比 |
+| Body M | `15–16` | `600` | 数据标签、分类名 |
+| Body S | `13–14` | 正常或 `600` | 副标题、图例、来源 |
+| Caption | `12–13` | 正常 | 坐标轴刻度、注释 |
 
-> **最小字号下限：12px**。所有文本不得小于 12px。
+表中数值采用 SVG px 语义，但规范创作属性必须使用无单位写法：写
+`font-size="34"`，不得写 `font-size="34px"`。显式 `px` 仅是项目转换器的
+兼容输入，会触发 Checker 归一化建议，不得反向扩散到模板创作。
 
-### 2.3 tspan 规范
+> **最小字号下限：12**。所有文本不得小于 `font-size="12"`。
 
-所有 `<text>` 元素的文本内容 **必须** 包裹在 `<tspan>` 中：
+### 2.3 同一图表标签的内联格式
 
-```xml
-<!-- 正确 -->
-<text x="60" y="80" font-size="34" fill="#0F172A">
-    <tspan>图表标题</tspan>
-</text>
-
-<!-- 错误 -->
-<text x="60" y="80" font-size="34" fill="#0F172A">图表标题</text>
-```
-
-### 2.4 内联格式化规则（shared-standards SS4）
-
-**单逻辑行 = 单 `<text>`**。同一行内需要多色/多粗细时，用内联 `<tspan>` 实现，**不要**用多个并排 `<text>`：
+当一个图表标签需要在 PPT 中保持为单一可编辑文本框时，把同一逻辑行写进一个 `<text>`，并用内联 `<tspan>` 表达多色或多粗细。若本来就需要多个独立文本框，则可使用多个 `<text>`：
 
 ```xml
 <!-- 正确：一个 text frame，三个 run -->
@@ -114,15 +102,15 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
   实现<tspan fill="#3B82F6" font-weight="bold">10倍</tspan>效率提升
 </text>
 
-<!-- 错误：三个独立 text frame，PPT 中无法作为一行编辑 -->
+<!-- 若目标是单一文本框，则不适用：下面会生成三个独立 text frame -->
 <text x="100" y="200">实现</text>
 <text x="160" y="200" fill="#3B82F6">10倍</text>
 <text x="240" y="200">效率提升</text>
 ```
 
-> 内联 tspan **不得** 携带 `x` / `y` / `dy`，否则后处理会将其拆分为独立 text frame。`dx` 可用于微调字距。
+> 只有需要留在同一文本框内的 inline tspan 才不带 `x` / `y` / `dy`；带这些定位属性的 tspan 会按独立文本框处理。`dx` 可用于微调字距。
 
-### 2.5 数据高亮默认行为
+### 2.4 数据高亮默认行为
 
 图表中的关键数据文本应默认高亮：
 - **数值结果** — 百分比、倍数、金额 → `<tspan fill="主题色" font-weight="bold">`
@@ -133,7 +121,9 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 
 ## 3. 阴影滤镜
 
-`<filter>` 本身是允许的、且是 PPT 阴影/发光的官方推荐路径（详见本节末尾的"禁用列表"说明）。本节统一阴影 primitive 写法——使用 `feFlood` 方案，**禁止** `<filter>` 内部使用 `<feComponentTransfer>`：
+本节只规定图表模板库采用的阴影配方，不定义项目级 filter
+支持边界。图表阴影统一使用 `feFlood` 方案，本指南不采用
+`<feComponentTransfer>`：
 
 ```xml
 <filter id="chartShadow" x="-15%" y="-15%" width="130%" height="130%">
@@ -156,19 +146,20 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 | 中型元素（柱子、箱体） | 2-3 | 1-2 | 0.10-0.15 |
 | 轻型元素（底部卡片） | 4-6 | 2-4 | 0.06-0.08 |
 
-### 禁用列表
+### 本指南实现约定
 
 - `flood-color="#000000"` → 必须用 `#0F172A`
 - `<feComponentTransfer>` + `<feFuncA slope=...>` → 用 `<feFlood flood-color flood-opacity>` 替代
 - `flood-opacity > 0.20` → 阴影过重，最大 0.15-0.20
 
-> **被禁的是 sub-element，不是 `<filter>` 本身。** `<filter>` 是 PPT Master 允许的、官方推荐的阴影/发光路径（见 [`shared-standards.md`](../../references/shared-standards.md) §1 黑名单不含 filter、§6 把 filter shadow 列为 drop-shadow 的官方实现），转换器 [`svg_to_pptx/drawingml_styles.py`](../../scripts/svg_to_pptx/drawingml_styles.py) 也主动把 `feGaussianBlur` + `feOffset` + `feFlood` + `feComposite` + `feMerge`（以及 `feDropShadow` 简写）映射成 DrawingML `<a:outerShdw>`。
+> 这是图表模板的色彩一致性约定，不是项目级 SVG 黑名单。单独排除
+> `feComponentTransfer/feFuncA(slope)`，是因为它只能调透明度、无法携带
+> 颜色，容易让阴影退回纯黑，与同页使用 `feFlood`
+> `flood-color="#0F172A"` 的卡片产生肉眼可见的冷暖色差。
 >
-> 单独禁 `feComponentTransfer/feFuncA(slope)` 的原因：**它物理上只能调透明度、无法携带颜色**。转换器读到 `feFuncA slope` 时只把它当作 alpha，颜色字段保持默认 `'000000'`——SVG 端看起来阴影颜色正常（因为 SourceAlpha 本身是黑），但导出到 PPTX 后阴影颜色会被定死成纯黑 `#000000`，与同页其他用 `feFlood flood-color="#0F172A"` 的卡片产生肉眼可见的冷暖色差。
->
-> 简言之：**用 filter 没问题，但 primitive 必须能把"颜色"显式表达出来；只能表达"透明度"的 primitive 是被禁的。**
+> 简言之：本库的图表阴影必须显式表达颜色，而不能只表达透明度。
 
-### 阴影使用原则（shared-standards SS6）
+### 图表阴影使用原则
 
 > **阴影是美学成分，不是默认处理。** 克制而非丰富才能产生"经过设计"的感觉。 "阴影被感知而非被看见" 是高端美学标准。
 
@@ -222,7 +213,7 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 
 ## 5. 结构规范
 
-### 5.1 层级分组（shared-standards SS4 Grouping）
+### 5.1 图表层级分组
 
 使用 `<g id="...">` 进行语义分组，便于 PPT 中逐个操作/动画：
 
@@ -241,7 +232,7 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 </g>
 ```
 
-**分组单元参考**（来自 shared-standards）：
+**图表模板分组单元**：
 
 | 分组单元 | 包含内容 |
 |---------|---------|
@@ -252,9 +243,10 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 | 页头 | 标题 + 副标题 + 装饰 |
 | 装饰集群 | 相关装饰形状（环、球、点） |
 
-**命名约定**：使用描述性 `id`（如 `card-1`、`step-discover`、`header`、`footer`）。
-
-> 只有 `<g opacity="...">` 被禁止（见 SS2）。纯结构 `<g>` 是必需的。
+**命名约定**：每个顶层语义组必须使用页面内唯一、描述性的 `id`（如
+`card-1`、`step-discover`、`header`、`footer`）。仅用于局部绘制、样式继承
+或几何组织的内部 `<g>` 可以保持匿名；不要把 frame、icon、badge 等实现
+碎片暴露为独立的顶层动画锚点。
 
 ### 5.2 viewBox
 
@@ -278,52 +270,33 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 
 ---
 
-## 6. SVG 禁用特性与兼容性（shared-standards SS1-2）
+## 6. 通用 SVG 技术约束
 
-### 6.1 绝对禁止
+本指南不定义或摘录项目级 SVG 允许项、禁用项与条件映射。当前合同统一见
+[`shared-standards.md`](../../references/shared-standards.md)；新增或修改模板时，
+必须对目标文件运行 `svg_quality_checker.py` 并通过校验。
 
-| 禁用特性 | 替代方案 |
-|---------|---------| 
-| HTML 命名实体（`&nbsp;` `&mdash;` `&copy;` `&ndash;` `&reg;` `&hellip;` `&bull;` …） | 直接写原生 Unicode 字符（`—` `–` `©` `®` `→` NBSP …） |
-| 文本/属性值中裸写 `& < > " '` | 必须写成 XML 实体 `&amp;` `&lt;` `&gt;` `&quot;` `&apos;` |
-| `<style>` / `class` | 内联属性（`id` 在 `<defs>` 内合法） |
-| `<foreignObject>` | `<text>` + `<tspan>` |
-| `mask` | 叠加遮罩矩形 / gradient overlay |
-| `<symbol>` + `<use>` | 直接写出完整元素 |
-| `textPath` | 手动排列 `<text>` |
-| `@font-face` | 系统字体栈 |
-| `<animate*>` / `<set>` | 无（PPT 侧处理动画） |
-| `<script>` / event 属性 | 无 |
-| `<iframe>` | 无 |
+### 6.1 Shape-first 对象模型
 
-### 6.2 PPT 兼容性替代
+`templates/charts/` 的图示默认由独立、可编辑的 PowerPoint Shape 组成，
+不依赖节点吸附、自动布线或 Connector attachment：
 
-| 禁止语法 | 正确替代 |
-|---------|----------|
-| `fill="rgba(255,255,255,0.1)"` | `fill="#FFFFFF" fill-opacity="0.1"` |
-| `<g opacity="0.2">...</g>` | 在每个子元素上单独设置 `fill-opacity` / `stroke-opacity` |
-| `<image opacity="0.3"/>` | 在 image 后叠加 `<rect fill="背景色" opacity="0.7"/>` |
+| 图示对象 | 模板表达 | 最终 PPTX / 页面创作规则 |
+|---|---|---|
+| 基础节点与容器 | `<rect>`、`<circle>`、`<ellipse>` | 导出为原生可编辑 Shape |
+| 细关系线或方向箭头 | `<line>`；折线路径优先拆成少量线段，仅末段带已登记 marker | 导出为静态可编辑线形状，不创建 `p:cxnSp` |
+| 实心块箭头、chevron、标准流程节点 | 当纯色 preset 精确匹配时，保存 `preset_shape_svg.py` 生成的完整 compact 原子 `<g>` | group 只写一次 metadata / 基础 paint，直接可见 path 是 registry 层且只带必要的分层 paint 覆盖；改动 preset、frame、adjustment 或 paint 时必须整体重新生成 |
+| 自定义轮廓、品牌图形、数据几何 | `<path>`、`<polygon>` | 导出为可编辑 `p:sp/a:custGeom`，无需伪装成 preset |
+| 数据图表 | SVG Shape fallback；符合合同的模板可带 chart replacement marker | 默认仍为 Shape 图表；仅显式 opt-in 时替换为 native Chart |
 
-### 6.3 条件允许
-
-| 特性 | 条件 | 转换结果 |
-|------|------|----------|
-| `marker-start` / `marker-end` | `<marker>` 在 `<defs>` 中，`orient="auto"`，形状为三角/菱形/圆 | DrawingML `<a:headEnd>` / `<a:tailEnd>` |
-| `clipPath` on `<image>` | `<clipPath>` 在 `<defs>` 中，单子元素，**仅用于 image** | DrawingML `<a:prstGeom>` / `<a:custGeom>` |
-| `stroke-dasharray` | 使用预设值 `4,4` / `2,2` / `8,4` / `8,4,2,4` | PPTX `<a:prstDash>` |
-| `text-decoration` | `underline` / `line-through` | PPTX 原生文本格式 |
-| `transform="rotate(...)"` | 所有元素类型均支持 | PPTX `<a:xfrm rot="...">` |
-
-> 完整条件约束见 [`shared-standards.md`](../../references/shared-standards.md) SS1.1（marker 约束）和 SS1.2（clipPath 约束）。
-
-### 6.4 虚线预设对照
-
-| SVG 值 | PPTX 预设 | 适用场景 |
-|--------|-----------|---------|
-| `4,4` | Dash | 通用虚线、分隔线 |
-| `2,2` | Dot (sysDot) | 占位轮廓、细边框 |
-| `8,4` | Long dash | 时间线连接、流程箭头 |
-| `8,4,2,4` | Long dash-dot | 技术图纸、尺寸线 |
+**硬规则**：图表模板不得包含 `data-pptx-object="connector"` 或 Connector
+端点 attachment metadata。authored preset 只能粘贴 helper 输出的完整 compact
+原子 `<g>`：不得手写或局部修改 metadata / path，也不得加入 hidden carrier、
+preview wrapper 或 fingerprint。修改时整体重生成。PPTX 导入与 `mirror` 的
+expanded 无损表达属于独立合同，不得复制为新模板创作格式。概念流程图、
+架构图、关系图也不得添加
+`data-pptx-replace-with="chart"`。来源 PPTX 已有 Connector 的导入/回导保真
+属于独立合同，不通过模板示例扩张到新页面创作。
 
 ---
 
@@ -413,16 +386,16 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 
 ### 排版
 - [ ] 无 `font-size < 12` 的文本
-- [ ] 所有 `<text>` 内容包裹 `<tspan>`
-- [ ] 同一行多格式用内联 `<tspan>`，**非**多个并排 `<text>`
-- [ ] 内联 `<tspan>` 不携带 `x` / `y` / `dy`
-- [ ] 标题 34px、副标题 18px、来源 14px
+- [ ] `font-size` 使用有限无单位数值；不把 `px` / `pt` 等兼容输入写进模板
+- [ ] 需要保持为单一 PPT 文本框的多格式标签使用 inline `<tspan>`；只有这类 inline run 不携带 `x` / `y` / `dy`
+- [ ] 标题、副标题、正文、标签与来源按 §2.2 的角色范围形成稳定层级
 
 ### 结构
-- [ ] 主要元素有语义化 `<g id="...">`
-- [ ] 无 `<style>`、`class`、`<foreignObject>`、`mask`、`rgba()`
-- [ ] `<g>` 标签无 `opacity` 属性
-- [ ] 文本字符为原生 Unicode（`—` `©` `→` NBSP 等），无 HTML 命名实体（`&nbsp;` `&mdash;` `&copy;` 等）；裸 `& < >` 已转义为 `&amp; &lt; &gt;`
+- [ ] 每个顶层语义组都有页面内唯一的描述性 `<g id="...">`；内部实现组可匿名
+- [ ] `svg_quality_checker.py` 对目标模板通过；通用 SVG 合同不在本清单复述
+- [ ] 细关系箭头使用普通 line/path Shape，不含 Connector 或 attachment metadata
+- [ ] authored preset 是 helper 输出的完整 compact 原子 `<g>`；无 carrier / preview wrapper / fingerprint，且 metadata / path 未手改
+- [ ] 只有受支持的数据图表/文本表格使用 replacement marker；概念图示不冒充 native Chart
 
 ### 阴影
 - [ ] 使用 `feFlood` 方案（非 `feComponentTransfer`）
@@ -443,11 +416,86 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 
 ### 验证命令
 ```bash
-# 一键校验
+# 全 catalog：索引、Checker、默认 Shape 路线、原生 Chart/Table 路线
+python3 -c '
+import contextlib
+import io
+import json
+import sys
+from pathlib import Path
+from xml.etree import ElementTree as ET
+
+scripts = Path("skills/ppt-master/scripts").resolve()
+sys.path.insert(0, str(scripts))
+
+from svg_quality_checker import SVGQualityChecker
+from svg_to_pptx.drawingml.converter import convert_svg_to_slide_shapes
+from svg_to_pptx.native_objects import native_replacement_kind
+
+catalog = Path("skills/ppt-master/templates/charts")
+index = json.loads((catalog / "charts_index.json").read_text(encoding="utf-8"))
+paths = sorted(catalog.glob("*.svg"))
+indexed = set(index["charts"])
+actual = {path.stem for path in paths}
+assert index["meta"]["total"] == len(indexed), "meta.total does not match index"
+assert actual == indexed, f"catalog/index mismatch: {sorted(actual ^ indexed)}"
+
+native_markers = 0
+for path in paths:
+    checked = SVGQualityChecker().check_file(str(path))
+    errors = checked["errors"]
+    assert errors == [], f"{path.name}: {errors}"
+
+    default_result = convert_svg_to_slide_shapes(path)
+    default_xml = default_result[0]
+    assert "<c:chart " not in default_xml
+    assert "<cx:chart " not in default_xml
+    assert "<a:tbl>" not in default_xml
+
+    root = ET.parse(path).getroot()
+    kinds = {
+        kind
+        for element in root.iter()
+        if (kind := native_replacement_kind(element))
+    }
+    with contextlib.redirect_stderr(io.StringIO()):
+        native_result = convert_svg_to_slide_shapes(path, native_objects=True)
+    native_xml = native_result[0]
+
+    if not kinds:
+        assert native_result == default_result, path.name
+        continue
+
+    assert len(kinds) == 1, f"{path.name}: {sorted(kinds)}"
+    assert native_result != default_result, path.name
+    native_markers += 1
+    if kinds == {"chart"}:
+        assert "<c:chart " in native_xml or "<cx:chart " in native_xml
+        assert "<a:tbl>" not in native_xml
+    elif kinds == {"table"}:
+        assert "<a:tbl>" in native_xml
+        assert "<c:chart " not in native_xml
+        assert "<cx:chart " not in native_xml
+    else:
+        raise AssertionError(f"{path.name}: unsupported {sorted(kinds)}")
+
+print(
+    f"OK: {len(paths)} chart templates; "
+    f"{native_markers} native Chart/Table markers"
+)
+'
+# 预期：OK: 76 chart templates; 25 native Chart/Table markers
+
+# 单文件诊断
 f="your_chart.svg"
-xmllint --noout "skills/ppt-master/templates/charts/$f" && echo "XML OK" || echo "XML FAIL"
-echo "Old colors:" && grep -c '#2C3E50\|#7F8C8D\|#95A5A6\|#5D6D7E\|#000000' "skills/ppt-master/templates/charts/$f"
-echo "Small fonts:" && grep -c 'font-size="[0-9]"' "skills/ppt-master/templates/charts/$f"
+python3 "skills/ppt-master/scripts/svg_quality_checker.py" \
+  "skills/ppt-master/templates/charts/$f"
+
+# 图表库专用视觉审计（有输出即需人工处理）
+rg -n '#2C3E50|#7F8C8D|#95A5A6|#5D6D7E|#000000' \
+  "skills/ppt-master/templates/charts/$f"
+rg --pcre2 -n 'font-size="(?:[0-9](?:\.[0-9]+)?|1[01](?:\.[0-9]+)?)"' \
+  "skills/ppt-master/templates/charts/$f"
 ```
 
 ---
@@ -533,7 +581,7 @@ echo "Small fonts:" && grep -c 'font-size="[0-9]"' "skills/ppt-master/templates/
 
 **判定**："4 个并列方面" → 2×2；"3 个并列方面" → 1×3；"6 个能力点" → 2×3；"4 个关键指标" → 1×4。`page_rhythm` 标 `breathing` 的页面 **不要** 用卡片网格（见 executor-base.md §2.1）。
 
-### 11.5 倾斜虚线连接箭头 (Diagonal Dashed Connector)
+### 11.5 倾斜虚线关系箭头 (Diagonal Dashed Relationship Arrow)
 
 **用途**：表达"跨象限/跨层级"的关系——优先级迁移、影响传导、虚线汇报、对角趋势。水平/垂直箭头表达的是"流程进度"，倾斜虚线箭头表达的是"关系或方向引导"，两者语义不一样。
 
@@ -640,4 +688,3 @@ echo "Small fonts:" && grep -c 'font-size="[0-9]"' "skills/ppt-master/templates/
 | §11.5 倾斜虚线连接箭头 | `matrix_2x2.svg` |
 | §11.6 接地椭圆 | `team_roster.svg` |
 | §11.7 双向交互箭头 | `client_server_flow.svg` |
-

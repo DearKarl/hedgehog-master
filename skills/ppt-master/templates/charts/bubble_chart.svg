@@ -51,6 +51,26 @@
     <text x="60" y="90" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
           font-size="18" fill="#64748B">Market Size vs Growth vs Share · Bubble Size = Market Share</text>
     <!-- Chart Area -->
+    <g id="bubble_chart" data-pptx-replace-with="chart">
+        <metadata type="application/json">
+            {
+              "name": "bubble_chart",
+              "x": 20,
+              "y": 122,
+              "width": 1041.45,
+              "height": 506.75,
+              "type": "bubble",
+              "series": [
+                {"name": "Product A", "points": [[120, 35, 28]]},
+                {"name": "Product B", "points": [[85, 25, 18]]},
+                {"name": "Product C", "points": [[45, 42, 12]]},
+                {"name": "Product D", "points": [[130, 8, 25]]},
+                {"name": "Product E", "points": [[30, -5, 8]]},
+                {"name": "Product F", "points": [[65, 15, 9]]}
+              ],
+              "style": {"colors": ["#10B981", "#7C3AED", "#F59E0B", "#2563EB", "#E11D48", "#059669"]}
+            }
+        </metadata>
     <g id="chartArea">
         <!-- Quadrant Background -->
         <rect x="160" y="130" width="440" height="215" fill="#FFF1F2" opacity="0.3"/>
@@ -181,6 +201,7 @@
                   font-size="15" font-weight="600" fill="#FFFFFF" text-anchor="middle">A</text>
         </g>
     </g>
+    </g>
     <!-- Product List -->
     <g id="productList" transform="translate(1060, 130)">
         <rect x="0" y="0" width="180" height="320" rx="8" fill="#F8F9FA" stroke="#E0E0E0" stroke-width="1"/>
@@ -243,13 +264,13 @@
               font-size="12" fill="#64748B" text-anchor="middle">Bubble Size = Market Share</text>
         <circle cx="40" cy="60" r="10" fill="#CBD5E1"/>
         <text x="40" y="82" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="10" fill="#64748B" text-anchor="middle">10%</text>
+              font-size="12" fill="#64748B" text-anchor="middle">10%</text>
         <circle cx="90" cy="55" r="18" fill="#CBD5E1"/>
         <text x="90" y="82" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="10" fill="#64748B" text-anchor="middle">20%</text>
+              font-size="12" fill="#64748B" text-anchor="middle">20%</text>
         <circle cx="145" cy="48" r="25" fill="#CBD5E1"/>
         <text x="145" y="82" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="10" fill="#64748B" text-anchor="middle">30%</text>
+              font-size="12" fill="#64748B" text-anchor="middle">30%</text>
     </g>
     <!-- Data Source -->
     <text x="60" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 

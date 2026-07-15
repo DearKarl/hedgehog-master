@@ -31,6 +31,8 @@ from pathlib import Path, PurePosixPath
 from typing import Any
 from xml.etree import ElementTree as ET
 
+from pptx_to_svg.ooxml_loader import parse_ooxml_boolean
+
 
 NS = {
     "a": "http://schemas.openxmlformats.org/drawingml/2006/main",
@@ -59,12 +61,14 @@ class SlideRecord:
     slide_path: str
     layout_path: str | None
     master_path: str | None
+    show_inherited_shapes: bool
     background_asset: str | None
     background_source: str | None
     image_assets: list[str]
     text_samples: list[str]
     text_count: int
     shape_count: int
+    placeholders: list[dict[str, Any]]
     page_type: str
     svg_file: str
     flat_svg_file: str
@@ -87,21 +91,39 @@ def summarize_part_record(
 
     bg_asset = detect_background_asset(root, rels)
     image_targets = extract_image_targets(root, rels)
-    return {
+    sp_tree = root.find("p:cSld/p:spTree", NS) if root is not None else None
+    shape_image_targets = extract_image_targets(sp_tree, rels)
+    display_name = part_display_name(root, part_path)
+    layout_type = root.attrib.get("type") if root is not None else None
+    record = {
         "path": part_path,
         "name": PurePosixPath(part_path).name,
+        "displayName": display_name,
+        "layoutType": layout_type,
         "svgFile": svg_file,
         "parentPath": parent_path,
         "themePath": theme_path,
         "theme": theme,
         "backgroundAsset": copied_assets.get(bg_asset, PurePosixPath(bg_asset).name if bg_asset else None),
         "imageAssets": [copied_assets.get(target, PurePosixPath(target).name) for target in image_targets],
+        "shapeImageAssets": [
+            copied_assets.get(target, PurePosixPath(target).name)
+            for target in shape_image_targets
+        ],
         "placeholders": extract_placeholders(root),
         "textSamples": extract_text_samples(root),
         "textCount": len(root.findall(".//a:t", NS)) if root is not None else 0,
         "shapeCount": count_slide_shapes(root),
+        "drawableShapeCount": count_drawable_shapes(root),
         "usedBySlides": used_by_slides,
     }
+    if root is not None and root.tag == f"{{{NS['p']}}}sldLayout":
+        record["showMasterShapes"] = parse_ooxml_boolean(
+            root.attrib.get("showMasterSp"),
+            default=True,
+            context=f"{part_path} showMasterSp",
+        )
+    return record
 
 
 def normalize_part(path: str, base: str | None = None) -> str:
@@ -201,6 +223,40 @@ def parse_xfrm_record(sp: ET.Element) -> dict[str, int] | None:
     }
 
 
+def part_display_name(root: ET.Element | None, part_path: str) -> str:
+    """Return the PowerPoint picker name, falling back to the package stem."""
+    if root is not None:
+        common_slide = root.find("p:cSld", NS)
+        if common_slide is not None:
+            name = (common_slide.attrib.get("name") or "").strip()
+            if name:
+                return name
+        matching_name = (root.attrib.get("matchingName") or "").strip()
+        if matching_name:
+            return matching_name
+    return PurePosixPath(part_path).stem
+
+
+def placeholder_semantic_role(placeholder_type: str | None) -> str:
+    """Map an OOXML placeholder type to the exporter role vocabulary."""
+    normalized = placeholder_type or "obj"
+    role_by_type = {
+        "title": "title",
+        "ctrTitle": "title",
+        "body": "body",
+        "subTitle": "subtitle",
+        "obj": "object",
+        "pic": "picture",
+        "chart": "chart",
+        "tbl": "table",
+        "media": "media",
+        "dt": "date",
+        "ftr": "footer",
+        "sldNum": "slide-number",
+    }
+    return role_by_type.get(normalized, "other")
+
+
 def extract_placeholders(root: ET.Element | None) -> list[dict[str, Any]]:
     if root is None:
         return []
@@ -209,11 +265,16 @@ def extract_placeholders(root: ET.Element | None) -> list[dict[str, Any]]:
         ph = sp.find("p:nvSpPr/p:nvPr/p:ph", NS)
         if ph is None:
             continue
+        non_visual = sp.find("p:nvSpPr/p:cNvPr", NS)
+        placeholder_type = ph.attrib.get("type")
         record: dict[str, Any] = {
-            "type": ph.attrib.get("type"),
+            "type": placeholder_type,
             "idx": ph.attrib.get("idx"),
             "size": ph.attrib.get("sz"),
             "orient": ph.attrib.get("orient"),
+            "semanticRole": placeholder_semantic_role(placeholder_type),
+            "shapeId": non_visual.attrib.get("id") if non_visual is not None else None,
+            "shapeName": non_visual.attrib.get("name") if non_visual is not None else None,
             "geometry": parse_xfrm_record(sp),
             "textSamples": extract_text_samples(sp, limit=2),
         }
@@ -224,9 +285,35 @@ def extract_placeholders(root: ET.Element | None) -> list[dict[str, Any]]:
     return placeholders
 
 
+def count_drawable_shapes(root: ET.Element | None) -> int:
+    """Count top-level visual shapes that are not placeholder definitions."""
+    if root is None:
+        return 0
+    sp_tree = root.find("p:cSld/p:spTree", NS)
+    if sp_tree is None:
+        return 0
+    visual_tags = {
+        f"{{{NS['p']}}}sp",
+        f"{{{NS['p']}}}grpSp",
+        f"{{{NS['p']}}}graphicFrame",
+        f"{{{NS['p']}}}pic",
+        f"{{{NS['p']}}}cxnSp",
+    }
+    count = 0
+    for child in sp_tree:
+        if child.tag not in visual_tags:
+            continue
+        if child.find("p:nvSpPr/p:nvPr/p:ph", NS) is not None:
+            continue
+        count += 1
+    return count
+
+
 def extract_placeholder_text_style(sp: ET.Element) -> dict[str, Any]:
     style: dict[str, Any] = {}
-    rpr = sp.find(".//a:rPr", NS) or sp.find(".//a:endParaRPr", NS)
+    rpr = sp.find(".//a:rPr", NS)
+    if rpr is None:
+        rpr = sp.find(".//a:endParaRPr", NS)
     if rpr is None:
         return style
     if rpr.attrib.get("sz"):
@@ -376,6 +463,38 @@ def parse_theme(root: ET.Element | None) -> dict[str, Any]:
 def choose_common_assets(asset_usage: Counter[str]) -> list[str]:
     common = [asset for asset, count in asset_usage.items() if count > 1]
     return sorted(common)
+
+
+def _effective_inherited_image_assets(
+    *,
+    show_inherited_shapes: bool,
+    layout_record: dict[str, Any] | None,
+    master_record: dict[str, Any] | None,
+) -> set[str]:
+    """Return visible inherited shape images, excluding background assets."""
+    if not show_inherited_shapes:
+        return set()
+
+    def shape_images(record: dict[str, Any] | None) -> set[str]:
+        if record is None:
+            return set()
+        if "shapeImageAssets" in record:
+            return {
+                asset
+                for asset in record.get("shapeImageAssets", [])
+                if asset
+            }
+        background = record.get("backgroundAsset")
+        return {
+            asset
+            for asset in record.get("imageAssets", [])
+            if asset and asset != background
+        }
+
+    assets = shape_images(layout_record)
+    if layout_record is None or layout_record.get("showMasterShapes", True):
+        assets.update(shape_images(master_record))
+    return assets
 
 
 def write_summary(output_path: Path, manifest: dict[str, Any]) -> None:
@@ -572,6 +691,7 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
             image_targets = extract_image_targets(slide_root, slide_rels)
             texts = extract_text_samples(slide_root)
             shape_count = count_slide_shapes(slide_root)
+            placeholders = extract_placeholders(slide_root)
             page_type = classify_slide(index, len(slide_parts), texts, len(image_targets), shape_count)
 
             resolved_bg = copied_assets.get(bg_asset, PurePosixPath(bg_asset).name if bg_asset else None)
@@ -617,12 +737,19 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
                     slide_path=slide_path,
                     layout_path=layout_path,
                     master_path=master_path,
+                    show_inherited_shapes=parse_ooxml_boolean(
+                        slide_root.attrib.get("showMasterSp")
+                        if slide_root is not None else None,
+                        default=True,
+                        context=f"{slide_path} showMasterSp",
+                    ),
                     background_asset=resolved_bg,
                     background_source=bg_source,
                     image_assets=resolved_images,
                     text_samples=texts,
                     text_count=len(texts),
                     shape_count=shape_count,
+                    placeholders=placeholders,
                     page_type=page_type,
                     svg_file=slide_svg_filename(index),
                     flat_svg_file=slide_svg_filename(index),
@@ -692,15 +819,12 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
             if slide.background_asset:
                 per_slide_assets.add(slide.background_asset)
             layout_record = layout_by_path.get(slide.layout_path or "")
-            if layout_record:
-                if layout_record.get("backgroundAsset"):
-                    per_slide_assets.add(layout_record["backgroundAsset"])
-                per_slide_assets.update(layout_record.get("imageAssets", []))
             master_record = master_by_path.get(slide.master_path or "")
-            if master_record:
-                if master_record.get("backgroundAsset"):
-                    per_slide_assets.add(master_record["backgroundAsset"])
-                per_slide_assets.update(master_record.get("imageAssets", []))
+            per_slide_assets.update(_effective_inherited_image_assets(
+                show_inherited_shapes=slide.show_inherited_shapes,
+                layout_record=layout_record,
+                master_record=master_record,
+            ))
             for asset in per_slide_assets:
                 if asset:
                     asset_usage[asset] += 1
@@ -734,12 +858,14 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
                     "slidePath": slide.slide_path,
                     "layoutPath": slide.layout_path,
                     "masterPath": slide.master_path,
+                    "showInheritedShapes": slide.show_inherited_shapes,
                     "backgroundAsset": slide.background_asset,
                     "backgroundSource": slide.background_source,
                     "imageAssets": slide.image_assets,
                     "textSamples": slide.text_samples,
                     "textCount": slide.text_count,
                     "shapeCount": slide.shape_count,
+                    "placeholders": slide.placeholders,
                     "pageType": slide.page_type,
                 }
                 for slide in slide_records

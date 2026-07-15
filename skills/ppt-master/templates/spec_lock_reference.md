@@ -4,13 +4,13 @@
 >
 > Machine-readable execution contract. Executor MUST `read_file` this before every SVG page. Values not listed here must NOT appear in SVGs. For design narrative (rationale, audience, style), see `design_spec.md`.
 >
-> After SVG generation begins, this is the canonical source for color / font / icon / image values. Modifications should go through `scripts/update_spec.py` to keep this file and generated SVGs in sync.
+> After SVG generation begins, this is the canonical source for color / font / icon / image values. Supported color/font modifications should go through `scripts/update_spec.py` to keep this file and generated SVGs in sync. Canvas changes are intentionally not bulk-rewritten by that tool.
 
 ## canvas
 - viewBox: 0 0 1280 720
 - format: PPT 16:9
 
-> Strategist: fill viewBox and format for the chosen canvas. Common values: `0 0 1280 720` (PPT 16:9), `0 0 1024 768` (PPT 4:3), `0 0 1242 1660` (Xiaohongshu), `0 0 1080 1080` (WeChat Moments), `0 0 1080 1920` (Story).
+> Strategist: fill viewBox and format for the chosen canvas. New authoring uses the canonical `0 0 W H` spelling with positive integer pixels. Every generated page and internal Layout prototype must match this numeric canvas. Common values: `0 0 1280 720` (PPT 16:9), `0 0 1024 768` (PPT 4:3), `0 0 1242 1660` (Xiaohongshu), `0 0 1080 1080` (WeChat Moments), `0 0 1080 1920` (Story). Changing the canvas after authoring starts requires re-authoring and re-validating affected SVGs; `update_spec.py` does not propagate canvas changes.
 
 ## mode
 - mode: pyramid
@@ -36,6 +36,8 @@
 - image_palette: cool-corporate
 
 > Strategist: fill only colors actually used. Add extra rows as needed; delete unused rows rather than leave as `#......`.
+>
+> **PowerPoint theme roles.** Flat and structured export map `bg` / `background` / `master_bg` → `lt1`, `secondary_bg` / `bg_secondary` → `lt2`, `text` / `body_text` → `dk1`, `text_secondary` → `dk2`, `primary` → `accent1`, `accent` → `accent2`, `secondary_accent` → `accent3`, and `border` → `accent4`. The first two additional non-black/non-white roles become `accent5` / `accent6`; remaining colors stay fixed. Mapping is usage-aware, so a background HEX is not automatically reused for inverse text.
 >
 > **`image_rendering` and `image_palette`** — required only when `images` section below contains `ai`-sourced files. Values MUST be valid names from `references/image-renderings/_index.md` and `references/image-palettes/_index.md`, **or** the literal string `custom`. Image_Generator reads these and applies them deck-wide. Omit both rows when the deck has no AI-generated images.
 >
@@ -73,16 +75,18 @@
 >
 > **Size slots are anchors, not a closed menu.** Common slots (`title` / `subtitle` / `annotation`) cover frequent cases. Add role-specific slots (e.g. `cover_title: 88`, `hero_number: 56`, `subheading: 32`, `lead: 30`, `footnote: 16`, `chart_annotation: 16`) for the roles the deck actually uses — common for cover-heavy decks, consulting-style hero numbers, dense pages. **Mandatory — scan `§IX` and declare a slot for every role that recurs across pages, not just the four defaults.** A report / `text`-mode deck almost always recurs a per-page **core-message / lead line** and **page numbers / source credits / footnotes** → declare `lead` and `footnote` for them. `subheading` and `lead` sit between `subtitle` and `body` (their bands overlap `subtitle`) — pick by role, not size — and the core-message `lead` is a **primary** line, **always ≥ `body`**, never smaller. Leaving a recurring lead / footnote undeclared forces the Executor to improvise an unlocked size (and a core line improvised below `body` inverts the hierarchy). **Structural roles (title / body / subtitle / annotation / footnote) render at their locked size on every page — one role, one size, deck-wide.** Intermediate in-band sizes are for special / feature elements only (hero number, display title, one-off emphasis); declare a recurring one as its own slot so it stays consistent too.
 >
-> **⚠️ PPT-safe stack discipline (HARD rule).** PPTX stores one `typeface` per run with no runtime fallback. Every stack MUST end with a cross-platform pre-installed font: `"Microsoft YaHei", sans-serif` / `SimSun, serif` / `Arial, sans-serif` / `"Times New Roman", serif` / `Consolas, "Courier New", monospace`. Non-preinstalled fonts (Inter / Google Fonts / brand typefaces) may lead the stack only when the Design Spec notes the font-install or embedding requirement.
+> **Generated Master defaults**: `pptx_structure.mode: flat` and `mode: structured` require unitless `title` and `body`. Native export writes `title` into every generated Master `titleStyle` default and derives a deterministic nine-level, non-increasing size hierarchy from `body` for `bodyStyle` / `otherStyle`. It changes only each level's `a:defRPr@sz`, preserving indentation, bullets, and paragraph settings. Direct page-run sizes and role-specific structured-Layout placeholder prototype sizes remain unchanged.
 >
-> **Stack length discipline.** 3-4 fonts per stack is the sweet spot. Converter only writes the **first** Latin and **first** CJK font into PPTX — everything after is silently dropped. macOS-only families (`Songti SC`, `Menlo`, `Monaco`, `Helvetica`) are auto-mapped to Windows equivalents via `FONT_FALLBACK_WIN` (see `scripts/svg_to_pptx/drawingml_utils.py`); stacking both is redundant. Lead with Windows-preinstalled fonts (`Microsoft YaHei` / `SimSun` / `Arial` / `Georgia` / `Consolas`); keep at most **one** macOS-exclusive family (typically `"PingFang SC"`) as a browser-preview nicety.
+> **⚠️ PPT-safe stack discipline (HARD rule).** Flat and structured export map `title_family` to the PowerPoint theme major font and `body_family` (or `font_family`) to the theme minor font. Runs whose resolved face matches either role use `+mj-*` / `+mn-*` theme tokens; other role families remain concrete per-run typefaces. Every exported Latin / EA face MUST therefore resolve to cross-platform pre-installed fonts: `"Microsoft YaHei"` / `SimSun` / `Arial` / `"Times New Roman"` / `Consolas`. Stacks that resolve to non-preinstalled typefaces (Inter / Google Fonts / brand typefaces) may be used only when the Design Spec notes the font-install or embedding requirement.
+>
+> **Stack length discipline.** 3-4 fonts per stack is the sweet spot. Converter only writes the **first** Latin and **first** CJK font into PPTX — everything after is silently dropped. macOS-only families (`Songti SC`, `Menlo`, `Monaco`, `Helvetica`) are auto-mapped to Windows equivalents via `FONT_FALLBACK_WIN` (see `scripts/svg_to_pptx/drawingml/utils.py`); stacking both is redundant. Lead with Windows-preinstalled fonts (`Microsoft YaHei` / `SimSun` / `Arial` / `Georgia` / `Consolas`); keep at most **one** macOS-exclusive family (typically `"PingFang SC"`) as a browser-preview nicety.
 
 ## icons
 - library: chunk-filled
 - brand_library: simple-icons
 - inventory: target, bolt, shield, users, chart-bar, lightbulb
 
-> `library` MUST be exactly one of `chunk-filled` / `tabler-filled` / `tabler-outline` / `phosphor-duotone` — mixing is forbidden. `brand_library: simple-icons` is optional; include only when the deck uses real company / product brand marks, otherwise omit. `inventory` lists approved icon names (no library prefix); Executor may only use icons from this list.
+> `library` MUST be exactly one of `chunk-filled` / `tabler-filled` / `tabler-outline` / `phosphor-duotone` — mixing is forbidden. `brand_library: simple-icons` is optional; include only when the deck uses real company / product brand marks, otherwise omit. `inventory` lists approved icon names (no library prefix); Executor may only use icons from this list. Names are case-sensitive filenames: bundled-library inventory values are the exact verified lowercase basenames (`award`, never `Award`); custom icon names preserve the custom file's exact case.
 >
 > **`stroke_width` (stroke-style libraries only)** — required when `library` is stroke-based (currently `tabler-outline`); allowed values `1.5` / `2` / `3`. Executor MUST apply this value to every `<use data-icon="...">` placeholder via `stroke-width`, deck-wide. Omit for non-stroke libraries (`chunk-filled` / `tabler-filled` / `phosphor-duotone`) — ignored there. For heavier weight switch library; do not exceed `3` (at 24×24 strokes merge and the icon stops reading as line art).
 >
@@ -120,23 +124,73 @@
 >
 > **Missing or empty section** → Executor falls back to `dense` for every page (legacy pre-rhythm behavior). Remove the section only for legacy decks; new decks MUST fill it.
 
+## pptx_structure
+- mode: flat
+
+> One deck-wide native PowerPoint structure policy. Free-design and brand-only routes use `flat`; deck/layout template routes use `structured`.
+>
+> `flat` keeps every SVG object Slide-local. Export materializes one clean project-owned Master plus one Blank Layout, maps the current color/typography lock into the theme and Master defaults, removes stock content placeholders and unused built-in Layouts, and retains only the standard date/footer/slide-number capability hooks. In this mode, omit `pptx_masters`, `pptx_layouts`, `page_pptx_layouts`, and `page_layouts`, and do not add root Master/Layout identity, `data-pptx-layer`, or `data-pptx-placeholder*` metadata to generated pages.
+>
+> When Step 3 loaded a deck/layout template, replace the `flat` row above with exactly one of:
+> ```
+> - mode: structured
+> - template_adherence: adaptive
+> ```
+> or:
+> ```
+> - mode: structured
+> - template_adherence: strict
+> ```
+> Both values require complete `pptx_masters`, `pptx_layouts`, `page_pptx_layouts`, and `page_layouts` sections. Existing legacy template SVGs that lack the current root Master identity, grouped slot/carrier contract, or positive bounds must run [`restore-pptx-structure`](../workflows/restore-pptx-structure.md) before they can be selected.
+
+## pptx_masters
+- master-default: Default Master
+
+> Deck/layout template routes only. One row per Master: `<master_key>: <PowerPoint picker name>`. A key contains 1–64 ASCII letters, digits, dots, underscores, or hyphens; its first character is a letter or digit. Spaces belong only in the PowerPoint picker name, never in the key. Keys are deck-unique and stable. Omit this entire section when `pptx_structure.mode: flat`.
+
+## pptx_layouts
+- cover-hero-split: master-default | Cover — Hero Split | template:01_cover
+- kpi-band-trio: master-default | KPI Band Trio | P02
+- content-two-column: master-default | Two Column | template:03a_content_abstract
+- quote-focus: master-default | Quote Focus | template:04_quote_focus
+
+> Deck/layout template routes only. This is the unique reusable Layout roster, not a page roster. Layout keys use the same grammar as Master keys. Value format: `<master_key> | <PowerPoint layout name> | <prototype source>`. Supply all three non-empty fields separated by `|`. A prototype source is either `P<NN>` for one generated page carrying that exact Layout contract, or `template:<basename>` for an installed `templates/<basename>.svg`; the `template:` prefix is required, so a bare basename is invalid. Omit this section when `pptx_structure.mode: flat`.
+>
+> Every Layout key appears exactly once, belongs to exactly one declared Master, and is globally unique even when two Masters use the same picker name. Every declared Master owns at least one Layout definition. A Layout may remain unused by generated pages; such a Layout must use `template:<basename>` so export can register it without manufacturing a published slide.
+>
+> The definition prototype repeats its identity through root `data-pptx-master`, `data-pptx-master-name`, `data-pptx-layout`, and `data-pptx-layout-name`. Strategist plans the initial roster. If adaptive use genuinely changes reusable framing or slot topology/bounds, Executor adds a new definition and updates the page assignment immediately; never mutate a reused key silently.
+>
+> Reuse one `(master_key, layout_key)` only when its ordered Layout atoms and slot ids/types/indices/bounds/binding modes are identical. Current text, imagery, crop, or Slide-local geometry does not define Layout identity.
+>
+> **Different reusable composition → different key.** Name keys after the composition (`timeline-spine`, `kpi-band-trio`), never after PowerPoint stock roles or page topics. Distinct compositions collapsing into stock-role keys (`title-content` for eight different pages) and one shared skeleton splitting into per-topic keys (`allocation-fengqing` / `allocation-luoping` over identical framing) both produce Layout rosters that do not match the deck; the quality checker flags the second as duplicate Layouts.
+>
+> A Layout may have zero slots. Do not create an empty `utility` kind or a full-page fake `object` slot; the named Layout and its fixed atoms are sufficient.
+
+## page_pptx_layouts
+- P01: cover-hero-split
+- P02: kpi-band-trio
+- P03: content-two-column
+- P04: content-two-column
+
+> Deck/layout template routes only. Include exactly one row per generated page. The value is one key declared in `pptx_layouts`; Master and picker name come from that unique definition and are not repeated per page. The generated SVG root must match the assigned definition. Omit this section when `pptx_structure.mode: flat`.
+
 ## page_layouts
 - P01: 01_cover
 - P03: 02a_chapter
 - P04: 03a_content_abstract
 
-> One entry per page **that uses a template SVG**. Key: `P<NN>` matching §IX. Value: the template's SVG basename without extension (e.g., `01_cover`, `03a_content_image_text`) — Executor resolves it to `templates/<value>.svg`. Modern templates ship many content-page variants (`03a_content_abstract`, `03b_content_image_text`, `03c_content_three_items` …); the page-type → single-file mapping in `executor-base.md §1` no longer covers them, so this section is the per-page truth.
+> For a deck/layout template route, include one entry per page. Key: `P<NN>` matching §IX. Value: the template SVG basename without extension. This is the authoring-input prototype mapping; `page_pptx_layouts` is the output page assignment, while `pptx_layouts` defines the unique reusable roster. Strict preserves the prototype Master/Layout/slot contract. Adaptive retains its Master contract and may explicitly define and assign a new Layout key while authoring. Non-mirror skin follows the project lock.
 >
-> **No entry for a page** → that page is free design (no template inheritance). Mixed decks are supported: e.g., cover/chapter pages inherit a template while content pages are free.
+> **No entry for a page** is an error in structured template mode.
 >
-> **Hard rule**: Use both `page_layouts` and `page_charts` for the same page only when the layout template is a compatible shell for the chart. Do not assign a conflicting layout just to fill every page: a waterfall chart should not inherit a timeline layout, and KPI cards should not inherit a circle-diagram layout unless that is the intended visual structure. When no compatible layout exists, omit the page from `page_layouts`.
+> **Hard rule**: Use both `page_layouts` and `page_charts` only with a compatible shell. Adaptive mode may start from a neutral content template and finalize a new explicit Layout after design; strict mode must choose an existing compatible Layout or revise the outline.
 >
-> **Whole section omitted** → entire deck is free design. Equivalent to no rows but cleaner; do this when zero pages reference a template.
+> **Whole section omitted** → required for free-design and brand-only `flat` routes. Template strict/adaptive routes require complete `page_layouts`. A legacy package that cannot satisfy the current structured contract must migrate before use; it never enters a compatibility branch inside normal generation.
 >
-> **Strategist source**: copy the per-page SVG choices from `design_spec.md §VI Page Roster` (or §IX outline if Roster is absent). Names must match files in `templates/` exactly — typos cause silent fallback to free design.
+> **Strategist source**: record each project-page choice in project `design_spec.md §IX Content Outline`, using the copied template package's `templates/design_spec.md §V Page Roster` descriptions as the roster authority. Basenames must match files in `templates/` exactly. A typo is a blocking contract error: stop before drawing and report it; never fall back to free design inside template mode.
 
 ## page_charts
-- P05: bar_chart
+- P05: column_chart
 - P09: timeline_horizontal
 - P12: quadrant_bubble_scatter
 
@@ -150,7 +204,14 @@
 
 ## forbidden
 - Mixing icon libraries
-- rgba()
-- `<style>`, `class`, `<foreignObject>`, `textPath`, `@font-face`, `<animate*>`, `<script>`, `<iframe>`, `<symbol>`+`<use>`
-- `<g opacity>` (set opacity on each child element individually)
-- HTML named entities in text (`&nbsp;`, `&mdash;`, `&copy;`, `&ndash;`, `&reg;`, `&hellip;`, `&bull;` …) — write as raw Unicode (`—`, `©`, `→`, NBSP, etc.); XML reserved chars `& < > " '` must be escaped as `&amp; &lt; &gt; &quot; &apos;`. See shared-standards.md §1.0
+- `mask`, `<style>`, `class`, external CSS, `<foreignObject>`, `textPath`, `@font-face`, `<animate*>`, `<set>`, `<script>` / event attributes, `<iframe>`
+- HTML named entities in text; write typography as raw Unicode and escape XML reserved characters
+
+> **Execution reminder — not authoring authority**: the baseline blacklist above
+> is intentionally terse. Add only deck-specific execution locks. General SVG
+> required / forbidden / conditional rules are owned by
+> [`shared-standards.md`](../references/shared-standards.md); do not copy its
+> feature matrix or parameter contracts into `spec_lock.md`. In particular, do
+> not move supported-but-non-default spellings such as `rgba()` or compatible
+> `<g opacity>` into the generic forbidden list merely to enforce a generation
+> preference; their checker warnings remain advisory.
