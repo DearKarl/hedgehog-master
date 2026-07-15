@@ -1,5 +1,8 @@
 # PPT Master — AI 生成原生可编辑 PPTX，支持任意文档输入
 
+> [!NOTE]
+> 这是基于 [hugohe3/ppt-master](https://github.com/hugohe3/ppt-master) 的 Hedgehog Master 集成开发仓库。上游 harness 保持在仓库根目录，确定性 Diagram IR 编译器位于 [`packages/diagram-ir`](./packages/diagram-ir)。本地架构和开发流程见 [`HEDGEHOG_MASTER.md`](./HEDGEHOG_MASTER.md)。
+
 [![Version](https://img.shields.io/badge/version-v2.11.0-blue.svg)](https://github.com/hugohe3/ppt-master/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub stars](https://img.shields.io/github/stars/hugohe3/ppt-master.svg)](https://github.com/hugohe3/ppt-master/stargazers)

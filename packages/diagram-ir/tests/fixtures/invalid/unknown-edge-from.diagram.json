@@ -1,0 +1,22 @@
+{
+  "irVersion": "0.1a",
+  "id": "unknown-edge-from",
+  "title": "Unknown Edge From",
+  "kind": "dataflow",
+  "direction": "left-to-right",
+  "nodes": [
+    {
+      "id": "node-b",
+      "label": "Node B",
+      "role": "output"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-missing-b",
+      "from": "missing-node",
+      "to": "node-b"
+    }
+  ],
+  "metadata": {}
+}

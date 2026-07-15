@@ -1,0 +1,52 @@
+{
+  "irVersion": "0.1a",
+  "id": "branching-dataflow",
+  "title": "Branching Dataflow",
+  "kind": "dataflow",
+  "direction": "left-to-right",
+  "nodes": [
+    {
+      "id": "source-data",
+      "label": "Source Data",
+      "role": "source"
+    },
+    {
+      "id": "clean-a",
+      "label": "Clean A",
+      "role": "transform"
+    },
+    {
+      "id": "clean-b",
+      "label": "Clean B",
+      "role": "transform"
+    },
+    {
+      "id": "report-output",
+      "label": "Report Output",
+      "role": "output"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-source-a",
+      "from": "source-data",
+      "to": "clean-a"
+    },
+    {
+      "id": "edge-source-b",
+      "from": "source-data",
+      "to": "clean-b"
+    },
+    {
+      "id": "edge-a-output",
+      "from": "clean-a",
+      "to": "report-output"
+    },
+    {
+      "id": "edge-b-output",
+      "from": "clean-b",
+      "to": "report-output"
+    }
+  ],
+  "metadata": {}
+}

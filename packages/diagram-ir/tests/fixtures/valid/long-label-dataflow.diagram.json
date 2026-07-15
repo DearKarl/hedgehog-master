@@ -1,0 +1,27 @@
+{
+  "irVersion": "0.1a",
+  "id": "long-label-dataflow",
+  "title": "Long Label Dataflow",
+  "kind": "dataflow",
+  "direction": "left-to-right",
+  "nodes": [
+    {
+      "id": "very-long-source",
+      "label": "This is a very long source label that must wrap deterministically",
+      "role": "source"
+    },
+    {
+      "id": "output-a",
+      "label": "Output A",
+      "role": "output"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-long-output",
+      "from": "very-long-source",
+      "to": "output-a"
+    }
+  ],
+  "metadata": {}
+}

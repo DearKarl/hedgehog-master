@@ -1,0 +1,10 @@
+{
+  "irVersion": "0.1a",
+  "id": "invalid-kind",
+  "title": "Invalid Kind",
+  "kind": "workflow",
+  "direction": "left-to-right",
+  "nodes": [],
+  "edges": [],
+  "metadata": {}
+}

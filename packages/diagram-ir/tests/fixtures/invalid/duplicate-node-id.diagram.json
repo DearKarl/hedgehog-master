@@ -1,0 +1,21 @@
+{
+  "irVersion": "0.1a",
+  "id": "duplicate-node-id",
+  "title": "Duplicate Node ID",
+  "kind": "dataflow",
+  "direction": "left-to-right",
+  "nodes": [
+    {
+      "id": "node-a",
+      "label": "Node A",
+      "role": "source"
+    },
+    {
+      "id": "node-a",
+      "label": "Node A Again",
+      "role": "transform"
+    }
+  ],
+  "edges": [],
+  "metadata": {}
+}

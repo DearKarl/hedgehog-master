@@ -1,0 +1,42 @@
+{
+  "irVersion": "0.1a",
+  "id": "cycle",
+  "title": "Cycle",
+  "kind": "dataflow",
+  "direction": "left-to-right",
+  "nodes": [
+    {
+      "id": "node-a",
+      "label": "Node A",
+      "role": "source"
+    },
+    {
+      "id": "node-b",
+      "label": "Node B",
+      "role": "transform"
+    },
+    {
+      "id": "node-c",
+      "label": "Node C",
+      "role": "output"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-a-b",
+      "from": "node-a",
+      "to": "node-b"
+    },
+    {
+      "id": "edge-b-c",
+      "from": "node-b",
+      "to": "node-c"
+    },
+    {
+      "id": "edge-c-a",
+      "from": "node-c",
+      "to": "node-a"
+    }
+  ],
+  "metadata": {}
+}

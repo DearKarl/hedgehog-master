@@ -1,0 +1,63 @@
+{
+  "irVersion": "0.1a",
+  "id": "simple-dataflow",
+  "title": "Simple Dataflow",
+  "kind": "dataflow",
+  "direction": "left-to-right",
+  "nodes": [
+    {
+      "id": "source-data",
+      "label": "Source Data",
+      "role": "source"
+    },
+    {
+      "id": "clean-data",
+      "label": "Clean Data",
+      "role": "transform"
+    },
+    {
+      "id": "train-model",
+      "label": "Train Model",
+      "role": "model"
+    },
+    {
+      "id": "quality-metric",
+      "label": "Quality Metric",
+      "role": "metric"
+    },
+    {
+      "id": "report-output",
+      "label": "Report Output",
+      "role": "output"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-source-clean",
+      "from": "source-data",
+      "to": "clean-data",
+      "label": "raw input",
+      "evidenceRef": "dataset:raw-v1"
+    },
+    {
+      "id": "edge-clean-model",
+      "from": "clean-data",
+      "to": "train-model"
+    },
+    {
+      "id": "edge-model-metric",
+      "from": "train-model",
+      "to": "quality-metric"
+    },
+    {
+      "id": "edge-metric-output",
+      "from": "quality-metric",
+      "to": "report-output"
+    }
+  ],
+  "metadata": {
+    "evidence": {
+      "dataset:raw-v1": "Preserved as opaque metadata in v0.1a."
+    }
+  }
+}
