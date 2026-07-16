@@ -40,7 +40,7 @@ export async function runCli(args: readonly string[], io: CliIo): Promise<number
 
 async function runValidate(args: readonly string[], io: CliIo): Promise<number> {
   if (args.length !== 2) {
-    return fail(io, [usageDiagnostic("Usage: hedgehog1 validate input.diagram.json")]);
+    return fail(io, [usageDiagnostic("Usage: hedgehog-diagram validate input.diagram.json")]);
   }
 
   const input = await readInput(args[1]!, io);
@@ -67,7 +67,9 @@ async function runValidate(args: readonly string[], io: CliIo): Promise<number> 
 
 async function runCompile(args: readonly string[], io: CliIo): Promise<number> {
   if (args.length !== 4 || args[2] !== "-o") {
-    return fail(io, [usageDiagnostic("Usage: hedgehog1 compile input.diagram.json -o output.svg")]);
+    return fail(io, [
+      usageDiagnostic("Usage: hedgehog-diagram compile input.diagram.json -o output.svg")
+    ]);
   }
 
   const input = await readInput(args[1]!, io);
@@ -94,7 +96,7 @@ async function runCompile(args: readonly string[], io: CliIo): Promise<number> {
 
 async function runCheck(args: readonly string[], io: CliIo): Promise<number> {
   if (args.length !== 2) {
-    return fail(io, [usageDiagnostic("Usage: hedgehog1 check input.diagram.json")]);
+    return fail(io, [usageDiagnostic("Usage: hedgehog-diagram check input.diagram.json")]);
   }
 
   const input = await readInput(args[1]!, io);
@@ -168,7 +170,7 @@ function usageDiagnostic(message: string): Diagnostic {
     severity: "error",
     path: "",
     message,
-    hint: "Use one of: hedgehog1 validate input.diagram.json, hedgehog1 compile input.diagram.json -o output.svg, hedgehog1 check input.diagram.json."
+    hint: "Use one of: hedgehog-diagram validate input.diagram.json, hedgehog-diagram compile input.diagram.json -o output.svg, hedgehog-diagram check input.diagram.json."
   };
 }
 

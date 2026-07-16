@@ -8,9 +8,9 @@ For user-facing selection, see [Templates Guide](./templates-guide.md).
 
 | Kind | Library workspace | Owns | Must not own |
 |---|---|---|---|
-| brand | skills/ppt-master/templates/brands/<id>/ | color, typography, logo, voice, icon style | canvas, page types, SVG roster |
-| layout | skills/ppt-master/templates/layouts/<id>/ | canvas, page structure, page types, SVG roster | brand logo, official brand palette, brand voice |
-| deck | skills/ppt-master/templates/decks/<id>/ | complete identity, structure, and template overview | none of the required segments |
+| brand | skills/hedgehog-master/templates/brands/<id>/ | color, typography, logo, voice, icon style | canvas, page types, SVG roster |
+| layout | skills/hedgehog-master/templates/layouts/<id>/ | canvas, page structure, page types, SVG roster | brand logo, official brand palette, brand voice |
+| deck | skills/hedgehog-master/templates/decks/<id>/ | complete identity, structure, and template overview | none of the required segments |
 
 The physical library directory and the frontmatter kind must agree. A project-scoped workspace uses the same kind even though it lives under projects/.
 

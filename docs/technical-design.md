@@ -88,7 +88,7 @@ Minimal semantic markers do not weaken that closure. Free-design and brand-only 
 | Domain | Authority |
 |---|---|
 | Visible page content and layout on SVG-authoring routes | Final page SVG in `svg_output/` |
-| Project-canonical SVG syntax, compatible forms, and mapping boundary | [`references/shared-standards.md`](../skills/ppt-master/references/shared-standards.md) |
+| Project-canonical SVG syntax, compatible forms, and mapping boundary | [`references/shared-standards.md`](../skills/hedgehog-master/references/shared-standards.md) |
 | Master/Layout/Slide packaging and native-object mapping | SVG-to-PPTX translation; it may reorganize represented content but does not invent visible content |
 | Animations, transitions, speaker notes, and narration | Dedicated sidecars/assets and PPTX package post-processing |
 | Direct native-PPTX editing | The selected native workflow's PPTX/OOXML contract |
@@ -107,7 +107,7 @@ Direct PPTX workflows intentionally bypass the SVG authoring route and remain se
 
 ## Route Decision Quick Reference
 
-Executable route selection is authoritative in [`workflows/routing.md`](../skills/ppt-master/workflows/routing.md); this section is a rationale-oriented quick reference, not a second route matrix to maintain.
+Executable route selection is authoritative in [`workflows/routing.md`](../skills/hedgehog-master/workflows/routing.md); this section is a rationale-oriented quick reference, not a second route matrix to maintain.
 
 Use this table before reasoning about implementation details. Most failed runs start with the wrong route, not the wrong command.
 
@@ -147,7 +147,7 @@ Post-processing scripts convert supported SVG vector elements to DrawingML. Text
 
 ## Artifact Flow
 
-Artifact source/derived ownership is authoritative in [`artifact-ownership.md`](../skills/ppt-master/references/artifact-ownership.md); this section visualizes the same dataflow for architecture rationale.
+Artifact source/derived ownership is authoritative in [`artifact-ownership.md`](../skills/hedgehog-master/references/artifact-ownership.md); this section visualizes the same dataflow for architecture rationale.
 
 The workflow is easier to maintain if the artifacts are read as a dataflow rather than as folders that happen to exist:
 
@@ -197,7 +197,7 @@ SVG wins because it shares the same world view as DrawingML: both are absolute-c
 | `linearGradient` / `radialGradient` | `<a:gradFill>` |
 | `fill-opacity` / `stroke-opacity` | `<a:alpha>` |
 
-This table shows conceptual counterparts, not a commitment to the entire SVG standard or a promise of lossless semantics. Every supported capability must have an explicit mapping in [`shared-standards.md`](../skills/ppt-master/references/shared-standards.md) that identifies its project-canonical spelling, accepted compatible inputs, target DrawingML expression, fidelity, and rejection boundary; capabilities that support PPTX import must also identify the source PPTX/OOXML semantics. A mapping may be exact, deterministically normalized, an explicit fallback, a sidecar, or unsupported. Package semantics such as notes, animations, and relationships do not need to be forced into SVG, but their owning route must be explicit.
+This table shows conceptual counterparts, not a commitment to the entire SVG standard or a promise of lossless semantics. Every supported capability must have an explicit mapping in [`shared-standards.md`](../skills/hedgehog-master/references/shared-standards.md) that identifies its project-canonical spelling, accepted compatible inputs, target DrawingML expression, fidelity, and rejection boundary; capabilities that support PPTX import must also identify the source PPTX/OOXML semantics. A mapping may be exact, deterministically normalized, an explicit fallback, a sidecar, or unsupported. Package semantics such as notes, animations, and relationships do not need to be forced into SVG, but their owning route must be explicit.
 
 For a PowerPoint-first, feature-by-feature view of those relationships, see the [PowerPoint Feature ↔ Project SVG Mapping Guide](./powerpoint-svg-mapping.md). It owns the public capability and PPTX-import recovery map; `shared-standards.md` remains the generated-authoring contract.
 
@@ -254,7 +254,7 @@ The CLI still supports three source-import modes: `--move`, `--copy`, and an aut
 
 ## Architecture Invariants
 
-Executable artifact ownership invariants are authoritative in [`artifact-ownership.md`](../skills/ppt-master/references/artifact-ownership.md); this section explains why those boundaries matter architecturally.
+Executable artifact ownership invariants are authoritative in [`artifact-ownership.md`](../skills/hedgehog-master/references/artifact-ownership.md); this section explains why those boundaries matter architecturally.
 
 These invariants are stronger than ordinary implementation preferences. If a change violates one, it is probably changing the architecture rather than refactoring it.
 
@@ -275,7 +275,7 @@ These invariants are stronger than ordinary implementation preferences. If a cha
 
 ## Canvas Format System
 
-Hedgehog Master is not PPT-only — the same SVG → DrawingML pipeline produces square posters, 9:16 stories, A4 prints. Format-specific conventions (ratios, safe zones, brand areas) live in [`references/canvas-formats.md`](../skills/ppt-master/references/canvas-formats.md).
+Hedgehog Master is not PPT-only — the same SVG → DrawingML pipeline produces square posters, 9:16 stories, A4 prints. Format-specific conventions (ratios, safe zones, brand areas) live in [`references/canvas-formats.md`](../skills/hedgehog-master/references/canvas-formats.md).
 
 The architectural choice worth flagging: **viewBox is in pixels, not absolute units.** Pixel space makes layout reasoning unambiguous for the AI Executor (`x="100"` is unambiguously left + 100px) and inspectable in any browser. Conversion to PowerPoint's EMU happens once at export — picking pixels means the rest of the pipeline (Strategist, Executor, quality checker, post-processing) never thinks in EMU, which would be hostile both to AI generation and to human debugging.
 
@@ -299,7 +299,7 @@ All current Brand/Layout/Deck packages use one workspace routing contract. Brand
 └── exports/     # optional, on-demand review files; Git-ignored in the library
 ```
 
-`<template_workspace>` is either `skills/ppt-master/templates/<kind>/<id>/` or `projects/<name>/`. Step 3 receives that root. The workspace is portable between locations without reshaping; global index registration is the only scope-specific behavior. Empty optional directories are absent, and template application never copies `exports/`.
+`<template_workspace>` is either `skills/hedgehog-master/templates/<kind>/<id>/` or `projects/<name>/`. Step 3 receives that root. The workspace is portable between locations without reshaping; global index registration is the only scope-specific behavior. Empty optional directories are absent, and template application never copies `exports/`.
 
 `standard` and `fidelity` write new SVG documents and a new Master/Layout/slot system; source topology is visual evidence only and is neither preserved nor distilled. `mirror` restores source page order, Master/Layout identities and parentage, placeholder facts, and supported visuals without semantic synthesis. Because structural layers cannot be `<g>`, fixed-layer source group wrappers are mechanically expanded into direct atoms while preserving ownership, paint order, and appearance.
 
@@ -337,9 +337,9 @@ Hedgehog Master uses **role switching within one main agent** rather than parall
 
 ## Execution Discipline
 
-The pipeline is enforced by a 10-rule set in [`SKILL.md` § Global Execution Discipline](../skills/ppt-master/SKILL.md) — that file is authoritative; the rules live there. They look bureaucratic but exist because LLMs default to "let me solve the whole problem in this turn", which is exactly the wrong shape for a serial pipeline where each step's output is bounded, checkpointed, and consumed by the next. The rules collectively close failure modes that surfaced repeatedly in practice: out-of-order execution, AI proxying user design decisions, cross-phase bundling, missing prerequisites, speculative pre-work, sub-agent context loss, page-batching drift, long-deck color/font drift, batch/script-generated SVG drift, and routing ambiguity.
+The pipeline is enforced by a 10-rule set in [`SKILL.md` § Global Execution Discipline](../skills/hedgehog-master/SKILL.md) — that file is authoritative; the rules live there. They look bureaucratic but exist because LLMs default to "let me solve the whole problem in this turn", which is exactly the wrong shape for a serial pipeline where each step's output is bounded, checkpointed, and consumed by the next. The rules collectively close failure modes that surfaced repeatedly in practice: out-of-order execution, AI proxying user design decisions, cross-phase bundling, missing prerequisites, speculative pre-work, sub-agent context loss, page-batching drift, long-deck color/font drift, batch/script-generated SVG drift, and routing ambiguity.
 
-Common stop/continue recovery behavior is authoritative in [`failure-recovery.md`](../skills/ppt-master/workflows/failure-recovery.md); this section does not duplicate that matrix.
+Common stop/continue recovery behavior is authoritative in [`failure-recovery.md`](../skills/hedgehog-master/workflows/failure-recovery.md); this section does not duplicate that matrix.
 
 Two newer rules are especially important to the architecture. First, Executor page SVGs must be hand-authored by the current main agent, one page at a time; writing a Python/Node/shell generator to emit pages is prohibited because the resulting deck loses cross-page judgment and visual continuity. Second, routing is deterministic: raw PPTX template requests, beautify requests, native enhancement, custom animation, live preview, and other workflow triggers are not turned into open-ended user route questions when the repository already defines the boundary.
 
@@ -386,7 +386,7 @@ Several architectural decisions shape this phase:
 
 ## Image-Text Layout: Primary Structures + Modifier Layers
 
-The catalog of *how an image is placed on a slide* (full vocabulary in [`references/image-layout-patterns.md`](../skills/ppt-master/references/image-layout-patterns.md)) splits 72 numbered techniques into two layers that compose freely:
+The catalog of *how an image is placed on a slide* (full vocabulary in [`references/image-layout-patterns.md`](../skills/hedgehog-master/references/image-layout-patterns.md)) splits 72 numbered techniques into two layers that compose freely:
 
 - **Primary Structures** (container layouts / image-as-canvas + native overlay / multi-image compositions) — the page's bones. One or more per page; cross-Primary combinations like *side-by-side comparison + image-as-canvas annotation* are legitimate.
 - **Modifier Layers** (non-rectangular clips / overlays & masks / texture / special techniques) — finish. Any number per page, stacked on top of the Primary.
@@ -397,13 +397,13 @@ The catalog of *how an image is placed on a slide* (full vocabulary in [`referen
 
 **Why composition flows through Strategist's resource list, not just Executor's improvisation.** The `Layout pattern` column in `§VIII Image Resource List` accepts a `#<id> + #<id> ...` expression — Primary id plus optional Modifier ids — so the composition is declared *before* SVG generation, audited by `svg_quality_checker`, and survives session re-entry. Pushing composition onto Executor alone would lose it on context compression in long decks; encoding it in the spec_lock-adjacent resource list makes it a piece of the design contract.
 
-**Why true hard constraints stay upstream.** Cross-cutting SVG authoring and PPTX-compatibility exceptions live exclusively in [`shared-standards.md`](../skills/ppt-master/references/shared-standards.md). The layout patterns file points there rather than restating the contract — so when a constraint changes, only one file changes, and a stale duplicate in patterns cannot silently keep enforcing the old rule.
+**Why true hard constraints stay upstream.** Cross-cutting SVG authoring and PPTX-compatibility exceptions live exclusively in [`shared-standards.md`](../skills/hedgehog-master/references/shared-standards.md). The layout patterns file points there rather than restating the contract — so when a constraint changes, only one file changes, and a stale duplicate in patterns cannot silently keep enforcing the old rule.
 
 ---
 
 ## Project-Canonical SVG and the Compatibility Boundary
 
-PowerPoint's DrawingML is a strict subset of what SVG can express, so the main compiler route does not treat “the browser can render it” as “the project can export it.” Input is accepted only when [`references/shared-standards.md`](../skills/ppt-master/references/shared-standards.md) registers a project-canonical expression or an explicit compatible form with a deterministic DrawingML mapping. That file is the sole authority for syntax, structure, units, metadata, compatible aliases, fidelity, and rejection conditions; this architecture document defines the layering principle without duplicating individual rules.
+PowerPoint's DrawingML is a strict subset of what SVG can express, so the main compiler route does not treat “the browser can render it” as “the project can export it.” Input is accepted only when [`references/shared-standards.md`](../skills/hedgehog-master/references/shared-standards.md) registers a project-canonical expression or an explicit compatible form with a deterministic DrawingML mapping. That file is the sole authority for syntax, structure, units, metadata, compatible aliases, fidelity, and rejection conditions; this architecture document defines the layering principle without duplicating individual rules.
 
 **Why local reuse is compile-time reuse, not a retained PowerPoint object.** The canonical contract defines accepted authoring forms, and the shared validator enforces them. After validation, the pipeline recursively materializes each referenced subtree and rewrites clone-local IDs before export. PPTX-to-SVG import therefore returns expanded primitives rather than reconstructing the authoring-time reuse graph.
 
@@ -458,7 +458,7 @@ The post-processing and export stages work with distinct artifacts. Each one ser
 
 ### SVG preprocessors have TWO consumers
 
-This is the key insight that's easy to miss when reading the code. Cleanup modules under `skills/ppt-master/scripts/svg_finalize/`, together with the local-reference expander, are used in two places for two different products.
+This is the key insight that's easy to miss when reading the code. Cleanup modules under `skills/hedgehog-master/scripts/svg_finalize/`, together with the local-reference expander, are used in two places for two different products.
 
 **Disk consumer** — `finalize_svg.py` writes `svg_output/` → `svg_final/` once per run, expanding both project icon placeholders and qualified local `<use>` references. This mandatory output feeds IDE/browser preview and may be inserted manually as an SVG picture; it is not converted into a separate PPTX artifact.
 
@@ -571,7 +571,7 @@ The tempting simplifications below have explicit costs. Treat them as negative c
 
 ## Standalone Workflows
 
-The standalone workflow registry is authoritative in [`workflows/index.md`](../skills/ppt-master/workflows/index.md); this section explains why these capabilities stay separate.
+The standalone workflow registry is authoritative in [`workflows/index.md`](../skills/hedgehog-master/workflows/index.md); this section explains why these capabilities stay separate.
 
 Standalone workflows are route definitions, not optional decorations. They exist when a capability has a different contract from the main pipeline or is too sparse to justify loading by default.
 

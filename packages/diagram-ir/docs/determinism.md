@@ -1,6 +1,6 @@
 # Determinism in v0.1a
 
-Hedgehog One v0.1a is a local deterministic Diagram IR -> SVG compiler.
+Hedgehog Master Diagram IR v0.1a is a local deterministic Diagram IR -> SVG compiler.
 
 The v0.1a runtime:
 

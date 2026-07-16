@@ -23,7 +23,7 @@ describe("simple dataflow SVG snapshot", () => {
 
     expect(svg).toMatchInlineSnapshot(`
       "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-labelledby="title desc">
-        <title id="title">Hedgehog One diagram</title>
+        <title id="title">Hedgehog Master Diagram IR diagram</title>
         <desc id="desc">Deterministic dataflow diagram generated from LayoutModel</desc>
         <defs>
           <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">

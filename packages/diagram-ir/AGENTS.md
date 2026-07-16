@@ -1,11 +1,10 @@
-# Hedgehog One / 刺猬一号 Agent Rules
+# Hedgehog Master Diagram IR Agent Rules
 
 ## Project Identity
 
-- Project name: Hedgehog One
-- Chinese name: 刺猬一号
-- Repository: hedgehog1
-- GitHub: DearKarl/hedgehog1
+- Product: Hedgehog Master
+- Module: Diagram IR
+- Repository: DearKarl/hedgehog-master
 - v0.1a goal: deterministic Diagram IR -> SVG compiler
 - Runtime must work without LLM, network, or interactive external service.
 
@@ -113,9 +112,9 @@ v0.1a evidenceRef rule:
 
 Only these commands are allowed in v0.1a:
 
-hedgehog1 validate input.diagram.json
-hedgehog1 compile input.diagram.json -o output.svg
-hedgehog1 check input.diagram.json
+hedgehog-diagram validate input.diagram.json
+hedgehog-diagram compile input.diagram.json -o output.svg
+hedgehog-diagram check input.diagram.json
 
 Command semantics:
 
@@ -151,7 +150,7 @@ Before modifying code:
 - Keep each task small.
 - Do not implement future milestones early.
 - Do not introduce large dependencies without explaining why.
-- Do not change PLAN.md scope unless explicitly asked.
+- Keep the v0.1a contract narrow unless a versioned IR change is explicitly approved.
 
 After each completed task:
 

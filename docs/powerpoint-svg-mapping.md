@@ -5,7 +5,7 @@
 
 This guide answers one question from the PowerPoint user's point of view: **for a PowerPoint feature, what project representation owns it, and what survives export or import?** PowerPoint semantics are therefore the primary index. SVG elements appear only as the implementation of a specific PowerPoint capability.
 
-This is a public capability and import-behavior map, not a second generated-SVG syntax specification and not a promise to convert arbitrary SVG or arbitrary OOXML. The canonical generated-authoring contract remains [`shared-standards.md`](../skills/ppt-master/references/shared-standards.md); when generated syntax differs, that contract wins. PPTX import recovery modes and user-visible degradation belong to §11 here and to the [conversion command reference](../skills/ppt-master/scripts/docs/conversion.md), while the parser implementation remains the exact source of truth. A feature not listed here is not implicitly supported.
+This is a public capability and import-behavior map, not a second generated-SVG syntax specification and not a promise to convert arbitrary SVG or arbitrary OOXML. The canonical generated-authoring contract remains [`shared-standards.md`](../skills/hedgehog-master/references/shared-standards.md); when generated syntax differs, that contract wins. PPTX import recovery modes and user-visible degradation belong to §11 here and to the [conversion command reference](../skills/hedgehog-master/scripts/docs/conversion.md), while the parser implementation remains the exact source of truth. A feature not listed here is not implicitly supported.
 
 The main route compiles **project-canonical SVG**, not general browser SVG:
 
@@ -45,11 +45,11 @@ Each row owns one PowerPoint capability. The mapping cardinality is not always o
 | Theme colors and fonts | Roles locked in `spec_lock.md`; canonical SVG uses the resolved values | Theme-aware tokens where an exact locked role can be retained; otherwise direct DrawingML values | `Native-stable` for registered roles | New pages must not invent unlocked colors, fonts, or text sizes |
 | PowerPoint-only package identity | `spec_lock.md` structure declarations and the package builder | Presentation, Master, Layout, relationship, and content-type registrations | Read back from package structure, not inferred from page appearance | Final-package read-back must match the declared roster |
 
-See [`canvas-formats.md`](../skills/ppt-master/references/canvas-formats.md) for supported canvases and [`shared-standards.md`](../skills/ppt-master/references/shared-standards.md) §4.1 for the normative root-`viewBox` contract.
+See [`canvas-formats.md`](../skills/hedgehog-master/references/canvas-formats.md) for supported canvases and [`shared-standards.md`](../skills/hedgehog-master/references/shared-standards.md) §4.1 for the normative root-`viewBox` contract.
 
 ## 2. Master, Layout, background, and placeholder features
 
-**Route boundary**: Free-design and brand-only projects in the main SVG pipeline remain on `pptx_structure.mode: flat` from planning through export; `flat` is not a provisional state awaiting an exporter upgrade. Repeated logos, footers, or layouts never cause export to switch to `structured`, promote content into a Master/Layout, infer placeholders, or deduplicate objects. Output that requires reusable native Master, Layout, or placeholder behavior must enter Step 3 with a validated deck/layout template workspace; when none exists, run [`create-template`](../skills/ppt-master/workflows/create-template.md) first and return to the main pipeline with that workspace. The minimal Master and Blank Layout emitted by flat export are PPTX package scaffolding, not a design master derived from the slides. Filling new content into a raw PPTX template remains the [`template-fill-pptx`](../skills/ppt-master/workflows/template-fill-pptx.md) route.
+**Route boundary**: Free-design and brand-only projects in the main SVG pipeline remain on `pptx_structure.mode: flat` from planning through export; `flat` is not a provisional state awaiting an exporter upgrade. Repeated logos, footers, or layouts never cause export to switch to `structured`, promote content into a Master/Layout, infer placeholders, or deduplicate objects. Output that requires reusable native Master, Layout, or placeholder behavior must enter Step 3 with a validated deck/layout template workspace; when none exists, run [`create-template`](../skills/hedgehog-master/workflows/create-template.md) first and return to the main pipeline with that workspace. The minimal Master and Blank Layout emitted by flat export are PPTX package scaffolding, not a design master derived from the slides. Filling new content into a raw PPTX template remains the [`template-fill-pptx`](../skills/hedgehog-master/workflows/template-fill-pptx.md) route.
 
 | PowerPoint feature | Project representation | PPTX result | Import and fidelity | Validation boundary |
 |---|---|---|---|---|
@@ -76,7 +76,7 @@ See [`canvas-formats.md`](../skills/ppt-master/references/canvas-formats.md) for
 | Page role such as cover/content/ending | Flat-route root `data-pptx-page-role` compiler hint | Routing/validation hint; not a native PowerPoint page type | No independent OOXML object | Structured pages use explicit Master/Layout identity instead |
 | Slide sections and custom shows | No SVG mapping | Not authored by the main generation route | `Direct preservation` where a source-preserving workflow owns them | Do not encode them as visual metadata |
 
-The exact structured metadata and slot grammar live in the [PPTX structure section of the normative standards](../skills/ppt-master/references/shared-standards.md#pptx-structure-routing).
+The exact structured metadata and slot grammar live in the [PPTX structure section of the normative standards](../skills/hedgehog-master/references/shared-standards.md#pptx-structure-routing).
 
 Internal identifiers and PowerPoint display names are separate concerns: Master and Layout keys use the restricted project ASCII identifier grammar, while picker names may contain spaces. Every Layout definition also names its parent Master and one explicit prototype source. The normative standards own the exact row syntax.
 
@@ -104,9 +104,9 @@ Internal identifiers and PowerPoint display names are separate concerns: Master 
 Project-authored presets deliberately use a compact representation, while PPTX
 import keeps the expanded evidence needed for lossless round-trip decisions.
 The exact machine contract remains in
-[`shared-standards.md`](../skills/ppt-master/references/shared-standards.md), and
+[`shared-standards.md`](../skills/hedgehog-master/references/shared-standards.md), and
 preset selection and authoring behavior are documented in
-[`native-shape-authoring.md`](../skills/ppt-master/references/native-shape-authoring.md).
+[`native-shape-authoring.md`](../skills/hedgehog-master/references/native-shape-authoring.md).
 
 ## 4. PowerPoint text features
 
@@ -118,13 +118,13 @@ preset selection and authoring behavior are documented in
 | Significant text whitespace | Exact `xml:space="default"` or `xml:space="preserve"` on `<text>`/`<tspan>` | Normalized or preserved U+0020 text in editable DrawingML runs | `Native-normalized`; inline run ownership is retained | Uses the project Chromium/SVG2 contract: LF/TAB become spaces, `default` collapses across runs, `preserve` retains them, and Unicode spacing characters remain literal; CSS `white-space` and legacy SVG 1.1 newline deletion are outside the mapping |
 | Font family | Canonical `font-family` resolved against the project lock | Direct typeface or registered theme font | `Native-stable` within installed/font-substitution limits | Unlocked or unavailable fonts are reported by validation |
 | Font size | Finite unitless SVG pixels, for example `font-size="24"` | DrawingML hundredths of a point; `1 px = 0.75 pt` | `Native-stable` after unit conversion | Generated authoring uses only unitless px; registered legacy units are compatible input and warn, while unknown units error; DrawingML minimum is 1 pt |
-| Font weight | Registered `font-weight` on `<text>`/`<tspan>` | DrawingML regular/bold run switch | `Native-normalized`; numeric weights collapse to the DrawingML boolean boundary | The exact value grammar and aliases belong to [`shared-standards.md` §6.7](../skills/ppt-master/references/shared-standards.md#67-advanced-text-treatments) |
-| Italic, underline, and strike | Registered `font-style` / `text-decoration` on `<text>`/`<tspan>` | DrawingML italic, underline, and strike run properties | `Native-stable` for registered tokens | Unknown tokens are rejected; the exact grammar belongs to [`shared-standards.md` §6.7](../skills/ppt-master/references/shared-standards.md#67-advanced-text-treatments) |
+| Font weight | Registered `font-weight` on `<text>`/`<tspan>` | DrawingML regular/bold run switch | `Native-normalized`; numeric weights collapse to the DrawingML boolean boundary | The exact value grammar and aliases belong to [`shared-standards.md` §6.7](../skills/hedgehog-master/references/shared-standards.md#67-advanced-text-treatments) |
+| Italic, underline, and strike | Registered `font-style` / `text-decoration` on `<text>`/`<tspan>` | DrawingML italic, underline, and strike run properties | `Native-stable` for registered tokens | Unknown tokens are rejected; the exact grammar belongs to [`shared-standards.md` §6.7](../skills/hedgehog-master/references/shared-standards.md#67-advanced-text-treatments) |
 | Text fill and transparency | Canonical fill plus run alpha | DrawingML run fill and alpha | `Native-normalized` | Use the semantic alpha channel, not an unregistered CSS effect |
 | Text outline | Registered stroke on text | DrawingML run outline | `Native-normalized` | Review when outline carries fine visual meaning |
-| Text alignment | Registered `text-anchor` and paragraph semantics | Paragraph alignment plus normalized text-frame position | `Native-normalized` | Run-level anchoring and browser baseline heuristics are unsupported; exact placement belongs to [`shared-standards.md` §6.7](../skills/ppt-master/references/shared-standards.md#67-advanced-text-treatments) |
+| Text alignment | Registered `text-anchor` and paragraph semantics | Paragraph alignment plus normalized text-frame position | `Native-normalized` | Run-level anchoring and browser baseline heuristics are unsupported; exact placement belongs to [`shared-standards.md` §6.7](../skills/hedgehog-master/references/shared-standards.md#67-advanced-text-treatments) |
 | Vertical text-frame alignment | No canonical generated-SVG control; generated text boxes use top anchoring | Top-anchored DrawingML text body | Imported vertical text may be normalized, but the main route does not expose a general authoring control | Do not infer vertical alignment from SVG baseline or browser layout behavior |
-| Character spacing | Registered `letter-spacing` | DrawingML character spacing | `Native-normalized` | Unsupported CSS typography, out-of-range DrawingML spacing, and negative tracking that collapses a generated run advance or text-frame extent to a non-positive value are rejected under [`shared-standards.md` §6.7](../skills/ppt-master/references/shared-standards.md#67-advanced-text-treatments) |
+| Character spacing | Registered `letter-spacing` | DrawingML character spacing | `Native-normalized` | Unsupported CSS typography, out-of-range DrawingML spacing, and negative tracking that collapses a generated run advance or text-frame extent to a non-positive value are rejected under [`shared-standards.md` §6.7](../skills/hedgehog-master/references/shared-standards.md#67-advanced-text-treatments) |
 | Bulleted paragraph | Recognized leading bullet form | Native DrawingML bullet | `Native-normalized` | Only the registered bullet grammar is promoted |
 | Rotated text | Supported transform on the text object | Rotated text shape | `Native-normalized` | Skewed text and browser-only transforms are unsupported |
 | Text shadow or glow | Supported filter/effect contract | One native outer shadow or glow | `Approximate` | One supported effect graph only; review material effects |
@@ -195,7 +195,7 @@ Imported chart groups classify their visible fallback with `data-pptx-fallback-k
 | Edited SVG fallback with stale replacement metadata | Updated visible SVG plus stale hash | Default export keeps the visible SVG; native replacement fails | Explicit safety behavior | The compiler never discards a newer visual edit silently |
 | Unsupported 3D or deferred chart family | SVG-drawn chart, baked asset, or direct source preservation | No guessed native chart | Fallback / `Direct preservation` | Unsupported aliases must fail native validation |
 
-The exhaustive chart/table schemas and supported family list intentionally remain in the [normative replacement contract](../skills/ppt-master/references/shared-standards.md#powerpoint-native-chart--table-replacement-markers-opt-in).
+The exhaustive chart/table schemas and supported family list intentionally remain in the [normative replacement contract](../skills/hedgehog-master/references/shared-standards.md#powerpoint-native-chart--table-replacement-markers-opt-in).
 
 ## 9. PowerPoint playback and package features
 
@@ -212,7 +212,7 @@ These capabilities belong to PPTX package semantics. Their absence from page SVG
 | Comment or review thread | No SVG or generation-side mapping | Not authored | `Direct preservation` only when explicitly owned by another route | Do not convert review metadata into visible slide content automatically |
 | Relationship not owned by a mapped feature | No generic SVG escape hatch | Not generated | `Direct preservation` where applicable | Arbitrary relationship injection is unsupported |
 
-See [`animations.md`](../skills/ppt-master/references/animations.md) and [`audio-narration.md`](./audio-narration.md) for the sidecar workflows.
+See [`animations.md`](../skills/hedgehog-master/references/animations.md) and [`audio-narration.md`](./audio-narration.md) for the sidecar workflows.
 
 ## 10. Other PowerPoint-native features
 
@@ -275,7 +275,7 @@ A generated-SVG warning is not permission to guess. It is reserved for a determi
 Treat a mapping change as a compiler change, not as a permissive SVG parser tweak:
 
 1. Name the PowerPoint capability and its intended editable DrawingML result.
-2. Define one canonical project-SVG or sidecar representation in [`shared-standards.md`](../skills/ppt-master/references/shared-standards.md).
+2. Define one canonical project-SVG or sidecar representation in [`shared-standards.md`](../skills/hedgehog-master/references/shared-standards.md).
 3. State accepted compatible input separately from generated authoring.
 4. Implement export, and implement import only when semantic reconstruction is supported.
 5. Add checker classification: error for invalid/ambiguous input, warning only for deterministic compatible or approximate input.
@@ -284,7 +284,7 @@ Treat a mapping change as a compiler change, not as a permissive SVG parser twea
 
 Implementation entry points:
 
-- Export: [`svg_to_pptx.py`](../skills/ppt-master/scripts/svg_to_pptx.py) and `scripts/svg_to_pptx/`
-- Import: [`pptx_to_svg.py`](../skills/ppt-master/scripts/pptx_to_svg.py) and `scripts/pptx_to_svg/`
-- Validation: [`svg_quality_checker.py`](../skills/ppt-master/scripts/svg_quality_checker.py)
-- Canonical contract: [`shared-standards.md`](../skills/ppt-master/references/shared-standards.md)
+- Export: [`svg_to_pptx.py`](../skills/hedgehog-master/scripts/svg_to_pptx.py) and `scripts/svg_to_pptx/`
+- Import: [`pptx_to_svg.py`](../skills/hedgehog-master/scripts/pptx_to_svg.py) and `scripts/pptx_to_svg/`
+- Validation: [`svg_quality_checker.py`](../skills/hedgehog-master/scripts/svg_quality_checker.py)
+- Canonical contract: [`shared-standards.md`](../skills/hedgehog-master/references/shared-standards.md)

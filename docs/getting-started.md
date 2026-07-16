@@ -23,7 +23,7 @@ The short path to your first deck, how to use everything around it — templates
 | **This exact deck, with new content** | Template fill | Picks the pages that fit (a page can be reused for several output slides), swaps text / table / chart data straight in the original file. Design, layouts, images, animations preserved; output is the same deck, natively editable. Fastest; bound to the existing layouts. |
 | **A new deck in this deck's style** | create-template | Parses the `.pptx` into a reusable style bundle, then generates a fresh deck through the SVG pipeline — new structure, any page count. More flexible; full regeneration. |
 
-For the first, give the AI your `.pptx` plus your material (or a topic) and ask it to "fill this deck with the new content" — see the [template-fill workflow](../skills/ppt-master/workflows/template-fill-pptx.md). The rest of this section covers create-template.
+For the first, give the AI your `.pptx` plus your material (or a topic) and ask it to "fill this deck with the new content" — see the [template-fill workflow](../skills/hedgehog-master/workflows/template-fill-pptx.md). The rest of this section covers create-template.
 
 **To generate a new deck in an existing PowerPoint's style, you must explicitly run the create-template flow — don't just hand over a `.pptx` and expect the AI to handle it.** The AI defaults to free design and won't switch into the template flow on its own; without an explicit trigger, generation easily goes off the rails. First turn that `.pptx` into a Hedgehog Master template via create-template:
 
@@ -39,13 +39,13 @@ A created template lives in one of two places:
 
 | Location | Path | Notes |
 |---|---|---|
-| **Registered in the skill library** | `skills/ppt-master/templates/<kind>/<id>/` | Portable workspace plus global registration, so it appears when you ask "what templates are available?" |
+| **Registered in the skill library** | `skills/hedgehog-master/templates/<kind>/<id>/` | Portable workspace plus global registration, so it appears when you ask "what templates are available?" |
 | **Under projects** | `projects/<name>/` | The same portable workspace without global registration |
 
 Invoke either result by giving its **workspace-root path** in chat. Step 3 resolves `templates/design_spec.md`; for compatibility it also accepts older flat packages whose `design_spec.md` is directly at the supplied root. A create-template run may hand its exact validated workspace root directly to Step 3 in the same conversation. Both cases stay path-based; a bare template name never triggers. The complete workspace can be copied or migrated between the library and `projects/` without restructuring it; only library registration changes.
 
 ```
-You: Make a deck from sources/report.pdf with template skills/ppt-master/templates/layouts/presentation_core/
+You: Make a deck from sources/report.pdf with template skills/hedgehog-master/templates/layouts/presentation_core/
 ```
 
 Full guide → [Templates Guide](./templates-guide.md)
@@ -78,7 +78,7 @@ A browser preview opens at `http://localhost:5050` while the deck is being gener
 
 The visual editor complements the agent workflow: direct edits are useful for precise local corrections, while annotations preserve a review trail for changes that require the agent to reconsider structure or content.
 
-Full guide → [Live Preview Workflow](../skills/ppt-master/workflows/live-preview.md)
+Full guide → [Live Preview Workflow](../skills/hedgehog-master/workflows/live-preview.md)
 
 ---
 
@@ -88,7 +88,7 @@ Exported decks carry page transitions and optional per-element entrance animatio
 
 Animation settings are strict: unknown effects or Start modes, invalid timing values, and missing sidecar targets fail instead of silently becoming another effect. Before the result replaces an existing output, Hedgehog Master reads the candidate package back and checks timing placement, IDs, shape targets, effects, durations, and Start modes. Microsoft PowerPoint is the primary motion-validation target; other presentation apps can open the PPTX but may map individual animation effects differently.
 
-Full guide → [Animations & Transitions](../skills/ppt-master/references/animations.md)
+Full guide → [Animations & Transitions](../skills/hedgehog-master/references/animations.md)
 
 ---
 
@@ -121,7 +121,7 @@ The [FAQ](./faq.md) is the living troubleshooting reference — continuously upd
 
 | Situation | First thing to try |
 |---|---|
-| The AI drifts or forgets a step | Ask it to re-read `skills/ppt-master/SKILL.md`. |
+| The AI drifts or forgets a step | Ask it to re-read `skills/hedgehog-master/SKILL.md`. |
 | Visual quality disappoints | Switch to a large-context Claude model + `gpt-image-2` — the harness sets the floor, the model sets the ceiling. |
 | Text overflows or elements overlap | Re-run that page, or fix it in live preview; see the [FAQ](./faq.md). |
 | No image-generation API key | Zero-config web search still works as a fallback; see the [FAQ](./faq.md). |

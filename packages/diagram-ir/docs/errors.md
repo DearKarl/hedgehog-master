@@ -1,6 +1,6 @@
 # Error Codes
 
-Hedgehog One diagnostics are stable JSON objects with `code`, `severity`, `path`, `message`, and optional `hint`.
+Hedgehog Master Diagram IR diagnostics are stable JSON objects with `code`, `severity`, `path`, `message`, and optional `hint`.
 
 | Code                        | Layer    | Meaning                                                        | Typical path         |
 | --------------------------- | -------- | -------------------------------------------------------------- | -------------------- |

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/DearKarl/hedgehog-master/schemas/research-deck.v1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "slides"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema_version": {"const": "1.0"},
+    "slides": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "layout", "title"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"},
+          "layout": {"enum": ["cover", "section", "diagram", "evidence", "closing"]},
+          "title": {"type": "string", "minLength": 1},
+          "subtitle": {"type": "string"},
+          "diagram": {"type": "string", "pattern": "^research/diagrams/.+\\.diagram\\.json$"},
+          "claim_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+        }
+      }
+    }
+  }
+}

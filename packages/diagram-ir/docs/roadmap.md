@@ -1,6 +1,6 @@
-# Hedgehog One Roadmap
+# Hedgehog Master Diagram IR Roadmap
 
-This roadmap keeps Hedgehog One focused on deterministic, verifiable intermediate representations before presentation surfaces.
+This roadmap keeps Hedgehog Master Diagram IR focused on deterministic, verifiable intermediate representations before presentation surfaces.
 
 ## v0.1a: Diagram IR -> SVG CLI
 

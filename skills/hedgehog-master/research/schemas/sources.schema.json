@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/DearKarl/hedgehog-master/schemas/research-sources.v1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "sources"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema_version": {"const": "1.0"},
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "type", "locator"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"},
+          "title": {"type": "string", "minLength": 1},
+          "type": {"enum": ["paper", "dataset", "code", "web", "local"]},
+          "locator": {"type": "string", "minLength": 1},
+          "doi": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

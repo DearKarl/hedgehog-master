@@ -4,10 +4,10 @@ import { getProjectName, projectIdentity } from "../src/index.js";
 
 describe("M0 scaffold", () => {
   it("exports project identity", () => {
-    expect(getProjectName()).toBe("Hedgehog One");
+    expect(getProjectName()).toBe("Hedgehog Master Diagram IR");
     expect(projectIdentity).toMatchObject({
-      chineseName: "刺猬一号",
-      repository: "hedgehog1",
+      module: "diagram-ir",
+      repository: "hedgehog-master",
       scope: "v0.1a"
     });
   });

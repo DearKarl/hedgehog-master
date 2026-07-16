@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "id": "academic-conference",
+  "name": "Academic Conference",
+  "description": "Formal English research talks with restrained typography and evidence-linked diagrams.",
+  "layouts": ["cover", "section", "diagram", "evidence", "closing"],
+  "colors": {
+    "background": "#FFFFFF",
+    "panel": "#F1F5F9",
+    "text": "#172033",
+    "muted": "#5B6578",
+    "accent": "#176B5B",
+    "secondary": "#D4A72C"
+  },
+  "constraints": {
+    "minimum_body_font_pt": 18,
+    "maximum_title_characters": 90,
+    "require_claim_ids_on_evidence_slides": true,
+    "allow_gradients": false,
+    "allow_decorative_shadows": false
+  }
+}

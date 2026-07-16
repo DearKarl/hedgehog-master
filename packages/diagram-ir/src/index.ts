@@ -1,7 +1,7 @@
 export const projectIdentity = {
-  name: "Hedgehog One",
-  chineseName: "刺猬一号",
-  repository: "hedgehog1",
+  name: "Hedgehog Master Diagram IR",
+  module: "diagram-ir",
+  repository: "hedgehog-master",
   scope: "v0.1a"
 } as const;
 

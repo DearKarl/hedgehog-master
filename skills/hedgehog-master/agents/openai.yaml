@@ -1,0 +1,4 @@
+interface:
+  display_name: "Hedgehog Master"
+  short_description: "Build evidence-linked research decks and deterministic diagrams"
+  default_prompt: "Use $hedgehog-master to create a formal English research presentation from structured evidence and export editable PPTX."

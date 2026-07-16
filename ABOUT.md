@@ -1,67 +1,27 @@
 # About Hedgehog Master
 
-## Project Identity
+Hedgehog Master is a local-first research presentation engineering project maintained at [`DearKarl/hedgehog-master`](https://github.com/DearKarl/hedgehog-master).
 
-Hedgehog Master is a local-first presentation engineering harness for research and technical communication. It is designed to help an AI agent transform source material and explicit instructions into a reviewable project, a coherent slide deck, editable PowerPoint output, and reusable vector diagrams.
+Its purpose is to make formal scientific communication reproducible. Sources, claims, narrative structure, diagram semantics, layout selection, and export remain separate artifacts with explicit contracts. A researcher can inspect each stage, rerun deterministic compilers, and revise the final PowerPoint without discarding provenance.
 
-The project name is **Hedgehog Master**. Public documentation, examples, repository metadata, and future hosted surfaces should use that name as the primary identity.
+## Product Direction
 
-## Purpose
+Hedgehog Master focuses on four outputs:
 
-The project exists to make high-quality research presentations more systematic and reproducible. Its target users include researchers, engineers, technical writers, open-source maintainers, and teams that need to explain complex systems without surrendering control of their source material or final artifacts.
+1. Formal English research presentations
+2. Evidence-linked scientific narratives
+3. Publication-oriented vector diagrams
+4. Editable PowerPoint files for continued collaboration
 
-Hedgehog Master prioritizes:
+The AutoResearch-PPT route deliberately limits the role of general-purpose models. An agent may organize semantic specifications, but it does not own final diagram geometry or academic layout code. Deterministic compilers and registered profiles own those surfaces.
 
-- formal English suitable for academic and professional audiences;
-- traceable use of source material;
-- editable and inspectable output;
-- deterministic vector diagrams;
-- explicit review gates;
-- local project storage;
-- reusable workflows instead of one-off prompt recipes.
+## Repository Identity
 
-## Architecture Boundary
+- Product: Hedgehog Master
+- Research workflow: AutoResearch-PPT
+- Repository: `DearKarl/hedgehog-master`
+- Runtime: local-first
+- Primary outputs: SVG and PPTX
+- License: MIT
 
-The repository currently contains two major systems.
-
-### Presentation Harness
-
-[`skills/ppt-master/`](./skills/ppt-master/) owns source intake, project creation, design confirmation, sequential SVG authoring, validation, speaker notes, and PPTX export.
-
-### Diagram IR
-
-[`packages/diagram-ir/`](./packages/diagram-ir/) owns structured diagram schemas, canonicalization, deterministic layout, SVG compilation, and compiler tests.
-
-The systems are intentionally separated today. The planned integration will allow the presentation workflow to request a scientific flowchart or system diagram through a structured intermediate representation, validate it independently, and then place the resulting vector asset into slides or publication-oriented figure exports.
-
-## Scientific Communication Standard
-
-Hedgehog Master should optimize for clarity before decoration. A research slide or figure should make the following questions easy to answer:
-
-1. What claim, method, or process is being shown?
-2. Which evidence or source supports it?
-3. What is the direction of the argument or flow?
-4. Which assumptions and limitations remain?
-5. Can a reader inspect and reuse the visual without reconstructing it manually?
-
-The project will treat academic English, citation retention, vector quality, print readability, accessible color, and deterministic rendering as engineering requirements.
-
-## Origin and Attribution
-
-Hedgehog Master preserves the Git history and legal notices of the open-source foundations incorporated into this repository. Those details live in [`NOTICE.md`](./NOTICE.md) and [`LICENSE`](./LICENSE), rather than defining the project's public identity.
-
-New product language, workflows, diagrams, examples, and local tooling are developed specifically for Hedgehog Master and must not reuse third-party promotional content.
-
-## Development Policy
-
-- Public project communication is written in English.
-- New features should serve research or technical presentation workflows.
-- Generated examples must distinguish sourced facts from illustrative content.
-- Diagram behavior should be deterministic where deterministic input is available.
-- Quality gates should fail explicitly on invalid output and report non-blocking review concerns separately.
-- Local deployment should remain a first-class path.
-- External changes are reviewed and integrated intentionally; they do not automatically override Hedgehog Master policy or branding.
-
-## Current Status
-
-The repository has a working local Python environment, a validated presentation export baseline, an SVG gallery and editor, and a tested Diagram IR compiler. The next phase is to connect these pieces into a cohesive, project-owned local application and academic figure workflow.
+Required attribution for incorporated open-source work is kept in [`LICENSE`](./LICENSE) and [`NOTICE.md`](./NOTICE.md). It is legal provenance, not product branding or repository lineage.

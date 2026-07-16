@@ -45,7 +45,7 @@ export const DiagramIrV01aSchema = Type.Object(
     metadata: MetadataV01aSchema
   },
   {
-    $id: "https://github.com/DearKarl/hedgehog1/schemas/diagram-ir.v0.1a.schema.json",
+    $id: "https://github.com/DearKarl/hedgehog-master/schemas/diagram-ir.v0.1a.schema.json",
     additionalProperties: false
   }
 );

@@ -60,7 +60,7 @@ Run checks that match the affected area.
 ### Python
 
 ```bash
-python -m compileall skills/ppt-master/scripts
+python -m compileall skills/hedgehog-master/scripts
 ```
 
 ### Diagram IR
@@ -73,8 +73,8 @@ pnpm check
 ### SVG Projects
 
 ```bash
-python skills/ppt-master/scripts/project_manager.py validate projects/<project-name>
-python skills/ppt-master/scripts/svg_quality_checker.py projects/<project-name>
+python skills/hedgehog-master/scripts/project_manager.py validate projects/<project-name>
+python skills/hedgehog-master/scripts/svg_quality_checker.py projects/<project-name>
 ```
 
 ### Documentation

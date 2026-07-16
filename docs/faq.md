@@ -51,12 +51,12 @@ The SVG-to-PPTX pipeline converts supported slide content into PowerPoint Drawin
 For layout-sensitive pages, `--no-merge` preserves each visual line as a separate text frame:
 
 ```bash
-python skills/ppt-master/scripts/svg_to_pptx.py <project_path> --no-merge
+python skills/hedgehog-master/scripts/svg_to_pptx.py <project_path> --no-merge
 ```
 
 The default export merges compatible body-text lines into editable paragraph frames.
 
-## Why does the internal path still use `skills/ppt-master/`?
+## Why does the internal path still use `skills/hedgehog-master/`?
 
 That path is a compatibility boundary retained while the repository is being migrated. Existing scripts, tests, project metadata, and agent instructions depend on it. The public product identity is Hedgehog Master; changing the internal namespace will be handled as a tested migration instead of a cosmetic rename.
 
@@ -77,7 +77,7 @@ Update a Git clone with:
 
 ```bash
 git pull --ff-only
-python skills/ppt-master/scripts/update_repo.py
+python skills/hedgehog-master/scripts/update_repo.py
 ```
 
 The project does not currently publish a separate marketplace package or lightweight skill archive. Use the repository as the canonical distribution until a project-owned release process is documented.
@@ -95,7 +95,7 @@ Then open `http://127.0.0.1:4173/`.
 For a project-specific SVG editor:
 
 ```bash
-python skills/ppt-master/scripts/svg_editor/server.py projects/<project_name> --live --daemon
+python skills/hedgehog-master/scripts/svg_editor/server.py projects/<project_name> --live --daemon
 ```
 
 The editor normally opens on `http://127.0.0.1:5050/`.
@@ -103,11 +103,11 @@ The editor normally opens on `http://127.0.0.1:5050/`.
 ## How do I create and validate a project?
 
 ```bash
-python skills/ppt-master/scripts/project_manager.py init research-talk --format ppt169
-python skills/ppt-master/scripts/project_manager.py validate projects/research-talk
+python skills/hedgehog-master/scripts/project_manager.py init research-talk --format ppt169
+python skills/hedgehog-master/scripts/project_manager.py validate projects/research-talk
 ```
 
-Ask the agent to read `AGENTS.md` and `skills/ppt-master/SKILL.md` before it begins presentation work. The confirmation stage should be completed before slide authoring so that narrative, format, typography, palette, and output requirements are explicit.
+Ask the agent to read `AGENTS.md` and `skills/hedgehog-master/SKILL.md` before it begins presentation work. The confirmation stage should be completed before slide authoring so that narrative, format, typography, palette, and output requirements are explicit.
 
 ## Can I use an existing presentation as a template?
 

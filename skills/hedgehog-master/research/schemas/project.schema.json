@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/DearKarl/hedgehog-master/schemas/research-project.v1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "id", "title", "audience", "venue", "language", "profile", "canvas", "policy"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema_version": {"const": "1.0"},
+    "id": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+    "title": {"type": "string", "minLength": 1},
+    "audience": {"type": "string", "minLength": 1},
+    "venue": {"type": "string", "minLength": 1},
+    "language": {"const": "en"},
+    "profile": {"type": "string", "minLength": 1},
+    "canvas": {"const": "ppt169"},
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authoring_mode", "require_claim_evidence", "citation_style"],
+      "properties": {
+        "authoring_mode": {"const": "structured-semantics-only"},
+        "require_claim_evidence": {"const": true},
+        "citation_style": {"enum": ["numeric", "author-year"]}
+      }
+    }
+  }
+}

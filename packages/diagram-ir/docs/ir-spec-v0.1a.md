@@ -1,6 +1,6 @@
 # Diagram IR v0.1a
 
-Hedgehog One v0.1a accepts a deliberately small Diagram IR for deterministic dataflow diagrams.
+Hedgehog Master Diagram IR v0.1a accepts a deliberately small Diagram IR for deterministic dataflow diagrams.
 
 The only supported flow is:
 

@@ -20,13 +20,13 @@ The workflow **defaults to free design** — it will not ask whether you want a 
 
 Send the Brand/Layout/Deck workspace root in your initial message. Anywhere in the sentence is fine; the path just has to be unambiguous:
 
-> "use this template: `skills/ppt-master/templates/layouts/presentation_core/`" ✅
+> "use this template: `skills/hedgehog-master/templates/layouts/presentation_core/`" ✅
 > "use last deck's template: `projects/last_deck/`" ✅
 > "make a product introduction with `/Users/me/Desktop/our_brand_v3/`" ✅
 
-For every current template kind, the path is the **template workspace root**. Step 3 resolves `templates/design_spec.md`, then installs `templates/` plus any existing `images/` and `icons/` into the target project or consumes them in place when the workspace is already that project. It never copies `exports/`. Deck/Layout workspaces additionally validate the structured SVG contract. The path may point to a built-in library workspace under `skills/ppt-master/templates/<kind>/<id>/`, a project workspace under `projects/<name>/`, or another workspace with the same routing. A create-template run may hand its exact validated workspace root directly to Step 3 in the same conversation; this is the only exception to the initial-message rule.
+For every current template kind, the path is the **template workspace root**. Step 3 resolves `templates/design_spec.md`, then installs `templates/` plus any existing `images/` and `icons/` into the target project or consumes them in place when the workspace is already that project. It never copies `exports/`. Deck/Layout workspaces additionally validate the structured SVG contract. The path may point to a built-in library workspace under `skills/hedgehog-master/templates/<kind>/<id>/`, a project workspace under `projects/<name>/`, or another workspace with the same routing. A create-template run may hand its exact validated workspace root directly to Step 3 in the same conversation; this is the only exception to the initial-message rule.
 
-> **Compatibility preflight:** Step 3 also accepts an older flat package with `design_spec.md` and SVGs directly at the supplied root. Flat placement by itself does not require restoration. Run [`restore-pptx-structure`](../skills/ppt-master/workflows/restore-pptx-structure.md) only when the SVGs use the former atomic-placeholder/unmapped Master/Layout semantics; Step 3 does not copy such a semantic-legacy package and defer migration.
+> **Compatibility preflight:** Step 3 also accepts an older flat package with `design_spec.md` and SVGs directly at the supplied root. Flat placement by itself does not require restoration. Run [`restore-pptx-structure`](../skills/hedgehog-master/workflows/restore-pptx-structure.md) only when the SVGs use the former atomic-placeholder/unmapped Master/Layout semantics; Step 3 does not copy such a semantic-legacy package and defer migration.
 
 ### What does NOT trigger the template flow
 
@@ -42,9 +42,9 @@ To browse what's available in the built-in library, ask "what templates are avai
 
 Templates are organized into three kinds, each in its own directory:
 
-- [`templates/brands/README.md`](../skills/ppt-master/templates/brands/README.md) — identity-only presets (color / typography / logo / voice / icon style), no SVG pages; Anthropic, Google
-- [`templates/layouts/README.md`](../skills/ppt-master/templates/layouts/README.md) — structure-only patterns (canvas / page structure / page types / SVG roster), no identity; presentation_core
-- [`templates/decks/README.md`](../skills/ppt-master/templates/decks/README.md) — full identity + structure references (including the middle segment); CATARC and China Telecom
+- [`templates/brands/README.md`](../skills/hedgehog-master/templates/brands/README.md) — identity-only presets (color / typography / logo / voice / icon style), no SVG pages; Anthropic, Google
+- [`templates/layouts/README.md`](../skills/hedgehog-master/templates/layouts/README.md) — structure-only patterns (canvas / page structure / page types / SVG roster), no identity; presentation_core
+- [`templates/decks/README.md`](../skills/hedgehog-master/templates/decks/README.md) — full identity + structure references (including the middle segment); CATARC and China Telecom
 
 Full data model and fusion/conflict-resolution rules: [`docs/templates-architecture.md`](./templates-architecture.md).
 
@@ -113,7 +113,7 @@ Turn a PPT you like, a brand guideline, or an existing PPTX file into a Hedgehog
 
 ### Entry point: the `/create-template` workflow
 
-Full spec in [`workflows/create-template.md`](../skills/ppt-master/workflows/create-template.md). This section is the user-facing short version — in your IDE, just say:
+Full spec in [`workflows/create-template.md`](../skills/hedgehog-master/workflows/create-template.md). This section is the user-facing short version — in your IDE, just say:
 
 ```
 Please use the /create-template workflow to generate a new template based on the reference materials below.
@@ -180,14 +180,14 @@ This is the most easily confused decision when deriving a template.
 
 ### Step 4 — Validation, review export, registration, and discovery
 
-After generation, both scopes run [`svg_quality_checker.py`](../skills/ppt-master/scripts/svg_quality_checker.py) as a hard gate. If you want a PowerPoint review file, run the optional preview export; it creates `exports/<id>_template_preview.pptx` on demand. The only scope-specific action is library registration:
+After generation, both scopes run [`svg_quality_checker.py`](../skills/hedgehog-master/scripts/svg_quality_checker.py) as a hard gate. If you want a PowerPoint review file, run the optional preview export; it creates `exports/<id>_template_preview.pptx` on demand. The only scope-specific action is library registration:
 
 | Scope | Workspace root | Preview | Discovery behavior |
 |---|---|---|---|
-| `library` (default) | `skills/ppt-master/templates/<kind>/<id>/` | Optional `exports/<id>_template_preview.pptx` | Register in the matching `layouts_index.json` or `decks_index.json` after validation |
+| `library` (default) | `skills/hedgehog-master/templates/<kind>/<id>/` | Optional `exports/<id>_template_preview.pptx` | Register in the matching `layouts_index.json` or `decks_index.json` after validation |
 | `project` | `projects/<name>/` | Optional `exports/<id>_template_preview.pptx` | Skip global index registration |
 
-Library registration makes the template **discoverable** — when someone asks "what templates are available?", the AI lists it from the index. To use either scope, follow the SKILL.md Step 3 rule: name the workspace root in your first message, for example `use this template: skills/ppt-master/templates/layouts/<your_template_id>/` or `use this template: projects/<name>/`. A project workspace can also be migrated or reused elsewhere because its core shape is identical; register it only if it is placed in the library and should appear in discovery.
+Library registration makes the template **discoverable** — when someone asks "what templates are available?", the AI lists it from the index. To use either scope, follow the SKILL.md Step 3 rule: name the workspace root in your first message, for example `use this template: skills/hedgehog-master/templates/layouts/<your_template_id>/` or `use this template: projects/<name>/`. A project workspace can also be migrated or reused elsewhere because its core shape is identical; register it only if it is placed in the library and should appear in discovery.
 
 When a deck/layout template is selected, the Strategist confirmation stage asks how it should be used:
 
@@ -196,7 +196,7 @@ When a deck/layout template is selected, the Strategist confirmation stage asks 
 
 ### What a derived template workspace looks like
 
-Library and project scopes use the same core structure; substitute either `skills/ppt-master/templates/<kind>/<id>/` or `projects/<name>/` for `<template_workspace>`:
+Library and project scopes use the same core structure; substitute either `skills/hedgehog-master/templates/<kind>/<id>/` or `projects/<name>/` for `<template_workspace>`:
 
 ```
 <template_workspace>/
@@ -223,7 +223,7 @@ A `mirror` workspace uses the same tree but places its source-ordered `001_cover
 
 ### Library registration vs project placement
 
-- **Library scope (`library`, default)** writes the workspace under `skills/ppt-master/templates/<kind>/<id>/` and registers it globally.
+- **Library scope (`library`, default)** writes the workspace under `skills/hedgehog-master/templates/<kind>/<id>/` and registers it globally.
 - **Project scope (`project`)** writes the same portable workspace at `projects/<name>/` and skips registration.
 
 The result is not a private or reduced project-only format. You can point Step 3 at either workspace root, copy `templates/` plus any existing `images/` and `icons/` between roots, or migrate a project result into the library without restructuring it. If it moves into the library, run registration so discovery reflects its new location.
@@ -244,7 +244,7 @@ Common misconceptions to avoid:
 
 ## Related docs
 
-- [`workflows/create-template.md`](../skills/ppt-master/workflows/create-template.md) — full workflow spec (AI-facing)
-- [`templates/layouts/README.md`](../skills/ppt-master/templates/layouts/README.md) — current template catalog
-- [`references/template-designer.md`](../skills/ppt-master/references/template-designer.md) — Template_Designer role definition and SVG technical constraints
+- [`workflows/create-template.md`](../skills/hedgehog-master/workflows/create-template.md) — full workflow spec (AI-facing)
+- [`templates/layouts/README.md`](../skills/hedgehog-master/templates/layouts/README.md) — current template catalog
+- [`references/template-designer.md`](../skills/hedgehog-master/references/template-designer.md) — Template_Designer role definition and SVG technical constraints
 - [FAQ: how do I create a custom template?](./faq.md) — short FAQ version

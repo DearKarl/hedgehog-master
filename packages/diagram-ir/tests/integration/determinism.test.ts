@@ -71,7 +71,7 @@ describe("v0.1a deterministic acceptance", () => {
   });
 
   it("compiles the same input twice to identical SVG files in the dist CLI path", async () => {
-    const tempDir = await mkdtemp(join(tmpdir(), "hedgehog1-determinism-"));
+    const tempDir = await mkdtemp(join(tmpdir(), "hedgehog-diagram-determinism-"));
 
     try {
       const firstPath = join(tempDir, "first.svg");
@@ -106,7 +106,7 @@ describe("v0.1a deterministic acceptance", () => {
   });
 
   it("does not produce SVG output for invalid input", async () => {
-    const tempDir = await mkdtemp(join(tmpdir(), "hedgehog1-invalid-"));
+    const tempDir = await mkdtemp(join(tmpdir(), "hedgehog-diagram-invalid-"));
 
     try {
       const outputPath = join(tempDir, "invalid.svg");
@@ -125,7 +125,7 @@ describe("v0.1a deterministic acceptance", () => {
   });
 
   it("does not produce SVG output for cyclic input", async () => {
-    const tempDir = await mkdtemp(join(tmpdir(), "hedgehog1-cycle-"));
+    const tempDir = await mkdtemp(join(tmpdir(), "hedgehog-diagram-cycle-"));
 
     try {
       const outputPath = join(tempDir, "cycle.svg");
@@ -185,7 +185,7 @@ describe("v0.1a deterministic acceptance", () => {
   });
 
   it("confirms dist CLI compile output starts as an SVG", async () => {
-    const tempDir = await mkdtemp(join(tmpdir(), "hedgehog1-svg-"));
+    const tempDir = await mkdtemp(join(tmpdir(), "hedgehog-diagram-svg-"));
 
     try {
       const outputPath = join(tempDir, "simple.svg");

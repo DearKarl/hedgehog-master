@@ -1,11 +1,11 @@
 {
-  "name": "hedgehog1",
+  "name": "@hedgehog-master/diagram-ir",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Hedgehog One v0.1a deterministic Diagram IR to SVG compiler.",
+  "description": "Hedgehog Master Diagram IR v0.1a deterministic Diagram IR to SVG compiler.",
   "bin": {
-    "hedgehog1": "./dist/cli.js"
+    "hedgehog-diagram": "./dist/cli.js"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",

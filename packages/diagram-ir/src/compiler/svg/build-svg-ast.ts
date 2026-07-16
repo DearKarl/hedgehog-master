@@ -26,7 +26,7 @@ export function buildSvgAst(layout: LayoutModel): SvgElement {
       attr("aria-labelledby", "title desc")
     ],
     [
-      element("title", [attr("id", "title")], [text("Hedgehog One diagram")]),
+      element("title", [attr("id", "title")], [text("Hedgehog Master Diagram IR diagram")]),
       element(
         "desc",
         [attr("id", "desc")],

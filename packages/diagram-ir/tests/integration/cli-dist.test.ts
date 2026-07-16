@@ -20,7 +20,7 @@ describe("dist CLI smoke tests", () => {
   });
 
   it("compiles the example diagram through dist/cli.js", async () => {
-    const tempDir = await mkdtemp(join(tmpdir(), "hedgehog1-cli-"));
+    const tempDir = await mkdtemp(join(tmpdir(), "hedgehog-diagram-cli-"));
 
     try {
       const outputPath = join(tempDir, "simple.svg");
@@ -45,7 +45,7 @@ describe("dist CLI smoke tests", () => {
   });
 
   it("checks the example diagram without writing files", async () => {
-    const tempDir = await mkdtemp(join(tmpdir(), "hedgehog1-cli-"));
+    const tempDir = await mkdtemp(join(tmpdir(), "hedgehog-diagram-cli-"));
 
     try {
       const before = await readdir(tempDir);

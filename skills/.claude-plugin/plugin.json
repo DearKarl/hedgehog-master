@@ -1,14 +1,13 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
-  "name": "ppt-master",
-  "description": "Generate natively editable PPTX from PDF / DOCX / URL / Markdown.",
+  "name": "hedgehog-master",
+  "description": "Build evidence-linked research presentations, deterministic diagrams, and editable PPTX.",
   "author": {
-    "name": "Hugo He",
-    "email": "heyug3@gmail.com",
-    "url": "https://www.hehugo.com/"
+    "name": "DearKarl",
+    "url": "https://github.com/DearKarl"
   },
-  "homepage": "https://github.com/hugohe3/ppt-master",
-  "repository": "https://github.com/hugohe3/ppt-master",
+  "homepage": "https://github.com/DearKarl/hedgehog-master",
+  "repository": "https://github.com/DearKarl/hedgehog-master",
   "license": "MIT",
   "keywords": [
     "pptx",
@@ -16,7 +15,10 @@
     "powerpoint",
     "svg",
     "drawingml",
-    "ai",
+    "academic",
+    "research",
+    "evidence",
+    "diagram-ir",
     "skill",
     "office",
     "document-conversion"
