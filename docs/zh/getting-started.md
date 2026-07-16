@@ -54,7 +54,7 @@
 
 ## 做出第一份 deck
 
-整个流程就三步。先装好环境——只需要 Python,见 [快速开始](../../README_CN.md#快速开始)。
+整个流程就三步。先装好环境——只需要 Python,见 [Local Installation](../../README.md#local-installation)。
 
 1. **把源材料放进** `projects/` —— PDF、DOCX、Markdown、一个网址,或直接要粘贴的文字。
 2. **在对话里告诉 AI** 要把什么做成 deck(如果上面准备了模板,把它的路径一起给;否则就是自由设计):
