@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PPT Master - Unified Markdown Converter
+Hedgehog Master - Unified Markdown Converter
 
 Auto-detect source type and dispatch to the existing source_to_md converters.
 

@@ -1,6 +1,6 @@
 # Windows Installation Guide
 
-This guide walks you through installing PPT Master on Windows step by step. Follow along and you'll have a working setup in under 10 minutes.
+This guide walks you through installing Hedgehog Master on Windows step by step. Follow along and you'll have a working setup in under 10 minutes.
 
 ---
 
@@ -11,8 +11,6 @@ Python is the only hard requirement.
 1. Go to **[python.org/downloads](https://www.python.org/downloads/)** and download the latest **Python 3.10+** installer.
 
 2. **⚠️ CRITICAL: Check "Add python.exe to PATH"** during installation — this is the single most common mistake on Windows. Skipping this will break every step that follows.
-
-   ![Python installer — check Add to PATH](assets/windows-python-path.png)
 
 3. After installation, open **PowerShell** (search "PowerShell" in Start menu) and verify:
 
@@ -30,15 +28,15 @@ Python is the only hard requirement.
 
 **Option A — Download ZIP** (easiest):
 
-1. Go to [github.com/hugohe3/ppt-master](https://github.com/hugohe3/ppt-master)
+1. Go to [github.com/DearKarl/hedgehog-master](https://github.com/DearKarl/hedgehog-master)
 2. Click the green **Code** button → **Download ZIP**
-3. Unzip to `C:\Users\YourName\ppt-master`
+3. Unzip to `C:\Users\YourName\hedgehog-master`
 
 **Option B — Git Clone** (requires [Git](https://git-scm.com/downloads)):
 
 ```powershell
-git clone https://github.com/hugohe3/ppt-master.git
-cd ppt-master
+git clone https://github.com/DearKarl/hedgehog-master.git
+cd hedgehog-master
 ```
 
 ---
@@ -46,7 +44,7 @@ cd ppt-master
 ## Step 3 — Install Dependencies
 
 ```powershell
-cd C:\Users\YourName\ppt-master   # ← adjust to your actual path
+cd C:\Users\YourName\hedgehog-master   # adjust to your actual path
 pip install -r requirements.txt
 ```
 
@@ -70,7 +68,7 @@ python -c "import pptx; import fitz; print('All core dependencies OK')"
 
 ## Step 5 — Run a Minimal Example
 
-Open your AI editor (Cursor, VS Code + Copilot, etc.), open the `ppt-master` folder, and type in the chat:
+Open your AI editor, open the `hedgehog-master` folder, and type in the chat:
 
 ```
 Please create a simple 3-page test PPT with a cover, one content page, and a closing page. Topic: "Hello World".
@@ -148,6 +146,5 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 ## Still stuck?
 
-- 📖 [FAQ](./faq.md)
-- 🐛 [GitHub Issues](https://github.com/hugohe3/ppt-master/issues) — include your Python version, Windows version, and full error message
-- 💬 [GitHub Discussions](https://github.com/hugohe3/ppt-master/discussions)
+- [FAQ](./faq.md)
+- [GitHub Issues](https://github.com/DearKarl/hedgehog-master/issues) - include your Python version, Windows version, and full error message

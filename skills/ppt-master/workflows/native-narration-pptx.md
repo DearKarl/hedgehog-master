@@ -13,7 +13,7 @@ This file remains only as a compatibility reference for older agents and links. 
 | Need | Action |
 |---|---|
 | Existing `.pptx` + add speaker notes, narration audio, auto-advance, or page transitions while preserving visible slides | Run [`native-enhance-pptx`](./native-enhance-pptx.md) |
-| PPT Master generated project with `svg_output/` / `svg_final/` | Use [`generate-audio`](./generate-audio.md) |
+| Hedgehog Master generated project with `svg_output/` / `svg_final/` | Use [`generate-audio`](./generate-audio.md) |
 | Existing `.pptx` + beautify or re-layout visible slides | Use [`beautify-pptx`](./beautify-pptx.md) |
 | Existing `.pptx` + fill new content into a native design | Use [`template-fill-pptx`](./template-fill-pptx.md) |
 

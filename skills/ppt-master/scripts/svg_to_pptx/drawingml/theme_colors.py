@@ -243,7 +243,7 @@ def apply_theme_color_spec(extract_dir: Path, spec: ThemeColorSpec) -> None:
         color_scheme = tree.getroot().find(f".//{{{DML_NS}}}clrScheme")
         if color_scheme is None:
             raise ThemeColorError(f"Theme has no clrScheme: {theme_path}")
-        color_scheme.set("name", "PPT Master")
+        color_scheme.set("name", "Hedgehog Master")
         for slot, color in spec.slots.items():
             _set_scheme_color(color_scheme, slot, color)
         tree.write(theme_path, encoding="utf-8", xml_declaration=True)

@@ -4,17 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PPT Master — AI generates natively editable PPTX from any document</title>
-    <meta name="description" content="Drop in a PDF, DOCX, URL, or Markdown — get back a natively editable PowerPoint with real shapes, not images. Open source templates and live examples.">
-    <meta property="og:title" content="PPT Master — AI generates natively editable PPTX">
-    <meta property="og:description" content="Drop in any document, get back a natively editable PowerPoint with real shapes, real text boxes, and real charts. Not images. Click anything and edit it.">
-    <meta property="og:image" content="https://hugohe3.github.io/ppt-master/docs/assets/screenshots/preview_pritzker_2026.png">
-    <meta property="og:url" content="https://hugohe3.github.io/ppt-master/">
+    <title>Hedgehog Master | Local research presentation harness</title>
+    <meta name="description" content="A local-first harness for academic English presentations, reproducible vector diagrams, and editable PPTX output.">
+    <meta property="og:title" content="Hedgehog Master | Research presentation engineering">
+    <meta property="og:description" content="Build research decks and publication-oriented vector diagrams through a reviewable local workflow.">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="PPT Master — AI generates natively editable PPTX">
-    <meta name="twitter:description" content="Drop in any document, get back a natively editable PowerPoint with real shapes. Not images. Open source.">
-    <meta name="twitter:image" content="https://hugohe3.github.io/ppt-master/docs/assets/screenshots/preview_pritzker_2026.png">
+    <meta name="twitter:title" content="Hedgehog Master | Research presentation engineering">
+    <meta name="twitter:description" content="A local-first harness for academic English decks, vector diagrams, and editable PPTX output.">
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 32' fill='none' stroke='%235b8def' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><rect x='2' y='2' width='44' height='28' rx='2.5'/><line x1='9' y1='11' x2='22' y2='11'/><line x1='9' y1='17' x2='32' y2='17'/><line x1='9' y1='23' x2='26' y2='23'/></svg>">
     <style>
@@ -508,12 +505,12 @@
                     <line x1="9" y1="23" x2="26" y2="23"/>
                 </svg>
             </div>
-            <div class="eyebrow">Open source · MIT</div>
-            <h1>PPT Master</h1>
-            <p>AI generates natively editable PPTX from any document — real PowerPoint shapes, not images.</p>
+            <div class="eyebrow">Local-first research tooling</div>
+            <h1>Hedgehog Master</h1>
+            <p>Engineer academic presentations, reproducible vector diagrams, and editable PowerPoint artifacts in one reviewable local workflow.</p>
             <div class="header-cta">
-                <a href="https://github.com/hugohe3/ppt-master" class="cta-btn primary" target="_blank">Star on GitHub</a>
-                <a href="https://github.com/hugohe3/ppt-master#quick-start" class="cta-btn secondary" target="_blank">Get Started</a>
+                <a href="https://github.com/DearKarl/hedgehog-master" class="cta-btn primary" target="_blank">View on GitHub</a>
+                <a href="https://github.com/DearKarl/hedgehog-master#local-installation" class="cta-btn secondary" target="_blank">Local Setup</a>
             </div>
             <div class="stats">
                 <div class="stat">
@@ -550,12 +547,12 @@
 
     <footer class="footer">
         <div class="footer-links">
-            <a href="https://github.com/hugohe3/ppt-master" target="_blank">GitHub</a>
-            <a href="https://github.com/hugohe3/ppt-master#quick-start" target="_blank">Quick Start</a>
-            <a href="https://github.com/hugohe3/ppt-master/blob/main/docs/faq.md" target="_blank">FAQ</a>
-            <a href="https://github.com/hugohe3/ppt-master/discussions" target="_blank">Discussions</a>
+            <a href="https://github.com/DearKarl/hedgehog-master" target="_blank">GitHub</a>
+            <a href="https://github.com/DearKarl/hedgehog-master#local-installation" target="_blank">Local Setup</a>
+            <a href="https://github.com/DearKarl/hedgehog-master/blob/main/docs/faq.md" target="_blank">FAQ</a>
+            <a href="https://github.com/DearKarl/hedgehog-master/issues" target="_blank">Issues</a>
         </div>
-        <p class="footer-copy">PPT Master © 2025–2026 · Built by <a href="https://www.hehugo.com/" target="_blank">Hugo He</a></p>
+        <p class="footer-copy">Hedgehog Master © 2026 · Local-first research presentation engineering</p>
     </footer>
 
     <script>
@@ -566,7 +563,7 @@
         async function initProjects() {
             try {
                 const data = await loadExamplesData();
-                projects = data.projects || [];
+                projects = (data.projects || []).filter(project => project.published !== false);
                 updateStats(data.stats);
                 renderProjects(activeFilter);
             } catch (error) {

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PPT Master - SVG Post-processing Tool (Unified Entry Point)
+Hedgehog Master - SVG Post-processing Tool (Unified Entry Point)
 
 Processes SVG files from svg_output/ and produces the visual preview in
 svg_final/, embedding supported raster/SVG assets. Native PPTX export continues
@@ -283,7 +283,7 @@ def finalize_project(
 def main() -> None:
     """Run the CLI entry point."""
     parser = argparse.ArgumentParser(
-        description='PPT Master - SVG Post-processing Tool',
+        description='Hedgehog Master - SVG Post-processing Tool',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog='''
 Examples:

@@ -1,6 +1,6 @@
 # Page Transitions & Per-Element Animations
 
-PPT Master's exported PPTX supports **page transitions** and **per-element
+Hedgehog Master's exported PPTX supports **page transitions** and **per-element
 entrance animations** as real PowerPoint OOXML. Other applications may
 interpret timing differently; this contract makes no unconditional Keynote guarantee.
 
@@ -169,7 +169,7 @@ Executors should wrap logical sections in `<g id>` regardless of whether you pla
 
 Animation configuration is strict. Export fails on an unknown effect, mode, or trigger; a boolean or non-finite duration/delay/stagger; a non-positive duration; a negative delay/stagger; a non-positive or non-integer order; a missing slide/group reference; or any attempt to animate a structural layer. These errors never downgrade to another effect or silently omit a requested target.
 
-Generated export reads each slide's timing tree back and checks row count/order, trigger, shape target, resolved effect tuple, duration, and timeline offset. Package validation then checks root timing placement, unique and valid `p:cTn` ids, and every `p:spTgt` reference. The writer does not emit `p:bldP` for groups or pictures. Direct-PPTX preserve mode tolerates unchanged legacy group/picture `p:bldP` rows from earlier PPT Master exports; new generated packages remain strict.
+Generated export reads each slide's timing tree back and checks row count/order, trigger, shape target, resolved effect tuple, duration, and timeline offset. Package validation then checks root timing placement, unique and valid `p:cTn` ids, and every `p:spTgt` reference. The writer does not emit `p:bldP` for groups or pictures. Direct-PPTX preserve mode tolerates unchanged legacy group/picture `p:bldP` rows from earlier Hedgehog Master exports; new generated packages remain strict.
 
 Narration injection merges audio timing into an existing direct `p:sld/p:timing` DOM and preserves entrance rows. A source timing tree nested in `mc:AlternateContent` or another non-root container fails safely instead of being rewritten or duplicated. Direct-PPTX routes fingerprint source object-animation timing before and after their allowed edits, then run structural package validation; they do not author or normalize animation effects.
 

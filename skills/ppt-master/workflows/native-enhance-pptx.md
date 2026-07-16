@@ -67,7 +67,7 @@ source.pptx
 | Existing `.pptx` + asks to optimize it but says not to change existing content or layout | Run this workflow only for V1 narration enhancements; clarify any visible-slide request |
 | Existing `.pptx` + asks to beautify or re-layout | Use [`beautify-pptx`](./beautify-pptx.md) |
 | Existing `.pptx` + asks to fill new content into the design | Use [`template-fill-pptx`](./template-fill-pptx.md) |
-| PPT Master generated project with `svg_output/` | Use [`generate-audio`](./generate-audio.md) for narration |
+| Hedgehog Master generated project with `svg_output/` | Use [`generate-audio`](./generate-audio.md) for narration |
 
 ---
 

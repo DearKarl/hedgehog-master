@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-We provide security updates for the latest version of PPT Master.
+We provide security updates for the latest version of Hedgehog Master.
 
 | Version | Supported |
 |---------|-----------|
@@ -28,7 +28,7 @@ We will acknowledge your report within **72 hours** and aim to provide a resolut
 
 ## Scope
 
-This policy covers the PPT Master source code in this repository, including:
+This policy covers the Hedgehog Master source code in this repository, including:
 
 - Python scripts in `skills/ppt-master/scripts/`
 - Post-processing pipeline (`total_md_split.py`, `finalize_svg.py`, `svg_to_pptx.py`)

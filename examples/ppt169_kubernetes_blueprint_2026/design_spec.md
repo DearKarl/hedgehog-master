@@ -296,7 +296,7 @@ Catalog read: 71 templates
 
 ## XI. Technical Constraints Reminder
 
-Standard PPT Master SVG constraints (see `references/shared-standards.md`). Key reminders for this deck:
+Standard Hedgehog Master SVG constraints (see `references/shared-standards.md`). Key reminders for this deck:
 
 1. Every isometric line drawing is hand-authored SVG — `<polygon>` / `<line>` / `<path>` primitives; no raster fallback
 2. The blueprint grid background is a `<pattern>` ref'd by `<rect>` (allowed) — not `class` / `<style>`

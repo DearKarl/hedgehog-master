@@ -2,11 +2,11 @@
 
 This file is the project entry point for general AI agents.
 
-**You MUST read [`skills/ppt-master/SKILL.md`](skills/ppt-master/SKILL.md) before any PPT generation task or repo modification.** This repository exists to generate presentations; SKILL.md is the authoritative workflow that owns project creation, role switching, serial execution, quality gates, post-processing, export, and every per-step command. The rest of this file only points to where related material lives — it never substitutes for SKILL.md.
+**You MUST read [`skills/ppt-master/SKILL.md`](skills/ppt-master/SKILL.md) before any PPT generation task or repo modification.** This repository exists to generate presentations; SKILL.md is the authoritative workflow that owns project creation, role switching, serial execution, quality gates, post-processing, export, and every per-step command. The rest of this file only points to where related material lives; it never substitutes for SKILL.md.
 
 ## Project Overview
 
-PPT Master is an AI-driven presentation generation system. Multi-role collaboration (Strategist → Image_Generator → Executor) converts source documents (PDF/DOCX/URL/Markdown) into natively editable PPTX with real PowerPoint shapes (DrawingML).
+Hedgehog Master is a local-first presentation engineering harness. Its multi-role workflow (Strategist -> Image_Generator -> Executor) converts source documents (PDF/DOCX/URL/Markdown) into editable PPTX and reusable vector assets, with an emphasis on formal academic English and reproducible scientific diagrams.
 
 **Core Pipeline**: `Source Document → Create Project → [Template] → Strategist confirmation stage → [Image_Generator] → Executor Live Preview → Quality Check → Post-processing → Export PPTX`
 
@@ -33,7 +33,7 @@ PPT Master is an AI-driven presentation generation system. Multi-role collaborat
 
 ## Compatibility Boundary
 
-- This repository is a workflow/skill package, not an app or service scaffold.
+- This repository currently combines a workflow/skill package, local review surfaces, and the Diagram IR compiler. It is not yet a unified application scaffold.
 - Do NOT assume generic-project conventions like `.worktrees/`, `tests/`, or mandatory branch setup unless the user explicitly requests them.
 - On conflict with a generic coding skill, prioritize [`skills/ppt-master/SKILL.md`](skills/ppt-master/SKILL.md) inside this repository.
 

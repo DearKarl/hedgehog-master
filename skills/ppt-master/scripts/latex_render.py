@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PPT Master - LaTeX Formula Renderer
+Hedgehog Master - LaTeX Formula Renderer
 
 Render Strategist-declared LaTeX formulas to transparent PNG assets.
 The script reads an explicit manifest; it never scans spec_lock.md or source

@@ -1,5 +1,5 @@
 /* ============================================================
-   PPT Master - SVG Editor  |  app.js
+   Hedgehog Master - SVG Editor  |  app.js
    Vanilla JS, IIFE pattern
    ============================================================ */
 (function () {
@@ -8,7 +8,7 @@
     // ---- i18n -------------------------------------------------------
     var MESSAGES = {
         en: {
-            page_title: "PPT Master - Live Preview",
+            page_title: "Hedgehog Master - Live Preview",
             panel_slides: "Slides",
             panel_annotations: "Annotations",
             panel_edit_annotate: "Edit / Annotate",
@@ -83,7 +83,7 @@
             nav_empty: "— / —"
         },
         ja: {
-            page_title: "PPT Master - ライブプレビュー",
+            page_title: "Hedgehog Master - ライブプレビュー",
             panel_slides: "スライド",
             panel_annotations: "注釈",
             panel_edit_annotate: "編集 / 注釈",
@@ -158,7 +158,7 @@
             nav_empty: "— / —"
         },
         zh: {
-            page_title: "PPT Master - 实时预览",
+            page_title: "Hedgehog Master - 实时预览",
             panel_slides: "幻灯片",
             panel_annotations: "标注",
             panel_edit_annotate: "编辑 / 标注",
@@ -234,16 +234,7 @@
         }
     };
 
-    var LANG = (function () {
-        try {
-            var stored = window.localStorage.getItem("ppt_lang");
-            if (stored === "zh" || stored === "en" || stored === "ja") return stored;
-        } catch (e) { /* ignore */ }
-        var nav = (navigator.language || navigator.userLanguage || "en").toLowerCase();
-        if (nav.indexOf("zh") === 0) return "zh";
-        if (nav.indexOf("ja") === 0) return "ja";
-        return "en";
-    })();
+    var LANG = "en";
 
     function t(key, params) {
         var dict = MESSAGES[LANG] || MESSAGES.en;
@@ -259,7 +250,7 @@
     }
 
     function applyI18n() {
-        document.documentElement.setAttribute("lang", LANG === "zh" ? "zh-CN" : (LANG === "ja" ? "ja" : "en"));
+        document.documentElement.setAttribute("lang", "en");
         document.title = t("page_title");
         document.querySelectorAll("[data-i18n]").forEach(function (el) {
             el.textContent = t(el.getAttribute("data-i18n"));
@@ -618,7 +609,7 @@
                 // Empty-canvas guard: surface a clear error if the SVG parsed
                 // to nothing renderable (issue #115's silent-blank scenario).
                 var rootSvg = svgContent.querySelector("svg");
-                // viewBox is the PPT Master canvas authority. Normalize the
+                // viewBox is the Hedgehog Master canvas authority. Normalize the
                 // preview DOM from it so stale or missing root width/height
                 // cannot shrink the slide. View-layer only — the file on disk
                 // is never touched.
@@ -2911,77 +2902,6 @@
     applyI18n();
     initAnnotationQuickActions();
     updatePendingStatus();
-    var langToggleBtn = document.getElementById("btn-lang-toggle");
-    var langMenu = document.getElementById("lang-menu");
-    if (langToggleBtn && langMenu) {
-        refreshLangUI(LANG);
-        var setMenuOpen = function (open) {
-            langMenu.hidden = !open;
-            langToggleBtn.setAttribute("aria-expanded", open ? "true" : "false");
-            if (open) {
-                var sel = langMenu.querySelector("li.selected") || langMenu.querySelector("li[data-lang]");
-                if (sel) sel.focus();
-            }
-        };
-        var chooseLang = function (v) {
-            setMenuOpen(false);
-            langToggleBtn.focus();
-            if (v) setLang(v);
-        };
-        langToggleBtn.addEventListener("click", function (e) {
-            e.stopPropagation();
-            setMenuOpen(langMenu.hidden);
-        });
-        langToggleBtn.addEventListener("keydown", function (e) {
-            if (e.key === "Escape" && !langMenu.hidden) {
-                e.stopPropagation();
-                setMenuOpen(false);
-            } else if ((e.key === "ArrowDown" || e.key === "ArrowUp") && langMenu.hidden) {
-                e.preventDefault();
-                e.stopPropagation();
-                setMenuOpen(true);
-            }
-        });
-        langMenu.addEventListener("click", function (e) {
-            e.stopPropagation();
-            var li = e.target && e.target.closest ? e.target.closest("li[data-lang]") : null;
-            if (li) chooseLang(li.getAttribute("data-lang"));
-            else setMenuOpen(false);
-        });
-        langMenu.addEventListener("keydown", function (e) {
-            e.stopPropagation();   // keep nudge / slide-nav shortcuts away while the menu is open
-            var items = Array.prototype.slice.call(langMenu.querySelectorAll("li[data-lang]"));
-            var idx = items.indexOf(document.activeElement);
-            if (e.key === "Escape") {
-                setMenuOpen(false);
-                langToggleBtn.focus();
-            } else if (e.key === "ArrowDown") {
-                e.preventDefault();
-                (items[idx + 1] || items[0]).focus();
-            } else if (e.key === "ArrowUp") {
-                e.preventDefault();
-                (items[idx - 1] || items[items.length - 1]).focus();
-            } else if (e.key === "Home") {
-                e.preventDefault();
-                items[0].focus();
-            } else if (e.key === "End") {
-                e.preventDefault();
-                items[items.length - 1].focus();
-            } else if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-                e.preventDefault();
-            } else if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                if (idx >= 0) chooseLang(items[idx].getAttribute("data-lang"));
-            }
-        });
-        langToggleBtn.parentElement.addEventListener("focusout", function (e) {
-            if (!langMenu.hidden && !langToggleBtn.parentElement.contains(e.relatedTarget)) setMenuOpen(false);
-        });
-        document.addEventListener("click", function () {
-            if (!langMenu.hidden) setMenuOpen(false);
-        });
-    }
-
     loadConfig().then(function () {
         loadSlides();
         startSlidePolling();

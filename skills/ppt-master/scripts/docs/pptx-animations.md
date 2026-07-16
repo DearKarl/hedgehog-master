@@ -133,7 +133,7 @@ defines `p:bldP@spid` for a text-bearing `p:sp`; using it for `p:grpSp` or
 valid source `p:bldP` that targets a text-bearing shape.
 
 Direct-PPTX preserve mode also tolerates an unchanged legacy `p:bldP` that
-targets an existing group/picture. Earlier PPT Master exports wrote this form;
+targets an existing group/picture. Earlier Hedgehog Master exports wrote this form;
 the direct routes fingerprint and preserve it instead of blocking those decks.
 New generated output never writes it, and generated-package validation remains
 strict.

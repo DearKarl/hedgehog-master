@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PPT Master - Preset Shape SVG Fragment Tool
+Hedgehog Master - Preset Shape SVG Fragment Tool
 
 List DrawingML presets or print one compact canonical native-preset SVG group to
 stdout for manual insertion into a hand-authored page or template.
@@ -17,7 +17,7 @@ Examples:
         --frame 160 210 320 112 --fill "#2563EB" --stroke none
 
 Dependencies:
-    None (only uses standard library and local PPT Master modules)
+    None (only uses standard library and local Hedgehog Master modules)
 """
 
 from __future__ import annotations

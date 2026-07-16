@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PPT Master - Shared SVG Resource Path Helpers
+Hedgehog Master - Shared SVG Resource Path Helpers
 
 Centralizes project-relative SVG resource lookup used by the checker,
 finalizer, and SVG-to-PPTX exporter.

@@ -38,7 +38,7 @@ The four primary brand colors (Blue / Green / Yellow / Red) carry equal weight i
 | title | `Google Sans, Roboto, "Microsoft YaHei", sans-serif` | 500–700 |
 | body | `Roboto, "Microsoft YaHei", sans-serif` | 400 |
 
-> `Google Sans` is proprietary. PPT Master does not bundle or automatically embed it; use the `Roboto` / `Microsoft YaHei` fallback unless the user supplies an installed/approved font workflow.
+> `Google Sans` is proprietary. Hedgehog Master does not bundle or automatically embed it; use the `Roboto` / `Microsoft YaHei` fallback unless the user supplies an installed/approved font workflow.
 
 ## IV. Logo
 

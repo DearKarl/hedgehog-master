@@ -7,7 +7,7 @@ description: >
   "生成PPT", "做PPT", "制作演示文稿", or mentions "ppt-master".
 ---
 
-# PPT Master Skill
+# Hedgehog Master Skill
 
 > AI-driven multi-format SVG content generation system. Converts source documents into high-quality SVG pages through multi-role collaboration and exports to PPTX.
 
@@ -187,7 +187,7 @@ inputs or directory inputs, `-o` is an output directory. Backend converter detai
 > alongside bitmap images when the source format exposes them. After `import-sources`, these land in `images/`
 > together with `image_manifest.json` and are first-class assets in §VIII Image Resource List.
 >
-> **Do NOT convert EMF/WMF to PNG.** The PPT Master pipeline preserves them as external
+> **Do NOT convert EMF/WMF to PNG.** The Hedgehog Master pipeline preserves them as external
 > references (`finalize_svg.py` skips them) and `svg_to_pptx.py` embeds them as
 > PPTX-native media via `image/x-emf` / `image/x-wmf` MIME — PowerPoint renders them at full vector fidelity.
 > Converting via LibreOffice/Inkscape introduces CJK font substitution drift and
@@ -265,7 +265,7 @@ There is no slug matching, no name lookup, no fuzzy resolution. A name without a
 
 #### Three template kinds
 
-The architecture has three independent reference bundles. Full schema in [`docs/zh/templates-architecture.md`](../../docs/zh/templates-architecture.md). Summary:
+The architecture has three independent reference bundles. Full schema in [`docs/templates-architecture.md`](../../docs/templates-architecture.md). Summary:
 
 | Kind | Physical dir | Contains | Frontmatter |
 |---|---|---|---|

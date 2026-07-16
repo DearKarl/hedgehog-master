@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PPT Master - Icon Sync
+Hedgehog Master - Icon Sync
 
 Copy chosen library icons into a project's own `icons/` folder at the moment they
 are selected. Run it with the icon names you are picking; each is copied from the

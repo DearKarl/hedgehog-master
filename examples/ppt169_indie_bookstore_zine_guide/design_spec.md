@@ -264,7 +264,7 @@
 - **Layout**: Full-bleed hero image + floating Impact 大字标题（zine 海报感）
 - **Title**: 「Zine 文化指南 / INDIE BOOKSTORE × ZINE」
 - **Subtitle**: 一份从一张纸到一家书店的独立出版地图
-- **Info**: PPT Master Risograph 风格演示 · 2026
+- **Info**: Hedgehog Master Risograph 风格演示 · 2026
 
 #### Slide 02 - 目录
 

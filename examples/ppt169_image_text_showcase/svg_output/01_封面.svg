@@ -76,7 +76,7 @@
 
   <!-- Bottom info row -->
   <text x="640" y="470" text-anchor="middle" font-family="Arial, 'Microsoft YaHei', sans-serif"
-        font-size="15" fill="#5A5A72" letter-spacing="6">PPT MASTER  ·  2026</text>
+        font-size="15" fill="#5A5A72" letter-spacing="6">HEDGEHOG MASTER  ·  2026</text>
 
   <!-- Rendering label — top-right accent panel -->
   <text x="1050" y="112" text-anchor="middle" font-family="Arial, sans-serif"

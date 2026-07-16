@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PPT Master - Source Converter Batch Helpers
+Hedgehog Master - Source Converter Batch Helpers
 
 Share explicit multi-file and directory expansion logic across source_to_md
 backend converters.

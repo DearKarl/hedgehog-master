@@ -1,5 +1,5 @@
 ---
-description: Registry of standalone PPT Master workflows
+description: Registry of standalone Hedgehog Master workflows
 ---
 
 # Workflow Registry

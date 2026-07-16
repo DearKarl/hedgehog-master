@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PPT Master - Preset Shape Registry
+Hedgehog Master - Preset Shape Registry
 
 Expose the complete preset catalog and evaluate shape geometry instances.
 
@@ -83,7 +83,7 @@ class PresetShapeRegistry:
 
     @classmethod
     def bundled(cls) -> PresetShapeRegistry:
-        """Load the hash-locked catalog shipped with PPT Master."""
+        """Load the hash-locked catalog shipped with Hedgehog Master."""
 
         names = load_shape_type_values()
         definitions = load_preset_shape_definitions(expected_names=names)

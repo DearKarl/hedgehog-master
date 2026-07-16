@@ -1,4 +1,4 @@
-/* PPT Master - Strategist confirmation stage UI
+/* Hedgehog Master - Strategist confirmation stage UI
  * Finite/enumerable fields (canvas, mode, visual style, template adherence,
  * icons, image usage, AI source, formula policy, generation mode) list ALL options from
  * /static/catalogs.json with the AI's recommendation marked. Open/generative
@@ -11,7 +11,7 @@
     // ---- i18n ------------------------------------------------------------
     var MESSAGES = {
         en: {
-            page_title: "PPT Master - Confirm Design",
+            page_title: "Hedgehog Master - Confirm Design",
             topbar_hint: "Pick or type your choices, then click Confirm — the page closes and you return to the chat.",
             stage_anchors: "Stage 1 · Direction",
             stage_design: "Stage 2 · Design system",
@@ -123,7 +123,7 @@
             error_retry: "Error - retry"
         },
         ja: {
-            page_title: "PPT Master - デザイン確認",
+            page_title: "Hedgehog Master - デザイン確認",
             topbar_hint: "各項目を選択または入力して「確定」を押してください。ページが閉じたらチャットに戻ります。",
             stage_anchors: "ステージ 1 · 方向性",
             stage_design: "ステージ 2 · デザインシステム",
@@ -348,16 +348,7 @@
         }
     };
 
-    var LANG = (function () {
-        try {
-            var stored = window.localStorage.getItem("ppt_lang");
-            if (stored === "zh" || stored === "en" || stored === "ja") return stored;
-        } catch (e) { /* ignore */ }
-        var nav = (navigator.language || navigator.userLanguage || "en").toLowerCase();
-        if (nav.indexOf("zh") === 0) return "zh";
-        if (nav.indexOf("ja") === 0) return "ja";
-        return "en";
-    })();
+    var LANG = "en";
 
     function t(key) {
         var dict = MESSAGES[LANG] || MESSAGES.en;
@@ -464,7 +455,7 @@
     }
 
     function applyStaticTranslations() {
-        document.documentElement.setAttribute("lang", LANG === "zh" ? "zh-CN" : (LANG === "ja" ? "ja" : "en"));
+        document.documentElement.setAttribute("lang", "en");
         document.querySelectorAll("[data-i18n]").forEach(function (node) {
             node.textContent = t(node.getAttribute("data-i18n"));
         });
@@ -2352,80 +2343,6 @@
 
     function boot() {
         applyStaticTranslations();
-        var toggleBtn = document.getElementById("btn-lang-toggle");
-        var langMenu = document.getElementById("lang-menu");
-        refreshLangToggle(toggleBtn);
-        var setMenuOpen = function (open) {
-            langMenu.hidden = !open;
-            toggleBtn.setAttribute("aria-expanded", open ? "true" : "false");
-            if (open) {
-                var sel = langMenu.querySelector("li.selected") || langMenu.querySelector("li[data-lang]");
-                if (sel) sel.focus();
-            }
-        };
-        var chooseLang = function (v) {
-            setMenuOpen(false);
-            toggleBtn.focus();
-            if (v !== "ja" && v !== "en" && v !== "zh") return;
-            if (v === LANG) return;
-            LANG = v;
-            try { window.localStorage.setItem("ppt_lang", LANG); } catch (e2) { /* ignore */ }
-            applyStaticTranslations();
-            refreshLangToggle(toggleBtn);
-            if (REC && CAT) renderAll();   // STATE persists → selections preserved
-        };
-        toggleBtn.addEventListener("click", function (e) {
-            e.stopPropagation();
-            setMenuOpen(langMenu.hidden);
-        });
-        toggleBtn.addEventListener("keydown", function (e) {
-            if (e.key === "Escape" && !langMenu.hidden) {
-                e.stopPropagation();
-                setMenuOpen(false);
-            } else if ((e.key === "ArrowDown" || e.key === "ArrowUp") && langMenu.hidden) {
-                e.preventDefault();
-                e.stopPropagation();
-                setMenuOpen(true);
-            }
-        });
-        langMenu.addEventListener("click", function (e) {
-            e.stopPropagation();
-            var li = e.target && e.target.closest ? e.target.closest("li[data-lang]") : null;
-            if (li) chooseLang(li.getAttribute("data-lang"));
-            else setMenuOpen(false);
-        });
-        langMenu.addEventListener("keydown", function (e) {
-            e.stopPropagation();   // page-level shortcuts must not fire while the menu is open
-            var items = Array.prototype.slice.call(langMenu.querySelectorAll("li[data-lang]"));
-            var idx = items.indexOf(document.activeElement);
-            if (e.key === "Escape") {
-                setMenuOpen(false);
-                toggleBtn.focus();
-            } else if (e.key === "ArrowDown") {
-                e.preventDefault();
-                (items[idx + 1] || items[0]).focus();
-            } else if (e.key === "ArrowUp") {
-                e.preventDefault();
-                (items[idx - 1] || items[items.length - 1]).focus();
-            } else if (e.key === "Home") {
-                e.preventDefault();
-                items[0].focus();
-            } else if (e.key === "End") {
-                e.preventDefault();
-                items[items.length - 1].focus();
-            } else if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-                e.preventDefault();
-            } else if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                if (idx >= 0) chooseLang(items[idx].getAttribute("data-lang"));
-            }
-        });
-        toggleBtn.parentElement.addEventListener("focusout", function (e) {
-            if (!langMenu.hidden && !toggleBtn.parentElement.contains(e.relatedTarget)) setMenuOpen(false);
-        });
-        document.addEventListener("click", function () {
-            if (!langMenu.hidden) setMenuOpen(false);
-        });
         document.getElementById("btn-confirm").addEventListener("click", function () {
             if (STAGE === 1) submitStage1();
             else if (STAGE === 2) submitStage2();
@@ -2442,11 +2359,6 @@
             REC = res[1];
             ICON_PREVIEWS = res[2] || {};
             AI_IMAGE_COMPARISON = res[3] || {};
-            if (REC.lang === "zh" || REC.lang === "en" || REC.lang === "ja") {
-                var hasStored = false;
-                try { hasStored = !!window.localStorage.getItem("ppt_lang"); } catch (e) { /* ignore */ }
-                if (!hasStored) { LANG = REC.lang; applyStaticTranslations(); refreshLangToggle(toggleBtn); }
-            }
             initState();
             // stage 1 / 2 / 3 from the recommendations; absent → legacy single-pass.
             STAGE = stageNumber(REC);

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PPT Master - SVG Editor Server
+Hedgehog Master - SVG Editor Server
 
 Flask backend for the SVG annotation editor.
 Serves the web UI and provides API endpoints for reading/writing SVG annotations.
@@ -1108,7 +1108,7 @@ def _open_browser_async(url: str, delay: float = 0.4) -> None:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description='PPT Master SVG Editor',
+        description='Hedgehog Master SVG Editor',
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument('project_dir', help='Path to project directory (contains svg_output/)')

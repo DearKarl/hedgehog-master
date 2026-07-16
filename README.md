@@ -103,7 +103,7 @@ python -m http.server 4173 --bind 127.0.0.1
 Open:
 
 - Gallery: [http://127.0.0.1:4173/](http://127.0.0.1:4173/)
-- Example viewer: [http://127.0.0.1:4173/viewer.html?project=ppt169_swiss_grid_systems](http://127.0.0.1:4173/viewer.html?project=ppt169_swiss_grid_systems)
+- Example viewer: [http://127.0.0.1:4173/viewer.html?project=ppt169_attention_is_all_you_need](http://127.0.0.1:4173/viewer.html?project=ppt169_attention_is_all_you_need)
 
 ### Create a Project Workspace
 
@@ -162,11 +162,11 @@ The package currently provides schema validation, canonicalization, deterministi
 5. Build a unified local interface for intake, generation, review, and export.
 6. Publish Hedgehog Master examples and documentation under project-owned branding.
 
-## Project Origin
+## Project Identity
 
-Hedgehog Master is independently developed from [`hugohe3/ppt-master`](https://github.com/hugohe3/ppt-master) under the MIT License. The upstream history and attribution are preserved. This repository also incorporates the former Hedgehog Diagram IR project and its Git history.
+Hedgehog Master is maintained as an independent project with its own product direction, scientific standards, diagram architecture, and local tooling. Earlier open-source foundations and their required legal attribution are recorded in [`NOTICE.md`](./NOTICE.md), while current public documentation uses the Hedgehog Master identity.
 
-The project is not intended to be a cosmetic mirror. Its scope, documentation, scientific standards, diagram architecture, and local tooling will evolve under the Hedgehog Master name. See [`ABOUT.md`](./ABOUT.md) for the ownership and architecture boundary.
+See [`ABOUT.md`](./ABOUT.md) for the architecture and development boundary.
 
 ## Contributing
 

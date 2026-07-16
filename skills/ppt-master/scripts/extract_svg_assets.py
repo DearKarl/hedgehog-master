@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PPT Master - Large Vector Asset Extractor
+Hedgehog Master - Large Vector Asset Extractor
 
 Factor large inline vector groups (complex illustrations) out of working SVGs
 into project icon assets, leaving a one-line `<use data-icon="id"/>`

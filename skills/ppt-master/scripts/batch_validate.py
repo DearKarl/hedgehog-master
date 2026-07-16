@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PPT Master - Batch Project Validation Tool
+Hedgehog Master - Batch Project Validation Tool
 
 Checks the structural integrity and compliance of multiple projects at once.
 
@@ -223,7 +223,7 @@ class BatchValidator:
             output_file: Output file path
         """
         with open(output_file, 'w', encoding='utf-8') as f:
-            f.write("PPT Master Project Validation Report\n")
+            f.write("Hedgehog Master Project Validation Report\n")
             f.write("=" * 80 + "\n\n")
 
             for result in self.results:
@@ -262,7 +262,7 @@ class BatchValidator:
 def build_parser() -> argparse.ArgumentParser:
     """Build the command-line parser."""
     parser = argparse.ArgumentParser(
-        description="Validate one or more PPT Master project directories.",
+        description="Validate one or more Hedgehog Master project directories.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""Examples:
   python3 scripts/batch_validate.py examples

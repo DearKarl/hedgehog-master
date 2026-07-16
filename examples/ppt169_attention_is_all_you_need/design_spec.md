@@ -1,6 +1,6 @@
 # attention_is_all_you_need — Design Spec
 
-> Paper-deep-read deck for the seminal Transformer paper (Vaswani et al., 2017). Pipeline output of PPT Master; truth-of-execution lives in `spec_lock.md`.
+> Paper-deep-read deck for the seminal Transformer paper (Vaswani et al., 2017). Pipeline output of Hedgehog Master; truth-of-execution lives in `spec_lock.md`.
 
 ## I. Project Information
 

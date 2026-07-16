@@ -1,6 +1,6 @@
 # ppt169_ai_industry_2026 — Design Spec
 
-> Brutalist editorial newspaper · capability-showcase demo for PPT Master roadmap §P0-2
+> Brutalist editorial newspaper · capability-showcase demo for Hedgehog Master roadmap §P0-2
 > Source: `sources/ai_industry_2026.md` (compiled May 2026 from Counterpoint / Stanford HAI / OneTrust / Deluair / IEEE Spectrum)
 
 ## I. Project Information
@@ -320,7 +320,7 @@ Catalog read: 71 templates
   - China frontier labs still have $0 of EU-market revenue.
   - Open-weights distribution still does not translate to direct revenue capture.
   - Power and grid interconnect remain the single hardest input to source.
-- **Imprint footer**: `THE AI INDUSTRY 2026 · Annual Report · Volume 1, Edition 1 · Compiled May 2026 · PPT Master ☐ AI Newspaper Demo`
+- **Imprint footer**: `THE AI INDUSTRY 2026 · Annual Report · Volume 1, Edition 1 · Compiled May 2026 · Hedgehog Master ☐ AI Newspaper Demo`
 
 ---
 

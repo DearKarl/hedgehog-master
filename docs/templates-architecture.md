@@ -1,336 +1,211 @@
-# Template Architecture: Brand / Layout / Deck
+# Template Architecture
 
-> This is the **architecture alignment document**. It defines the three template kinds at the data-model layer, the field sets of each `design_spec.md`, and the multi-path fusion + conflict resolution rules. Audience: contributors and AI workflows; answers "what should / shouldn't a template directory contain; how do they combine when multiple are supplied".
->
-> For user-facing usage (how to trigger, how to pick), see [`templates-guide.md`](./templates-guide.md); not repeated here.
+This document defines the three template identities used by Hedgehog Master: **brand**, **layout**, and **deck**. It is the contributor-facing reference for template workspaces, specification ownership, composition, and conflict handling.
 
----
+For user-facing selection, see [Templates Guide](./templates-guide.md).
 
-## 1. The three kinds
+## Template Kinds
 
-| Kind | Library workspace root | What it writes | What it does NOT write | Originating workflow |
-|---|---|---|---|---|
-| **Brand** | `templates/brands/<id>/` | Identity segment only: color / typography / logo / voice / icon style | No canvas, page structure, SVG roster | `workflows/create-brand.md` |
-| **Layout** | `templates/layouts/<id>/` | Structure segment only: canvas / page structure / page types / SVG roster | No brand identity (no logo, no locked brand color) | `workflows/create-template.md` (layout branch) |
-| **Deck** | `templates/decks/<id>/` | All segments: identity + structure + middle (template overview) | — | `workflows/create-template.md` (deck branch, default) |
-
-Every newly created or restored Layout/Deck SVG is a complete preview with root Master/Layout key and picker names, direct atomic Master/Layout elements, and top-level semantic slot groups. A normal slot has positive design-zone bounds and exactly one compatible carrier; composite `object` regions use explicit proxy binding, and zero-slot Layouts are valid. These specialized markers are authoritative; minimal `data-pptx-role` hints are added only for structural page-frame behavior they cannot express. `standard` / `fidelity` author new SVGs and new structure without preserving or distilling source topology. Mirror restores the source roster, identities, parentage, placeholder facts, and supported visuals without semantic synthesis; fixed-layer source groups are mechanically expanded into direct atoms. Strict keeps the selected declared Layout contract; adaptive retains the Master and may create a new Layout identity while authoring. Both export through `pptx_structure.mode: structured`. Packages with legacy Master/Layout semantics first run `restore-pptx-structure`; a legacy flat directory with `design_spec.md` at its root remains a supported compatibility shape and flat placement alone does not trigger restoration.
-
-The three are **parallel reference bundles**. In library scope, the physical directory and the frontmatter `kind` field correspond one-to-one:
-
-```yaml
-# templates/brands/anthropic/templates/design_spec.md
----
-kind: brand
-...
----
-
-# templates/layouts/presentation_core/templates/design_spec.md
----
-kind: layout
-native_structure_mode: structured
-...
----
-
-# templates/decks/china_merchants_bank/templates/design_spec.md
----
-kind: deck
-native_structure_mode: structured
-...
----
-```
-
-### Output scope is separate from kind
-
-`create-template` confirms where a Layout/Deck workspace is placed. This execution choice does not add a fourth kind and does not add a PPTX structure mode:
-
-| Scope | Workspace root | Core workspace | Discovery |
+| Kind | Library workspace | Owns | Must not own |
 |---|---|---|---|
-| `library` (default) | `skills/ppt-master/templates/<kind>/<id>/` | Required `templates/`; optional `images/`, `icons/`, and on-demand `exports/` | Register in the matching global index |
-| `project` | `projects/<name>/` | The same routing contract | No global index update |
+| brand | skills/ppt-master/templates/brands/<id>/ | color, typography, logo, voice, icon style | canvas, page types, SVG roster |
+| layout | skills/ppt-master/templates/layouts/<id>/ | canvas, page structure, page types, SVG roster | brand logo, official brand palette, brand voice |
+| deck | skills/ppt-master/templates/decks/<id>/ | complete identity, structure, and template overview | none of the required segments |
 
-Both roots have the same core shape:
+The physical library directory and the frontmatter kind must agree. A project-scoped workspace uses the same kind even though it lives under projects/.
 
-```text
-<template_workspace>/
-├── templates/
-│   ├── design_spec.md
-│   ├── *.svg
-│   └── icons/                  # package/validation copy when used
-├── images/                     # optional; SVG href uses ../images/<name>
-├── icons/                      # optional; runtime vector assets
-└── exports/                    # optional; created only for on-demand review
-    └── <id>_template_preview.pptx
-```
+## Workspace Shape
 
-Empty optional directories are omitted; do not add placeholder files. An on-demand preview PPTX is derived review evidence, not a source template asset. Step 3 reads the workspace root and consumes `templates/` plus any existing `images/` and `icons/`; it ignores `exports/`. Library `exports/` directories are Git-ignored.
+Library and project output scopes use the same portable structure:
 
-PPTX import uses a two-level metadata model. The temporary lossless SVG keeps native-shape metadata, hidden carriers, and preview evidence; `svg_authoring_view.py` creates a lightweight model-facing projection without opaque payload or duplicate hidden carriers. The projection is never an export source. Authored modes use project-canonical SVG and compact authored-preset groups only for exact registered preset matches. Mirror may reuse converter-supported metadata on unchanged Slide-local/slot objects; fixed structural layers remain direct atoms, and unsupported or edited objects keep their SVG fallback. Export compiles only the declared SVG structure and never infers ownership.
+    <template-workspace>/
+    |-- templates/
+    |   |-- design_spec.md
+    |   |-- *.svg
+    |   `-- icons/
+    |-- images/
+    |-- icons/
+    `-- exports/
+        `-- <id>_template_preview.pptx
 
-Both scopes retain `kind: layout` or `kind: deck` in portable frontmatter. `output_scope` and `target_project` stay in the workflow brief and are not persisted into `design_spec.md`.
+Only templates/ is mandatory. Empty optional directories are omitted. exports/ contains review artifacts and is never a template source.
 
-Before any final write, resolve the selected workspace root, require an empty `templates/` root, and check all planned image and icon destination filenames for conflicts. Check a preview-PPTX destination only when review export was requested. Project scope additionally requires an initialized target project. Fail before writing anything; never merge or overwrite.
+Step 3 consumes the workspace root. It installs templates/ plus any existing images/ and icons/, and ignores exports/. A workspace may be moved between project and library scope without changing internal asset paths.
 
-### Segment partition
+Before the first write, a creation workflow must:
 
-To make multi-path fusion override cleanly, every field belongs to a named segment. **Default fusion granularity is whole-segment replacement**:
+1. resolve the final workspace root;
+2. verify that the target templates/ directory is empty;
+3. enumerate all image and icon destinations;
+4. reject every destination collision;
+5. confirm that a project-scoped target project already exists.
 
-| Segment | Sections it contains | Override owner |
+No template workflow may silently merge or overwrite an existing workspace.
+
+## Structured SVG Contract
+
+Every newly authored or restored layout/deck SVG is a complete visual preview and declares its Master and Layout keys and picker names at the root.
+
+- Fixed Master and Layout visuals are direct root atoms.
+- A semantic slot is a top-level group.
+- A normal slot has positive design-zone bounds and exactly one compatible carrier.
+- A composite object slot uses the explicit proxy binding.
+- A zero-slot Layout is valid.
+- Specialized structure markers take precedence over generic page-role markers.
+
+standard and fidelity modes author a new SVG and a new structure contract. They do not preserve or infer source topology.
+
+mirror restores the source roster, identity, parent relationships, placeholder facts, and supported native visual metadata. It may mechanically expand fixed-layer source groups into direct atoms, but it must not infer new semantics.
+
+Both strict and adaptive template routes use pptx_structure.mode: structured. strict preserves the selected contract. adaptive preserves the Master and may introduce a new Layout identity during page authoring when the fixed Layout atoms or slot topology genuinely change.
+
+Run restore-pptx-structure only when a legacy package still uses obsolete Master/Layout semantics. A flat package directory by itself is only a packaging compatibility case and does not trigger restoration.
+
+## Segment Ownership
+
+Composition happens at segment granularity.
+
+| Segment | Sections | Priority owner |
 |---|---|---|
-| **Identity** | Color Scheme / Typography / Logo / Voice & Tone / Icon Style | brand |
-| **Structure** | Canvas Specification / Page Structure / Page Types / SVG Roster | layout |
-| **Middle** | Template Overview (use cases / design intent / page rhythm narrative) | deck only; brand / layout don't write this |
+| Identity | Color Scheme, Typography, Logo, Voice and Tone, Icon Style | brand |
+| Structure | Canvas, Page Structure, Page Types, SVG Roster | layout |
+| Overview | Template Overview, intended use, design intent, rhythm | deck |
 
-### Why Deck is its own kind
+The default operation is complete segment replacement. Field-level mixing is not performed during Step 3. A user-requested field adjustment belongs to the Strategist confirmation stage.
 
-A deck is the **full identity + structure reference** derived from an existing PPT or confirmed design direction — its geometry, color palette, and typefaces form one coherent system. Its value is "validated cohesion", which a free layout + brand combo can't always reach.
+## Brand Specification
 
-Its construction depends on replication mode. `standard` / `fidelity` author a new system from visual reference; mirror restores source identities and parentage one-to-one. Once packaged, either form is a complete reference solution that can be overridden by an explicitly supplied brand or layout.
+Required frontmatter fields:
 
----
+- brand_id
+- kind: brand
+- summary
+- primary_color
 
-## 2. `design_spec.md` schema per kind
+Required sections:
 
-The schema only specifies the **required** fields. "Don't write what isn't necessary" — if a field isn't listed here, don't add it.
+1. Brand Overview
+2. Color Scheme, including role, HEX, provenance, and notes
+3. Typography, including role, family, and weight
+4. Logo, including files and usage constraints
+5. Voice and Tone
+6. Icon Style
 
-### Brand schema
+A brand specification must not declare a canvas, page types, or an SVG roster.
 
-**Frontmatter**
+## Layout Specification
 
-```yaml
----
-brand_id: <slug>
-kind: brand
-summary: <one-line use cases, including primary color>
-primary_color: "<HEX>"
----
-```
+Required frontmatter fields:
 
-**Body sections** (full identity segment)
+- layout_id
+- kind: layout
+- native_structure_mode: structured
+- summary
+- canvas_format
+- page_count
+- page_types
 
-| § | Title | Required fields |
-|---|---|---|
-| I | Brand Overview | Brand Name / Use Cases / Tone |
-| II | Color Scheme | role / HEX / provenance (`fact` official truth \| `approx` derived) / notes |
-| III | Typography | role / family / weight |
-| IV | Logo | file / form / usage + clearspace and lockup rules |
-| V | Voice & Tone | formality / person / emoji / abbreviation policy |
-| VI | Icon Style | preference (stroke / filled / duotone …) + recommended libraries |
+Required sections:
 
-**Forbidden**: canvas viewBox, page types, SVG roster — those are layout's responsibility.
+1. Template Overview
+2. Canvas Specification
+3. Page Structure
+4. Page Types
+5. SVG Page Roster
 
-### Layout schema
+A layout specification must not declare a brand logo, brand voice, or official brand-color facts. Color and typography are confirmed by the Strategist when no brand or deck owns the identity segment.
 
-**Frontmatter**
+## Deck Specification
 
-```yaml
----
-layout_id: <slug>
-kind: layout
-native_structure_mode: structured
-summary: <one-line use cases>
-canvas_format: <ppt169 | ppt43 | a4 | ...>
-page_count: <N>
-page_types: [<cover, toc, chapter, content, ending, ...>]
----
-```
+Required frontmatter fields:
 
-**Body sections** (full structure segment + Template Overview)
+- deck_id
+- kind: deck
+- native_structure_mode: structured
+- summary
+- canvas_format
+- page_count
+- primary_color
 
-| § | Title | Required fields |
-|---|---|---|
-| I | Template Overview | Use Cases / Design Intent / Page Rhythm suggestions |
-| II | Canvas Specification | Format / Dimensions / viewBox / Margins / Content Area |
-| III | Page Structure | General Layout Grid / Decorative DNA / Navigation rules |
-| IV | Page Types | Per-page role (cover / toc / chapter / content / ending …) + variant descriptions |
-| V | SVG Page Roster | File list + purpose, each file mapped to a III/IV role |
+Required sections:
 
-**Forbidden**: brand logo, brand voice & tone, official-truth color (`provenance: fact`) — those belong to brand. Layouts have no fallback color or typography by definition: identity segments are not written here; color and typography are decided live in Strategist's confirmation stage.
+1. Template Overview
+2. Canvas Specification
+3. Color Scheme
+4. Typography
+5. Logo
+6. Voice and Tone
+7. Icon Style
+8. Page Structure
+9. Page Types
+10. SVG Page Roster
 
-### Deck schema
+A deck is the complete union of identity, overview, and structure segments.
 
-**Frontmatter**
+## Library Indexes
 
-```yaml
----
-deck_id: <slug>
-kind: deck
-native_structure_mode: structured
-summary: <one-line use cases>
-canvas_format: <ppt169 | ...>
-page_count: <N>
-primary_color: "<HEX>"
----
-```
+Project-scoped workspaces are intentionally not registered. Library workspaces use:
 
-**Body sections** (full identity + full structure + middle)
+- brands/brands_index.json with summary and primary_color;
+- layouts/layouts_index.json with summary, canvas_format, page_count, and page_types;
+- decks/decks_index.json with summary, canvas_format, page_count, and primary_color.
 
-| § | Title | Segment |
-|---|---|---|
-| I | Template Overview | Middle |
-| II | Canvas Specification | Structure |
-| III | Color Scheme (with provenance) | Identity |
-| IV | Typography | Identity |
-| V | Logo | Identity |
-| VI | Voice & Tone | Identity |
-| VII | Icon Style | Identity |
-| VIII | Page Structure | Structure |
-| IX | Page Types | Structure |
-| X | SVG Page Roster | Structure |
+Indexes remain compact selection aids. The workspace design specification is authoritative.
 
-> Deck is the union of all identity + structure fields, with no optional sections. This keeps fusion's segment-level replacement granularity uniform.
+## Composition Matrix
 
----
+| Supplied workspaces | Identity | Structure | Overview |
+|---|---|---|---|
+| none | free design | free design | none |
+| brand | brand | free design | none |
+| layout | free design | layout | layout overview |
+| deck | deck | deck | deck |
+| brand + layout | brand | layout | layout overview |
+| brand + deck | brand | deck | deck |
+| layout + deck | deck | layout | deck |
+| brand + layout + deck | brand | layout | deck |
 
-## 3. The three index files
+When the result owns both identity and structure, its fused kind is deck. Structure only yields layout; identity only yields brand.
 
-Each index maps one-to-one with its physical directory; fields are trimmed to what Strategist actually needs to pick (following the "meta + summary" pattern from `charts_index.json`, but preserving structured metadata that helps selection).
+## Same-Kind Conflicts
 
-These indexes cover library scope only. A project-root workspace is intentionally absent from all three indexes and remains usable through its explicit `projects/<name>/` path. Because both scopes use the same workspace shape, moving or copying the complete core workspace between them does not require asset-path rewriting; only library registration changes.
+Two workspaces of the same kind require an explicit segment-level decision:
 
-### `templates/brands/brands_index.json`
+1. use all segments from the first workspace;
+2. use all segments from the second workspace;
+3. choose the source separately for each segment.
 
-```json
-{
-  "<brand_id>": {
-    "summary": "Anthropic brand identity — AI/LLM tech talks, developer conferences",
-    "primary_color": "#D97757"
-  }
-}
-```
+There is no implicit ordering. Field-level conflict resolution is out of scope. More than two same-kind inputs must be reduced by the user before composition.
 
-- Keep `primary_color` — Strategist needs the dominant color at first glance when picking a brand
-- Drop `keywords` — summary already carries the English equivalents; AI matches via natural language (same approach as the charts library)
+## Provenance
 
-### `templates/layouts/layouts_index.json`
+A fused specification records its sources immediately below the H1:
 
-```json
-{
-  "<layout_id>": {
-    "summary": "Standard academic defense layout — cover/toc/chapter/content/ending",
-    "canvas_format": "ppt169",
-    "page_count": 5,
-    "page_types": ["cover", "toc", "chapter", "content", "ending"]
-  }
-}
-```
+    > **Fused from:**
+    > - deck: templates/decks/research_briefing/ (base)
+    > - brand: templates/brands/lab_identity/ (identity override)
+    > - layout: templates/layouts/academic_core/ (structure override)
+    > - conflicts resolved: Typography from lab_identity
 
-- Add `canvas_format` / `page_count` / `page_types` — Strategist needs to judge "can this skeleton hold my deck?" quickly
-- No `primary_color` — layouts have no identity
+This block is required for every multi-workspace composition and omitted for a single source.
 
-### `templates/decks/decks_index.json`
+## Step 3 Dispatch
 
-```json
-{
-  "<deck_id>": {
-    "summary": "China Telecom government-enterprise briefing deck",
-    "canvas_format": "ppt169",
-    "page_count": 5,
-    "primary_color": "#XXXXXX"
-  }
-}
-```
+Template selection is path-based. A bare name never triggers template loading.
 
-- Includes `primary_color` (decks carry identity) + structural metadata
-- Does not expand `page_types` — decks share the same page-type set as layouts; redundant to record
-
----
-
-## 4. Multi-path fusion and conflict resolution
-
-### Override priority (implicit dispatch)
-
-When the user supplies a set of paths in their initial message, Step 3 fuses them into `<project>/templates/design_spec.md` per the table below:
-
-| User paths | Fusion behavior |
+| Resolved kind | Step 3 behavior |
 |---|---|
-| (none) | Skip Step 3, free design |
-| brand only | Copy brand wholesale; structure stays free design |
-| layout only | Copy layout wholesale; identity stays free design (Strategist fields e/f/g decide) |
-| deck only | Copy deck wholesale |
-| brand + layout | brand provides identity, layout provides structure (follows existing SKILL.md fusion table) |
-| brand + deck | brand overrides deck's identity segment at segment level; structure + middle come from deck |
-| layout + deck | layout overrides deck's structure segment at segment level; identity + middle come from deck |
-| brand + layout + deck | brand overrides identity + layout overrides structure + deck provides middle; deck's original identity/structure segments are discarded wholesale |
+| brand | install portable roots; lock identity; keep structure free |
+| layout | install portable roots; lock structure; confirm identity |
+| deck | install portable roots; lock complete reference |
+| multiple paths | resolve conflicts, compose one specification, then install one final mapping |
 
-### Whole-segment replacement (default granularity)
+If the supplied workspace root is the target project root, consume it in place. Never copy a project workspace into itself.
 
-Fusion defaults to **whole-segment integer replacement** — e.g. on deck + brand, the entire Color Scheme / Typography / Logo / Voice / Icon Style five sections come from brand. **No implicit field-level mixing** (you will never get "primary from brand, secondary from deck").
+## Deliberate Non-Goals
 
-Field-level micro-adjustment goes through the existing Strategist confirmation stage path — the user says in chat "use the anthropic brand but change primary to #FF0000", and Strategist adjusts fields e/g. Step 3 fusion does not add field-level syntax.
-
-### Same-kind multiple paths = git-style conflict resolution
-
-User supplies `brands/anthropic` + `brands/google` (or any same-kind permutation):
-
-```
-AI: You supplied two brands. Detected segment-level conflicts:
-    - Color Scheme (Anthropic orange-red vs Google multi-color)
-    - Typography (Styrene/AnthropicSans vs GoogleSans/Roboto)
-    - Logo (Anthropic mark vs Google mark)
-    - Voice & Tone (restrained vs friendly)
-    - Icon Style (stroke vs filled)
-
-    (a) all from Anthropic / (b) all from Google / (c) pick per segment?
-```
-
-Rules:
-- No implicit ordering — every cross-source segment difference is reported as a conflict
-- Only when the user picks `(c)` does AI walk through each segment
-- Field-level conflict resolution is out of scope — segment-level only
-- `layout × 2`, `deck × 2`, `brand × 2` handled the same way
-- Max two of any one kind (more than that — ask the user to converge in chat first)
-
-### Provenance
-
-When fusion happens (any multi-path case), the resulting `<project>/templates/design_spec.md` carries a provenance block immediately under its H1:
-
-```markdown
-> **Fused from:**
-> - deck: `templates/decks/china_merchants_bank/` (base)
-> - brand: `templates/brands/anthropic/` (identity override)
-> - layout: `templates/layouts/presentation_core/` (structure override)
-> - conflicts resolved: Color Scheme from anthropic (user picked a)
-```
-
-This lets both AI and humans trace which segment came from where.
-
----
-
-## 5. Relationship with SKILL.md Step 3
-
-**Trigger rule stays path-based** — an explicit workspace-root path is still required (see [[feedback-template-explicit-path-only]]), and bare names never trigger. Step 3 first resolves `<workspace>/templates/design_spec.md`; for compatibility, it also accepts a legacy flat root containing `<workspace>/design_spec.md`. Flat placement is only a directory-shape compatibility case. It does not trigger `restore-pptx-structure`; restoration is required only when the SVG contract has legacy semantics such as `native_structure_mode: template`, missing Master identity, direct atomic placeholders, or distillation-era markers. The only narrow handoff exception is a `create-template` run in the current conversation: after validation, it may pass its exact workspace root directly into Step 3. The `kind` field decides **how AI handles the path after triggering**:
-
-| User path's `kind` | Step 3 action (per-kind branch) |
-|---|---|
-| `kind: brand` | Map workspace `templates/` plus existing `images/` and `icons/` to the matching project peers; ignore `exports/` |
-| `kind: layout` | Map workspace `templates/` plus existing `images/` and `icons/` to the matching project peers; ignore `exports/` |
-| `kind: deck` | Map workspace `templates/` plus existing `images/` and `icons/` to the matching project peers; ignore `exports/` |
-| Multi-path | Fuse one `design_spec.md` per the table above, then merge the existing portable roots after resolving collisions |
-| Same-kind multiple | Run the "git-style conflict resolution" prompt above to determine the merge |
-
-Bitmaps share the workspace `images/` pool and template SVGs reference them through `../images/`. If the explicit input root is already the target project's root, Step 3 consumes the workspace in place: do not copy it onto itself and do not move its assets again. Otherwise, the complete core workspace is portable: it may be copied from a project root to a library root, from the library to a project, or reused from another workspace without changing its internal structure. Registration is the only scope-specific step.
-
-### Strategist confirmation stage narrowing per kind
-
-When a deck path is supplied, the user already has a complete solution; the Strategist confirmation stage narrows to "target audience / page count / outline / tone tweaks" — deck-content fields. Other fields reuse the locked values directly. The narrowing rules live in `references/strategist.md` and `spec_lock_reference.md`.
-
----
-
-## 6. Relationship with workflows
-
-| Workflow | Produces |
-|---|---|
-| `workflows/create-brand.md` | identity-only brand workspace using the common routes; empty optional directories are omitted |
-| `workflows/create-template.md` | complete layout or deck workspace. `standard` / `fidelity` author new semantic SVGs; mirror restores the source contract. Output scope is `library` by default (`templates/<kind>/<id>/` + registration) or `project` when confirmed (`projects/<name>/`, no registration). Both use the same optional-directory routing; preview PPTX is on demand. The internal kind branch still defaults to deck; explicit "structure only / drop the brand color" selects layout |
-
-In library scope, the frontmatter `kind` field determines which workspace parent is used under `templates/brands/` / `templates/layouts/` / `templates/decks/`. Project scope keeps the same kind semantics at the project workspace root. A complete workspace may migrate between scopes without reshaping; add or remove only the library index registration.
-
----
-
-## 7. Non-goals (rejection list paired with this framing)
-
-- **No field-level override syntax in the fusion layer** — field-level adjustment uses the existing Strategist confirmation stage path
-- **No batch conflict resolution for three or more of the same kind** — ask the user to narrow it down in chat first
-- **No bilingual name mapping table** — templates are named in their brand / scenario's native language (Chinese templates use Chinese names; English templates use snake_case); no forced unification
-- **No output-scope structure fork or CLI flag** — output scope is a `create-template` brief decision; both layout/deck scopes declare `native_structure_mode: structured`
+- No field-level override language in the composition layer.
+- No batch conflict solver for three or more same-kind workspaces.
+- No additional template kind for project output scope.
+- No automatic template-name lookup.
+- No structure inference during export.

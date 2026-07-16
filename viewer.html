@@ -4,13 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="PPT Master Slide Gallery — Browse and view SVG presentation slides across various topics">
+    <meta name="description" content="Hedgehog Master research presentation and vector slide gallery">
     <meta name="keywords" content="slides, SVG, presentation, PPT, PowerPoint">
-    <meta property="og:title" content="Slide Gallery — PPT Master">
-    <meta property="og:description" content="Browse example presentations — AI-generated, natively editable PowerPoint from any document.">
-    <meta property="og:url" content="https://hugohe3.github.io/ppt-master/viewer.html">
+    <meta property="og:title" content="Hedgehog Master | Slide Gallery">
+    <meta property="og:description" content="Inspect local presentation examples and reusable SVG slide assets.">
     <meta property="og:type" content="website">
-    <title>Slide Gallery — PPT Master</title>
+    <title>Hedgehog Master | Slide Gallery</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -298,6 +297,51 @@
             height: auto;
             min-height: 400px;
         }
+
+        .main-slide-area {
+            min-width: 0;
+        }
+
+        @media (max-width: 767px) {
+            header .max-w-7xl > .flex {
+                align-items: stretch;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            #keyboardHints {
+                display: none !important;
+            }
+
+            #collectionSelector,
+            #collectionSelector > button,
+            #dropdownMenu {
+                width: 100%;
+                min-width: 0;
+            }
+
+            #collectionSelector > button {
+                justify-content: space-between;
+            }
+
+            #currentCollectionName {
+                min-width: 0;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .slide-container object {
+                aspect-ratio: 16 / 9;
+                display: block;
+                min-height: 0;
+            }
+
+            .sidebar-panel {
+                min-width: 0;
+                width: 100%;
+            }
+        }
     </style>
 </head>
 
@@ -480,7 +524,7 @@
     <footer class="mt-12 py-6" style="border-top: 1px solid var(--border);">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <p class="text-sm" style="color: var(--text-muted);">
-                PPT Master © 2025–2026 · Built by <a href="https://www.hehugo.com/" target="_blank" style="color: var(--text); text-decoration: none; border-bottom: 1px solid var(--border);">Hugo He</a>
+                Hedgehog Master © 2026 · Research presentation and vector asset review
             </p>
         </div>
     </footer>
@@ -545,11 +589,13 @@
                 throw new Error(`Failed to load ${EXAMPLES_DATA_URL}: ${response.status}`);
             }
             const data = await response.json();
-            return (data.projects || []).map(project => ({
-                ...project,
-                slides: project.slides || [],
-                cover: project.cover || project.slides?.[0]?.file || ''
-            }));
+            return (data.projects || [])
+                .filter(project => project.published !== false)
+                .map(project => ({
+                    ...project,
+                    slides: project.slides || [],
+                    cover: project.cover || project.slides?.[0]?.file || ''
+                }));
         }
 
         function showLoadError(error) {

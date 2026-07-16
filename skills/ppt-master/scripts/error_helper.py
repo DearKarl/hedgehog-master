@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PPT Master - Error Message Helper
+Hedgehog Master - Error Message Helper
 
 Provides user-friendly error messages and specific fix suggestions.
 """
@@ -376,7 +376,7 @@ class ErrorHelper:
     @classmethod
     def print_help(cls):
         """Print all error types and solutions."""
-        print("PPT Master - Error Types and Solutions\n")
+        print("Hedgehog Master - Error Types and Solutions\n")
         print("=" * 80)
 
         for error_type, info in cls.ERROR_SOLUTIONS.items():
@@ -392,7 +392,7 @@ class ErrorHelper:
 def build_parser() -> argparse.ArgumentParser:
     """Build the command-line parser."""
     parser = argparse.ArgumentParser(
-        description="Look up PPT Master error messages and suggested fixes.",
+        description="Look up Hedgehog Master error messages and suggested fixes.",
     )
     parser.add_argument(
         "error_type",

@@ -14,7 +14,7 @@ The short path to your first deck, how to use everything around it — templates
 
 ## Start from a template
 
-**Optional.** By default PPT Master uses **free design** — you don't need a template, and you can skip to the next section. Reach for one only when a deck must reuse a fixed layout set or brand identity.
+**Optional.** By default Hedgehog Master uses **free design** — you don't need a template, and you can skip to the next section. Reach for one only when a deck must reuse a fixed layout set or brand identity.
 
 **Two ways to reuse an existing `.pptx`, depending on what you want back:**
 
@@ -25,7 +25,7 @@ The short path to your first deck, how to use everything around it — templates
 
 For the first, give the AI your `.pptx` plus your material (or a topic) and ask it to "fill this deck with the new content" — see the [template-fill workflow](../skills/ppt-master/workflows/template-fill-pptx.md). The rest of this section covers create-template.
 
-**To generate a new deck in an existing PowerPoint's style, you must explicitly run the create-template flow — don't just hand over a `.pptx` and expect the AI to handle it.** The AI defaults to free design and won't switch into the template flow on its own; without an explicit trigger, generation easily goes off the rails. First turn that `.pptx` into a PPT Master template via create-template:
+**To generate a new deck in an existing PowerPoint's style, you must explicitly run the create-template flow — don't just hand over a `.pptx` and expect the AI to handle it.** The AI defaults to free design and won't switch into the template flow on its own; without an explicit trigger, generation easily goes off the rails. First turn that `.pptx` into a Hedgehog Master template via create-template:
 
 ```
 You: Replicate this as a template via /create-template: projects/brand/our_deck.pptx
@@ -76,7 +76,7 @@ A browser preview opens at `http://localhost:5050` while the deck is being gener
 - **Edit directly, no AI** — select an element to change its text, color, font, or size in the side panel; drag it to reposition, or nudge with the arrow keys (`Shift` = 10px). `Ctrl+Z` undoes. Edits preview instantly and write to `svg_output/` when you click **Apply changes**.
 - **Or annotate for the AI** — click an element, type what you want changed, hit **Submit annotations**, then say "apply my annotations" in chat and the AI rewrites that region and re-exports the PPTX.
 
-PPT Master was chat-only by design; visual editing was folded in after enough users asked for it (built on [@WodenJay](https://github.com/WodenJay)'s [PR #85](https://github.com/hugohe3/ppt-master/pull/85)).
+The visual editor complements the agent workflow: direct edits are useful for precise local corrections, while annotations preserve a review trail for changes that require the agent to reconsider structure or content.
 
 Full guide → [Live Preview Workflow](../skills/ppt-master/workflows/live-preview.md)
 
@@ -86,7 +86,7 @@ Full guide → [Live Preview Workflow](../skills/ppt-master/workflows/live-previ
 
 Exported decks carry page transitions and optional per-element entrance animations as real OOXML — not embedded video. The default is a `fade` page transition with **no element animation**; opt in with `-a auto`, a named effect, or an `animations.json` sidecar when you want a reveal sequence.
 
-Animation settings are strict: unknown effects or Start modes, invalid timing values, and missing sidecar targets fail instead of silently becoming another effect. Before the result replaces an existing output, PPT Master reads the candidate package back and checks timing placement, IDs, shape targets, effects, durations, and Start modes. Microsoft PowerPoint is the primary motion-validation target; other presentation apps can open the PPTX but may map individual animation effects differently.
+Animation settings are strict: unknown effects or Start modes, invalid timing values, and missing sidecar targets fail instead of silently becoming another effect. Before the result replaces an existing output, Hedgehog Master reads the candidate package back and checks timing placement, IDs, shape targets, effects, durations, and Start modes. Microsoft PowerPoint is the primary motion-validation target; other presentation apps can open the PPTX but may map individual animation effects differently.
 
 Full guide → [Animations & Transitions](../skills/ppt-master/references/animations.md)
 
@@ -109,7 +109,7 @@ Full guide → [Audio Narration & Video Export](./audio-narration.md)
 
 ## Use a cloned voice
 
-Bring your own cloned voice from ElevenLabs / MiniMax / Qwen / CosyVoice and have the whole deck narrated in *your* voice (or a presenter's, with permission). Clone once in the provider's console, then pass the `voice_id` — PPT Master reads every slide's notes in that voice and embeds the result back into the PPTX.
+Bring your own cloned voice from ElevenLabs / MiniMax / Qwen / CosyVoice and have the whole deck narrated in *your* voice (or a presenter's, with permission). Clone once in the provider's console, then pass the `voice_id` — Hedgehog Master reads every slide's notes in that voice and embeds the result back into the PPTX.
 
 Full guide → [Use a cloned voice](./audio-narration.md#use-a-cloned-voice)
 

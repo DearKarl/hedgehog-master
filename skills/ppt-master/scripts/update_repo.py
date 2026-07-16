@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PPT Master - Repository Updater
+"""Hedgehog Master - Repository Updater
 
 Pull the latest Git checkout and sync Python dependencies when requirements
 change.
@@ -37,19 +37,19 @@ REQUIREMENTS_FILE = REPO_ROOT / "requirements.txt"
 
 
 def non_git_checkout_message() -> str:
-    return f"""This copy of PPT Master is not a Git checkout, so it cannot be updated automatically.
+    return f"""This copy of Hedgehog Master is not a Git checkout, so it cannot be updated automatically.
 
 Repository path:
   {REPO_ROOT}
 
 If you installed with Download ZIP:
-  1. Download the latest ZIP from GitHub or AtomGit.
+  1. Download the latest ZIP from GitHub.
   2. Unzip it into a new folder.
   3. Copy your old .env and projects/ folder into the new folder.
   4. Run: pip install -r requirements.txt
 
 If you want one-command updates next time, install with Git clone:
-  git clone https://github.com/hugohe3/ppt-master.git
+  git clone https://github.com/DearKarl/hedgehog-master.git
 
 If you installed through a skill marketplace, update or reinstall through the
 same marketplace / skills tool."""

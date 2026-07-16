@@ -1,4 +1,4 @@
-# PPT Master Dependencies / PPT Master 依赖
+# Hedgehog Master dependencies
 # =============================================
 #
 # Most tools use only the Python standard library. Below are optional dependencies.

@@ -1,10 +1,10 @@
 ---
-description: Deterministic route selection rules for PPT Master requests
+description: Deterministic route selection rules for Hedgehog Master requests
 ---
 
 # Routing Rules
 
-Route selection authority for PPT Master. Use this file before entering the main pipeline or any standalone workflow.
+Route selection authority for Hedgehog Master. Use this file before entering the main pipeline or any standalone workflow.
 
 **Hard rule**: If this file conflicts with a route summary in `SKILL.md`, `AGENTS.md`, or a user-facing doc, this file wins for route selection. After a route is selected, the target workflow file or `SKILL.md` owns execution details.
 

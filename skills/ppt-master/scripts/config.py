@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PPT Master - Unified Configuration Management Module
+Hedgehog Master - Unified Configuration Management Module
 
 Centrally manages all project configuration items to ensure consistency and maintainability.
 
@@ -638,7 +638,7 @@ class Config:
 def build_parser() -> argparse.ArgumentParser:
     """Build the command-line parser."""
     parser = argparse.ArgumentParser(
-        description="PPT Master configuration management tool.",
+        description="Hedgehog Master configuration management tool.",
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
     subparsers.add_parser("list-formats", help="List all canvas formats")

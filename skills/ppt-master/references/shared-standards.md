@@ -1,6 +1,6 @@
 # Shared Technical Standards
 
-Mandatory reference for every PPT Master route that authors or regenerates slide visuals through SVG: owns shared XML/SVG constraints, editable PPTX mappings, advanced effects, geometry recipes, and PPT-specific interfaces.
+Mandatory reference for every Hedgehog Master route that authors or regenerates slide visuals through SVG: owns shared XML/SVG constraints, editable PPTX mappings, advanced effects, geometry recipes, and PPT-specific interfaces.
 Other files link here instead of restating its contracts.
 
 **Document map**:
@@ -490,7 +490,7 @@ path data, and polygon/polyline points remain XML attributes.
 
 **Forbidden — CSS geometry cascade**: `<style>`, `class`, selector rules,
 external stylesheets, and imported styles remain forbidden. This contract is
-only for literal declarations in an element's own `style` attribute; PPT Master
+only for literal declarations in an element's own `style` attribute; Hedgehog Master
 does not compute CSS cascade or custom properties. Root canvas authority remains
 the `viewBox`, regardless of root `<svg>` compatibility width/height values.
 

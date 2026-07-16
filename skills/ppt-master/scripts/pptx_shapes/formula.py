@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PPT Master - DrawingML Formula Evaluator
+Hedgehog Master - DrawingML Formula Evaluator
 
 Evaluate DrawingML geometry guide formulas and standard built-in guides.
 

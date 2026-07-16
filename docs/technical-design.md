@@ -1,6 +1,5 @@
 # Technical Design
 
-[English](./technical-design.md) | [Chinese](./zh/technical-design.md)
 
 ---
 
@@ -8,11 +7,11 @@
 
 The generated PPTX is a **design draft**, not a finished product. Think of it like an architect's rendering: the AI handles visual design, layout, and content structure — delivering a high-quality starting point. For truly polished results, **expect to do your own finishing work** in PowerPoint: swapping shapes, refining charts, adjusting colors, replacing placeholder graphics with native objects. The goal is to eliminate 90% of the blank-page work, not to replace human judgment in the final mile. Don't expect one AI pass to do everything — that's not how good presentations are made.
 
-**A tool's ceiling is your ceiling.** PPT Master amplifies the skills you already have — if you have a strong sense of design and content, it helps you execute faster. If you don't know what a great presentation looks like, the tool won't know either. The output quality is ultimately a reflection of your own taste and judgment.
+**A tool's ceiling is your ceiling.** Hedgehog Master amplifies the skills you already have — if you have a strong sense of design and content, it helps you execute faster. If you don't know what a great presentation looks like, the tool won't know either. The output quality is ultimately a reflection of your own taste and judgment.
 
 ### SVG Is a Project-Specific Intermediate Language
 
-PPT Master does not aim to convert arbitrary SVG into PPTX. `svg_output/` uses a **project-canonical SVG intermediate language**: it borrows SVG's XML syntax and two-dimensional graphics model, while the project contract closes the allowed elements, attributes, units, metadata, structural contracts, and DrawingML mappings. The direction is intentional: **SVG adapts to PPT Master; PPT Master does not expand to follow the entire SVG standard**.
+Hedgehog Master does not aim to convert arbitrary SVG into PPTX. `svg_output/` uses a **project-canonical SVG intermediate language**: it borrows SVG's XML syntax and two-dimensional graphics model, while the project contract closes the allowed elements, attributes, units, metadata, structural contracts, and DrawingML mappings. The direction is intentional: **SVG adapts to Hedgehog Master; Hedgehog Master does not expand to follow the entire SVG standard**.
 
 The intermediate language distinguishes three input states:
 
@@ -276,7 +275,7 @@ These invariants are stronger than ordinary implementation preferences. If a cha
 
 ## Canvas Format System
 
-PPT Master is not PPT-only — the same SVG → DrawingML pipeline produces square posters, 9:16 stories, A4 prints. Format-specific conventions (ratios, safe zones, brand areas) live in [`references/canvas-formats.md`](../skills/ppt-master/references/canvas-formats.md).
+Hedgehog Master is not PPT-only — the same SVG → DrawingML pipeline produces square posters, 9:16 stories, A4 prints. Format-specific conventions (ratios, safe zones, brand areas) live in [`references/canvas-formats.md`](../skills/ppt-master/references/canvas-formats.md).
 
 The architectural choice worth flagging: **viewBox is in pixels, not absolute units.** Pixel space makes layout reasoning unambiguous for the AI Executor (`x="100"` is unambiguously left + 100px) and inspectable in any browser. Conversion to PowerPoint's EMU happens once at export — picking pixels means the rest of the pipeline (Strategist, Executor, quality checker, post-processing) never thinks in EMU, which would be hostile both to AI generation and to human debugging.
 
@@ -322,7 +321,7 @@ When several paths are supplied, fusion is segment-level, not field-level. A bra
 
 ## Role System: Specialized Modes in a Single Pipeline
 
-PPT Master uses **role switching within one main agent** rather than parallel sub-agents. Strategist, Image_Generator, Executor, and workflow-specific modes are instruction scopes loaded on demand; they are not independent agents with their own stale copies of the deck state. The choice has three connected reasons:
+Hedgehog Master uses **role switching within one main agent** rather than parallel sub-agents. Strategist, Image_Generator, Executor, and workflow-specific modes are instruction scopes loaded on demand; they are not independent agents with their own stale copies of the deck state. The choice has three connected reasons:
 
 **Why one agent, not parallel sub-agents.** Page design depends on the full upstream context — Strategist's color choices, the image resources that actually got acquired (vs failed and substituted), prior pages' visual rhythm. Sub-agents would start with a stale partial snapshot of that context and produce visually drifting decks. The same logic forbids batched page generation (e.g., five pages per turn): batching accelerates context compression and the deck's visual consistency degrades faster than the speed gain is worth.
 
@@ -371,7 +370,7 @@ Several architectural decisions shape this phase:
 
 **Provider-specific config keys, not a generic `IMAGE_API_KEY`.** Every backend takes its own `OPENAI_API_KEY` / `MINIMAX_API_KEY` / etc. and the active one is selected by an explicit `IMAGE_BACKEND=<name>`. A unified `IMAGE_API_KEY` field looks tidier on first glance but causes silent confusion when a user has multiple providers configured at once and isn't sure which one is active — the kind of fault that surfaces only as "image generation gives weird results" with no clear failure point. Forcing per-provider keys makes "which backend am I using" a config-readable fact, not an inference.
 
-**Permissive-by-default license filter, with strict mode for credit-incompatible layouts.** Web image search defaults to allowing CC BY / CC BY-SA images with inline attribution — most slides have visual room for a credit element. `--strict-no-attribution` is the escape hatch for full-bleed hero images and tight composition where there's no place to put a credit without breaking the design. Non-commercial (CC BY-NC*) and no-derivatives (CC BY-ND*) licenses are auto-rejected because the typical PPT Master output is shared in commercial or modified contexts; a permissive default with that floor is the failure mode users actually want.
+**Permissive-by-default license filter, with strict mode for credit-incompatible layouts.** Web image search defaults to allowing CC BY / CC BY-SA images with inline attribution — most slides have visual room for a credit element. `--strict-no-attribution` is the escape hatch for full-bleed hero images and tight composition where there's no place to put a credit without breaking the design. Non-commercial (CC BY-NC*) and no-derivatives (CC BY-ND*) licenses are auto-rejected because the typical Hedgehog Master output is shared in commercial or modified contexts; a permissive default with that floor is the failure mode users actually want.
 
 **Manifest-first acquisition.** In-pipeline AI generation always writes `images/image_prompts.json` and renders the sidecar `image_prompts.md`, even for one image. The positional `image_gen.py "prompt"` form is intentionally limited to one-off debugging because it leaves no manifest/sidecar audit trail. Web acquisition mirrors this with `images/image_queries.json` for multi-row batches and `image_sources.json` for attribution/source tracking.
 
@@ -486,7 +485,7 @@ This is the key insight that's easy to miss when reading the code. Cleanup modul
 
 ## Direct OOXML Routes
 
-Not every PPTX-related request should regenerate slides. PPT Master now has direct OOXML routes for cases where the native deck itself is the object being edited.
+Not every PPTX-related request should regenerate slides. Hedgehog Master now has direct OOXML routes for cases where the native deck itself is the object being edited.
 
 `template_fill_pptx.py` is a thin CLI wrapper over `scripts/template_fill_pptx/`. Its analyzer extracts a slide library with text slots, tables, charts, and geometry; the fill plan selects source slides, confirms replacements, then the applier clones slides and patches XML parts directly. This route deliberately avoids SVG: a user who supplies a PowerPoint template usually wants those native slide masters, placeholders, tables, and charts to remain PowerPoint-native.
 
@@ -546,7 +545,7 @@ The interesting design choice is the animation **anchor**, not the effect list.
 
 **Why recorded narration drives auto-advance from clip duration.** When narration is embedded, the deck targets video export — and a video has no presenter to click. Setting per-slide auto-advance timings to the audio clip's actual duration produces a deck PowerPoint exports cleanly to MP4 without manual timing work. Picking any other duration source (estimated reading speed, fixed per-slide) breaks the audio-visual sync.
 
-**Why recorded narration rejects on-click object animation.** PowerPoint can record click timings during a real rehearsal, but PPT Master does not synthesize object-level click events. The recorded narration path writes page-level audio and slide auto-advance timings only, so click-driven object reveals would leave the export dependent on extra manual PowerPoint rehearsal. For narrated decks, object entrances must be click-free (`after-previous` or `with-previous`).
+**Why recorded narration rejects on-click object animation.** PowerPoint can record click timings during a real rehearsal, but Hedgehog Master does not synthesize object-level click events. The recorded narration path writes page-level audio and slide auto-advance timings only, so click-driven object reveals would leave the export dependent on extra manual PowerPoint rehearsal. For narrated decks, object entrances must be click-free (`after-previous` or `with-previous`).
 
 ---
 
@@ -562,7 +561,7 @@ The tempting simplifications below have explicit costs. Treat them as negative c
 | Do not script-generate batches of Executor SVG pages | cross-page design judgment depends on sequential main-agent authoring |
 | Do not make `image_analysis.csv` a durable cache | `images/` is a live folder; facts must be regenerated on use |
 | Do not make `svg_final/` the default native PPTX input | `svg_final/` is rewritten for self-contained preview, while native conversion needs high-fidelity `svg_output/` semantics |
-| Do not treat PowerPoint Convert to Shape as an export fallback | editable shapes come from PPT Master's `svg_output/` → DrawingML converter; `svg_final/` is a visual-preview / SVG-picture artifact only |
+| Do not treat PowerPoint Convert to Shape as an export fallback | editable shapes come from Hedgehog Master's `svg_output/` → DrawingML converter; `svg_final/` is a visual-preview / SVG-picture artifact only |
 | Do not auto-enable object-level entrance animations | page transitions are default; object builds are an explicit export policy |
 | Do not default visual review, narration, chart verification, or animation customization into every run | these workflows have narrow triggers and extra dependencies |
 | Do not replace `finalize_svg.py` with a file copy | finalization embeds icons/images, flattens special text, and prepares preview artifacts |

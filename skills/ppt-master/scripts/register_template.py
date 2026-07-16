@@ -2,7 +2,7 @@
 """Register a brand / layout / deck template into the global template index.
 
 Three kinds, three workspace roots, three index files (see
-``docs/zh/templates-architecture.md`` for the data model):
+``docs/templates-architecture.md`` for the data model):
 
 | --kind  | Workspace roots         | Index file                    |
 |---------|-------------------------|-------------------------------|

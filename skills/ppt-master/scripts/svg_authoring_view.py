@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PPT Master - SVG Authoring View
+Hedgehog Master - SVG Authoring View
 
 Create a lightweight, non-destructive view of PPTX-imported SVG files for
 human or model inspection. The source SVG remains the round-trip authority;

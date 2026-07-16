@@ -48,9 +48,9 @@ The project will treat academic English, citation retention, vector quality, pri
 
 ## Origin and Attribution
 
-Hedgehog Master is based on [`hugohe3/ppt-master`](https://github.com/hugohe3/ppt-master) and follows its MIT License obligations. The upstream Git history remains available in this repository. The former Hedgehog Diagram IR repository was also merged with its history intact.
+Hedgehog Master preserves the Git history and legal notices of the open-source foundations incorporated into this repository. Those details live in [`NOTICE.md`](./NOTICE.md) and [`LICENSE`](./LICENSE), rather than defining the project's public identity.
 
-This provenance is a foundation, not the public identity of the new project. New product language, workflows, diagrams, examples, and local tooling should be developed specifically for Hedgehog Master and should not copy upstream promotional content.
+New product language, workflows, diagrams, examples, and local tooling are developed specifically for Hedgehog Master and must not reuse third-party promotional content.
 
 ## Development Policy
 
@@ -60,7 +60,7 @@ This provenance is a foundation, not the public identity of the new project. New
 - Diagram behavior should be deterministic where deterministic input is available.
 - Quality gates should fail explicitly on invalid output and report non-blocking review concerns separately.
 - Local deployment should remain a first-class path.
-- Upstream changes are reviewed and merged intentionally; they do not automatically override Hedgehog Master policy or branding.
+- External changes are reviewed and integrated intentionally; they do not automatically override Hedgehog Master policy or branding.
 
 ## Current Status
 

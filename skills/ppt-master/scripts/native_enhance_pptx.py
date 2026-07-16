@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PPT Master - Native Enhance PPTX Entrypoint
+Hedgehog Master - Native Enhance PPTX Entrypoint
 
 Public CLI wrapper for native enhancement of existing PPTX decks. V1 delegates
 to the narration/timings implementation while keeping the stable command name

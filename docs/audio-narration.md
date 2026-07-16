@@ -1,6 +1,6 @@
 # Audio Narration & Video Export
 
-PPT Master can turn the speaker notes into per-slide narration via [`edge-tts`](https://github.com/rany2/edge-tts) (Microsoft Edge's online neural voices) by default, or via ElevenLabs, MiniMax, Qwen TTS, and CosyVoice when you need higher-quality cloud narration or a cloned voice. It can then embed the audio back into the PPTX and let PowerPoint export the deck as an MP4 video — with synced narration and slide transitions, no extra tools.
+Hedgehog Master can turn the speaker notes into per-slide narration via [`edge-tts`](https://github.com/rany2/edge-tts) (Microsoft Edge's online neural voices) by default, or via ElevenLabs, MiniMax, Qwen TTS, and CosyVoice when you need higher-quality cloud narration or a cloned voice. It can then embed the audio back into the PPTX and let PowerPoint export the deck as an MP4 video — with synced narration and slide transitions, no extra tools.
 
 ## What you get
 
@@ -10,7 +10,7 @@ PPT Master can turn the speaker notes into per-slide narration via [`edge-tts`](
 
 ## How it works
 
-1. **Speaker notes are written as pure spoken narration.** PPT Master's notes spec deliberately produces TTS-friendly prose — no bracketed stage markers, no `Key points:` / `Duration:` meta-lines — so what is read aloud is exactly what's on the page.
+1. **Speaker notes are written as pure spoken narration.** Hedgehog Master's notes spec deliberately produces TTS-friendly prose — no bracketed stage markers, no `Key points:` / `Duration:` meta-lines — so what is read aloud is exactly what's on the page.
 2. **AI picks the voice for you.** When you ask for narration, the AI checks the deck's primary language (`zh-CN` / `en-US` / `ja-JP` / `ko-KR` / …), pulls the selected provider's voice catalog, and recommends 3–6 candidates with a one-line tone description for each (e.g. "steady male voice for financial reporting"). It also recommends a speaking rate or provider defaults based on notes density.
 3. **One question, one answer.** You are asked once — voice, rate, and "embed audio back into PPTX (yes/no)" — all with a recommended default. Reply "ok" to accept everything, or just call out the part you want to change.
 4. **Generation runs.** The script writes page-level audio to `audio/`, then (if you kept embedding) re-exports the deck with audio attached. Long-audio import and automatic long-audio splitting are not supported.
@@ -104,9 +104,9 @@ For MiniMax, Qwen, and CosyVoice, pass the provider-specific system voice or clo
 
 ## Use a cloned voice
 
-Four cloud providers — **ElevenLabs**, **MiniMax**, **Qwen**, **CosyVoice** — let you clone a voice from a short sample and then synthesize new speech in that voice. PPT Master narrates the entire deck in your cloned voice as long as you can hand it a `voice_id`. (`edge` does not support cloning.)
+Four cloud providers — **ElevenLabs**, **MiniMax**, **Qwen**, **CosyVoice** — let you clone a voice from a short sample and then synthesize new speech in that voice. Hedgehog Master narrates the entire deck in your cloned voice as long as you can hand it a `voice_id`. (`edge` does not support cloning.)
 
-**The split of responsibilities**: voice cloning itself happens in the provider's console or API — you upload a sample (typically 10 s – a few minutes of clean audio) and the provider returns a `voice_id`. PPT Master is on the *consumption* side: it takes that `voice_id` and reads every slide's notes in that voice. PPT Master never uploads your sample anywhere.
+**The split of responsibilities**: voice cloning itself happens in the provider's console or API — you upload a sample (typically 10 s – a few minutes of clean audio) and the provider returns a `voice_id`. Hedgehog Master is on the *consumption* side: it takes that `voice_id` and reads every slide's notes in that voice. Hedgehog Master never uploads your sample anywhere.
 
 | Provider | Where to clone | Sample length |
 |---|---|---|
@@ -150,7 +150,7 @@ Cloud TTS providers do not require extra Python packages; they use HTTPS directl
 
 ## Tips
 
-- **Pacing**: PPT Master's default speaker-notes are 2–5 sentences per slide; `+0%` rate sounds natural. If a deck is very dense (long technical paragraphs), try `-5%`.
+- **Pacing**: Hedgehog Master's default speaker-notes are 2–5 sentences per slide; `+0%` rate sounds natural. If a deck is very dense (long technical paragraphs), try `-5%`.
 - **Mid-deck regeneration**: change a single slide's `notes/<page>.md`, re-run `notes_to_audio.py` (it overwrites all MP3s, so re-run for the whole deck — the cost is small).
 - **Mixed-language decks** (Chinese with English technical terms etc.): `edge-tts` neural voices handle the embedded foreign words reasonably well in most locales — pick the dominant language voice and try one slide first.
 
@@ -162,7 +162,7 @@ Once the narrated PPTX is in `exports/`, PowerPoint exports it as a video native
 
 1. Open the narrated `.pptx` from `exports/`.
 2. **File → Export → Create a Video**.
-3. Pick a quality (4K / Full HD / HD / Standard) and "Use Recorded Timings and Narrations" — PPT Master has already set both for you.
+3. Pick a quality (4K / Full HD / HD / Standard) and "Use Recorded Timings and Narrations" — Hedgehog Master has already set both for you.
 4. **Create Video** → save as `.mp4` (or `.wmv` on Windows).
 
 **Keynote (Mac)**: open the deck → **File → Export To → Movie…** — Keynote also honors embedded audio and per-slide timings, output `.m4v` / `.mov`.
@@ -170,6 +170,6 @@ Once the narrated PPTX is in `exports/`, PowerPoint exports it as a video native
 **Tips**:
 
 - **No mic, no recording session needed** — the audio is generated, not recorded, so re-runs are deterministic.
-- **Animations are preserved** — page transitions and click-free per-element entrance animations from PPT Master are real OOXML and play correctly in the exported video. See [Animations & Transitions](../skills/ppt-master/references/animations.md).
+- **Animations are preserved** — page transitions and click-free per-element entrance animations from Hedgehog Master are real OOXML and play correctly in the exported video. See [Animations & Transitions](../skills/ppt-master/references/animations.md).
 - **Want to tweak just one slide's audio?** Edit `notes/<page>.md`, re-run `notes_to_audio.py` and the embedding step, then re-export the video — total turnaround is usually under a minute per slide.
 - **File size**: a 20-page deck at Full HD typically lands at 30–80 MB depending on imagery. Drop to HD if you need a smaller file for sharing.

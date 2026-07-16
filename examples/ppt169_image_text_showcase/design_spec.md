@@ -184,7 +184,7 @@ No-template-match: all pages use custom layouts designed to demonstrate image-te
 - **Image**: p01_cover.png (hero_page，全出血)
 - **Title**: 图文结合
 - **Subtitle**: 20种视觉语言的并置实验
-- **Info**: PPT Master · 2026
+- **Info**: Hedgehog Master · 2026
 
 #### Slide 02 — 目录
 

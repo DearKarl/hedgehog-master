@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PPT Master - PPTX Transition Core
+Hedgehog Master - PPTX Transition Core
 
 Provide one strict transition registry plus shared OOXML read/write helpers for
 generated slides, template-filled PPTX files, and native PPTX enhancement.
@@ -8,7 +8,7 @@ See references/animations.md for the public workflow and
 scripts/docs/pptx-transitions.md for the OOXML contract.
 
 Usage:
-    Import from PPT Master PPTX builders and direct-package workflows.
+    Import from Hedgehog Master PPTX builders and direct-package workflows.
 
 Examples:
     from pptx_transitions import AdvanceUpdate, EnterUpdate, apply_slide_motion

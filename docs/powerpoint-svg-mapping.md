@@ -1,6 +1,5 @@
 # PowerPoint Feature ↔ Project SVG Mapping Guide
 
-[中文版](./zh/powerpoint-svg-mapping.md)
 
 ## Purpose and authority
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PPT Master - PPTX Intake Enrichment
+Hedgehog Master - PPTX Intake Enrichment
 
 Extract reusable PPTX intake facts into a standard analysis bundle. This is a
 read-only companion to `ppt_to_md.py`: Markdown remains the content source,

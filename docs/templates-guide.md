@@ -1,6 +1,6 @@
 # Templates Guide: Use, Derive, and Boundaries
 
-A PPT Master "template" is a **structure + style** preset bundle: complete standalone SVG pages whose metadata explicitly identifies one Master and Layout, atomic fixed-layer objects, and grouped content slots, plus `design_spec.md` and matching assets. Export deterministically reconstructs native PowerPoint structure from those SVGs.
+A Hedgehog Master "template" is a **structure + style** preset bundle: complete standalone SVG pages whose metadata explicitly identifies one Master and Layout, atomic fixed-layer objects, and grouped content slots, plus `design_spec.md` and matching assets. Export deterministically reconstructs native PowerPoint structure from those SVGs.
 
 This guide answers three questions:
 
@@ -46,7 +46,7 @@ Templates are organized into three kinds, each in its own directory:
 - [`templates/layouts/README.md`](../skills/ppt-master/templates/layouts/README.md) — structure-only patterns (canvas / page structure / page types / SVG roster), no identity; presentation_core
 - [`templates/decks/README.md`](../skills/ppt-master/templates/decks/README.md) — full identity + structure references (including the middle segment); CATARC and China Telecom
 
-Full data model + fusion / conflict-resolution rules: [`docs/zh/templates-architecture.md`](./zh/templates-architecture.md) (Chinese only for now).
+Full data model and fusion/conflict-resolution rules: [`docs/templates-architecture.md`](./templates-architecture.md).
 
 ### Free design vs template
 
@@ -109,7 +109,7 @@ When you describe a style, the AI doesn't pick a template — it interprets the 
 
 ## 2. Derive a new template (the focus)
 
-Turn a PPT you like, a brand guideline, or an existing PPTX file into a PPT Master template. This is the core of this guide.
+Turn a PPT you like, a brand guideline, or an existing PPTX file into a Hedgehog Master template. This is the core of this guide.
 
 ### Entry point: the `/create-template` workflow
 

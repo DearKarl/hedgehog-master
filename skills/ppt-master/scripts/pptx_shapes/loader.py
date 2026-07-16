@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PPT Master - Preset Shape Data Loader
+Hedgehog Master - Preset Shape Data Loader
 
 Load and validate the bundled DrawingML preset geometry catalog.
 

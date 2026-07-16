@@ -1,4 +1,4 @@
-# PPT Master Dependencies / PPT Master 依赖
+# Hedgehog Master dependencies
 # =============================================
 #
 # Full list lives inside the skill so installing the skill alone gives full capability.

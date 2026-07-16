@@ -254,7 +254,7 @@ treatment, or page roster); do not preserve a generic technical-rules heading.
 ### 2. Inherit Design Specification
 
 Templates must strictly follow the finalized template brief and the generated `design_spec.md`:
-- **Canvas dimensions**: `canvas_format` is not enough; root SVG `viewBox` matches `canvas_viewbox` in the design spec. Root `width` / `height` are optional compatibility attributes and are not PPT Master canvas authority.
+- **Canvas dimensions**: `canvas_format` is not enough; root SVG `viewBox` matches `canvas_viewbox` in the design spec. Root `width` / `height` are optional compatibility attributes and are not Hedgehog Master canvas authority.
 - **Source canvas**: when a PPTX/SVG reference is used, record `source_canvas_width`, `source_canvas_height`, and `source_viewbox`. If the output canvas differs from the source, normalize all geometry, typography, line heights, strokes, and image crop coordinates explicitly instead of relying on the shared aspect ratio.
 - **Color scheme**: Uses primary, secondary, and accent colors from the spec
 - **Font plan**: Uses the per-role font families declared in the spec

@@ -1,6 +1,6 @@
 # Minimal Semantic SVG Markers
 
-PPT Master uses rendering-neutral compiler hints only where ordinary SVG cannot express PowerPoint Master, Layout, placeholder, native-object, or package behavior.
+Hedgehog Master uses rendering-neutral compiler hints only where ordinary SVG cannot express PowerPoint Master, Layout, placeholder, native-object, or package behavior.
 
 ## 1. Boundary
 

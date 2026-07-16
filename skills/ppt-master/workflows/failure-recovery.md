@@ -1,10 +1,10 @@
 ---
-description: Failure recovery matrix for PPT Master generation routes
+description: Failure recovery matrix for Hedgehog Master generation routes
 ---
 
 # Failure Recovery Matrix
 
-Central recovery rules for common PPT Master failures. Route-specific workflow files may add narrower handling, but must not weaken these stop/continue decisions.
+Central recovery rules for common Hedgehog Master failures. Route-specific workflow files may add narrower handling, but must not weaken these stop/continue decisions.
 
 **Hard rule**: A failed required artifact blocks the next gate. A failed convenience surface falls back to the canonical channel and does not block generation.
 

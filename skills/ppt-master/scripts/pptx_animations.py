@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PPT Master - PPTX Animation Module
+Hedgehog Master - PPTX Animation Module
 
 Provides one strict entrance-animation registry plus OOXML read/write helpers.
 

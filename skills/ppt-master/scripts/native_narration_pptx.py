@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PPT Master - Native Existing PPTX Enhancer
+Hedgehog Master - Native Existing PPTX Enhancer
 
 Create and apply a lightweight project for enhancing an existing PPTX without
 entering the SVG generation pipeline or modifying the original file.

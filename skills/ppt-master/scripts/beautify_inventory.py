@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PPT Master - Beautify Inventory Builder
+Hedgehog Master - Beautify Inventory Builder
 
 Mechanically merge a source deck's extracts into one per-slide ledger for the
 beautify-pptx workflow: text blocks + tables + charts + SmartArt structure (from a

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PPT Master - Strategist confirmation stage UI Server (Step 4)
+Hedgehog Master - Strategist confirmation stage UI Server (Step 4)
 
 Lightweight Flask backend for the interactive, visual Strategist confirmation stage page.
 Strategist writes its recommendations to
@@ -949,7 +949,7 @@ def create_app(
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description='PPT Master Strategist confirmation stage UI',
+        description='Hedgehog Master Strategist confirmation stage UI',
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument('project_dir', help='Path to project directory')
