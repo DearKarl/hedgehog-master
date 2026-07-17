@@ -1,8 +1,8 @@
-# AutoResearch-PPT Architecture
+# AutoResearch-Future Architecture
 
 ## Objective
 
-AutoResearch-PPT compiles evidence-linked research semantics into publication SVG and editable PPTX without allowing a general-purpose model to own final geometry.
+AutoResearch-Future compiles evidence-linked research semantics into publication SVG and editable PPTX without allowing a general-purpose model to own final geometry.
 
 ## Pipeline
 
@@ -10,12 +10,13 @@ AutoResearch-PPT compiles evidence-linked research semantics into publication SV
 unified intake (brief + template + papers + code)
   -> project input registry
   -> optional PPTX Template Contract
-  -> local semantic planner
+  -> Content Provider (rules, cloud model, local LLM, or external Agent)
        -> page-aware source registry
        -> evidence-linked claim registry
        -> audience-facing storyboard
        -> typed Diagram IR
        -> Formula Manifest + Image Manifest
+  -> semantic and evidence guardrails
   -> deterministic diagram compiler
   -> registered academic slide renderer
   -> static validation
@@ -29,9 +30,9 @@ unified intake (brief + template + papers + code)
 |---|---|---|
 | Unified project inputs | Workbench or CLI | Brief, template, papers, and code are copied into project-local paths and registered once. |
 | Template Contract | PPTX template adapter | Master/Layout backgrounds, theme tokens, and placeholder slots constrain the academic renderer. |
-| Sources and claims | Local planner, then researcher | Extracted claims retain source IDs, page or code locators, excerpts, and confidence. |
-| Storyboard | Local planner, then researcher | Slides use registered semantic layout IDs and audience-facing copy. |
-| Diagram IR | Local planner, then researcher | Graph structure is strict JSON with explicit kind, roles, groups, and edges. |
+| Sources and claims | Rules/model provider, then researcher | Extracted claims retain source IDs, page or code locators, excerpts, and confidence. Unknown evidence IDs are rejected. |
+| Storyboard | Content Provider, guardrails, then researcher | Slides use registered semantic layout IDs and audience-facing copy. Text limits are validated before build. |
+| Diagram IR | Diagram Provider, guardrails, then researcher | Graph structure is strict JSON with explicit kind, roles, groups, and edges. Broken references fall back to rules. |
 | Formula Manifest | Local planner and asset resolver | LaTeX, provenance, render mode, status, and slide bindings remain auditable. |
 | Image Manifest | Local planner and configured provider | External generation is policy-gated; prompts and status remain project-local. |
 | Diagram geometry | Diagram IR compiler | Layout is deterministic and never inferred from arbitrary SVG. |
@@ -44,7 +45,9 @@ The root CLI is `hedgehog.py`. It exposes project initialization, semantic plann
 
 The default academic profile is `skills/hedgehog-master/research/profiles/academic-conference.json`. It defines the allowed layout roster and restrained publication colors. A project-local `template/template.json` may override the canvas, theme tokens, background layers, and semantic content slots without changing the registered academic layout IDs. Project, template, source, claim, storyboard, formula, and image schemas live under `skills/hedgehog-master/research/schemas/`.
 
-`research_planner.py` is deliberately local and deterministic. PDF extraction uses PyMuPDF and preserves page numbers. Python code uses `ast`; other languages use a conservative symbol parser. The planner does not generate coordinates. It emits Diagram IR v0.2, which is the only input accepted by the geometry compiler.
+`research_planner.py` keeps extraction local and deterministic. PDF extraction uses PyMuPDF and preserves page numbers. Python code uses `ast`; other languages use a conservative symbol parser. `content_provider.py` can then route semantic synthesis to rules, a cloud model, a local OpenAI-compatible LLM, or an external Agent. Provider output never contains coordinates. It emits constrained slide semantics and Diagram IR v0.2, which is the only input accepted by the geometry compiler.
+
+Provider credentials and routing live in the user-only `~/.hedgehog-master/settings.json` file. API responses never expose saved secrets. Project manifests record provider and model names, while `analysis/provider_trace.json` records guardrails, status, warnings, and fallback decisions.
 
 ## Validation
 
@@ -59,6 +62,9 @@ Validation combines JSON Schema with cross-file checks:
 - layout IDs must be registered by the selected profile;
 - unverified claims generate warnings;
 - malformed Diagram IR fails before geometry is produced;
+- provider output must match the constrained content or Diagram IR contract;
+- generated claims may reference only registered evidence identifiers;
+- requested prose length is checked and reported before rendering;
 - registered input files and template layers must exist inside the project boundary.
 
 ## Implemented Vertical Slice
@@ -70,4 +76,4 @@ The implementation supports cover, section, diagram, evidence, and closing layou
 - Editable formulas use mathematical PowerPoint text, not native OMML. Complex equations can use transparent raster rendering.
 - Template rendering preserves recovered visual layers and constraints, not every live native Master behavior or unsupported PowerPoint object.
 - Local extraction is conservative. Claims remain inspectable and must be reviewed before publication; draft Brief claims produce validation warnings.
-- External image providers are opt-in. The geometry compiler and slide renderer remain deterministic when no provider is configured.
+- Content, diagram, image, stock, and narration providers are opt-in. The rules engine, geometry compiler, and slide renderer remain deterministic when no provider is configured.

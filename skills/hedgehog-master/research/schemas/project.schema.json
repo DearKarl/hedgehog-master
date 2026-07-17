@@ -62,7 +62,11 @@
         "require_claim_evidence": {"const": true},
         "citation_style": {"enum": ["numeric", "author-year"]},
         "image_generation": {"enum": ["manual", "auto"]},
-        "formula_rendering": {"enum": ["editable-text", "raster"]}
+        "formula_rendering": {"enum": ["editable-text", "raster"]},
+        "content_provider": {"enum": ["rules", "openai", "gemini", "qwen", "zhipu", "local", "external-agent"]},
+        "content_model": {"type": "string", "minLength": 1, "maxLength": 160},
+        "diagram_provider": {"enum": ["rules", "openai", "gemini", "qwen", "zhipu", "local", "external-agent"]},
+        "diagram_model": {"type": "string", "minLength": 1, "maxLength": 160}
       }
     }
   },

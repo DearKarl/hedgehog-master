@@ -46,9 +46,17 @@ Windows PowerShell 使用 `.venv\Scripts\Activate.ps1` 激活 Python 环境。
 python3 hedgehog.py serve --port 4173
 ```
 
-打开 [http://127.0.0.1:4173](http://127.0.0.1:4173)。新建项目时可以一次性提交 PPTX 模板、演示指令、论文或文档、代码文件以及粘贴的代码。本地规划器会提取带页码定位的证据，生成 Sources、Claims 和 Storyboard，根据 Brief 与代码选择 Diagram IR 类型，并登记公式和图片资产。`Plan`、`Validate`、`Build SVG` 和 `Export PPTX` 都可以重复执行。
+打开 [http://127.0.0.1:4173](http://127.0.0.1:4173)。新建项目时可以一次性提交 PPTX 模板、演示指令、论文或文档、代码文件以及粘贴的代码。规划器会提取带页码定位的证据，生成 Sources、Claims 和 Storyboard，根据 Brief 与代码选择 Diagram IR 类型，并登记公式和图片资产。`Plan`、`Validate`、`Build SVG` 和 `Export PPTX` 都可以重复执行。
 
-工作台右上角可以切换中英文，并会在本地浏览器中记住选择。左侧的“说明”介绍完整项目流程，“更新”展示双语版本记录。左下角版本号来自 [`VERSION`](./VERSION)，完整发布记录维护在 [`CHANGELOG.md`](./CHANGELOG.md)。
+工作台右上角可以切换中英文，并会在本地浏览器中记住选择。左侧“设置”用于选择 Provider、模型、端点和可选 API Key；“说明”介绍完整项目流程，“更新”展示双语版本记录。左下角版本号来自 [`VERSION`](./VERSION)，完整发布记录维护在 [`CHANGELOG.md`](./CHANGELOG.md)。
+
+## 内容与流程图 Provider
+
+Hedgehog Master 默认使用纯规则模式，不需要 API Key。在“设置”中，内容规划与科研流程图规划可以分别选择 OpenAI、Gemini、Qwen、智谱、本地 OpenAI 兼容 LLM 或外部 Agent 端点。模型名与基础 URL 都可编辑，不会被固定在某个模型版本上。
+
+Provider 输出受到严格约束。内容模型只返回页面 ID、文本、证据 ID、长度与置信度；流程图模型只返回 Diagram IR v0.2。Harness 会拒绝不存在的证据、非法 ID、超长文本、断裂的图引用和未注册版式。模型不返回页面坐标或最终 SVG；合法 Diagram IR 会在本地确定性编译，并自动进入 PPT 故事板。
+
+凭据只保存在本机 `~/.hedgehog-master/settings.json`，文件权限仅限当前用户。设置 API 只返回遮蔽后的配置状态。项目 Manifest 会记录 Provider 与模型名以便复现，但绝不保存 API Key。Provider 无法调用或结构化输出不合格时，规划会自动退回确定性规则引擎，并将原因写入 `analysis/provider_trace.json`。
 
 ### macOS 一键启动器
 
@@ -116,7 +124,9 @@ projects/<project-id>/
 ├── template/
 │   ├── template.json               # 语义版式绑定与内容槽约束
 │   └── workspace/                  # 恢复后的 Master、Layout、主题和 SVG 图层
-├── analysis/plan.json              # 规划器结果、数量、警告和图类型
+├── analysis/
+│   ├── plan.json                   # 规划器结果、数量、警告和图类型
+│   └── provider_trace.json         # Provider/模型路由、约束、回退与警告
 ├── images/
 │   ├── formula_manifest.json       # LaTeX、来源定位、渲染模式和页面绑定
 │   └── image_prompts.json          # 可审计的外部图片提示词和状态
@@ -138,7 +148,7 @@ projects/<project-id>/
 
 默认公式模式会把保守的 LaTeX 子集转换成使用数学字体的可编辑 PowerPoint 文本。选择 `raster` 时，系统会通过已配置的公式服务生成透明科研 PNG。可编辑文本目前不是原生 OMML；复杂公式建议使用栅格路径。
 
-只有 Brief 明确要求视觉内容并且项目图片策略设为 `auto` 时，Build 才会调用外部图片 API；提示词始终保留在 `images/image_prompts.json`。使用内置 OpenAI 兼容后端时：
+只有 Brief 明确要求视觉内容并且项目图片策略设为 `auto` 时，Build 才会调用外部图片 API；提示词始终保留在 `images/image_prompts.json`。推荐在“设置”中选择 OpenAI、Gemini、Qwen、智谱或 MiniMax，保存的 Provider 配置会传入现有图片构建流程。自动化场景仍可使用环境变量：
 
 ```bash
 export IMAGE_BACKEND=openai
@@ -147,7 +157,7 @@ export OPENAI_MODEL="gpt-image-2"  # 可选；这是仓库当前默认值
 python3 hedgehog.py build reliable-research-decks
 ```
 
-`image_gen.py` 还保留其他已注册后端。手动模式会生成同一份可审计 Manifest，但不会调用外部 API。
+`image_gen.py` 还保留其他已注册后端。“设置”也可以保存 Pexels/Pixabay 图库密钥，以及 ElevenLabs/MiniMax/Qwen 旁白密钥；这些都是可选项，不影响基础测评。手动图片模式会生成同一份可审计 Manifest，但不会调用外部 API。
 
 ## 单独编译科研流程图
 
@@ -167,7 +177,7 @@ Diagram IR v0.2 支持 `dataflow`、`cycle`、`comparison`、`architecture` 和 
 
 ## 模型边界
 
-在 AutoResearch-PPT 路线中，语义规划器或 Agent 只能编辑以下结构化文件：
+在 AutoResearch-Future 路线中，语义规划器或 Agent 只能编辑以下结构化文件：
 
 - `project.json`
 - `research/sources.json`
@@ -189,7 +199,7 @@ Agent 不得直接生成最终流程图 SVG、任意 HTML 幻灯片布局或 Dra
 
 ## 架构与调研
 
-- [AutoResearch-PPT 架构](./docs/architecture/autoresearch-ppt.md)
+- [AutoResearch-Future 架构](./docs/architecture/autoresearch-future.md)
 - [参考系统调研](./docs/research/reference-systems.md)
 - [Diagram IR v0.2 规范](./packages/diagram-ir/docs/ir-spec-v0.2.md)
 - [快速开始](./docs/getting-started.md)
@@ -198,7 +208,7 @@ Agent 不得直接生成最终流程图 SVG、任意 HTML 幻灯片布局或 Dra
 ## 开发校验
 
 ```bash
-python3 -m py_compile hedgehog.py skills/hedgehog-master/scripts/research_harness.py skills/hedgehog-master/scripts/research_planner.py
+python3 -m py_compile hedgehog.py skills/hedgehog-master/scripts/research_harness.py skills/hedgehog-master/scripts/research_planner.py skills/hedgehog-master/scripts/provider_settings.py skills/hedgehog-master/scripts/content_provider.py
 python3 -m unittest tests.test_research_harness
 python3 hedgehog.py validate <project-id>
 pnpm --dir packages/diagram-ir check

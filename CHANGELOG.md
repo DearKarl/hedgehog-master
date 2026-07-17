@@ -4,6 +4,24 @@ Hedgehog Master follows a bilingual release process. Every user-facing release r
 
 Hedgehog Master 采用双语版本流程。每个面向用户的版本都会在本文件和本地工作台中同步记录中英文说明。
 
+## v0.3.0-beta - 2026-07-17
+
+### English
+
+- Added a local Content Provider layer for rules, OpenAI, Gemini, Qwen, Zhipu, local LLMs, and external Agents.
+- Added constrained semantic JSON and Diagram IR contracts with evidence, text-length, format, and graph-reference validation.
+- Connected provider-generated scientific diagrams to the deterministic SVG and PPTX build instead of allowing models to control geometry.
+- Added masked local credential storage and optional routing for image generation, stock libraries, and narration services.
+- Added provider traces and automatic rules-mode fallback when credentials, endpoints, or structured outputs are invalid.
+
+### 中文
+
+- 新增本地 Content Provider 层，支持纯规则、OpenAI、Gemini、Qwen、智谱、本地 LLM 与外部 Agent。
+- 新增受约束的语义 JSON 与 Diagram IR 契约，并校验证据、文本长度、格式和图结构引用。
+- 模型生成的科研流程图已接入确定性 SVG 与 PPTX 构建，模型不控制几何排版。
+- 新增密钥遮蔽的本地凭据存储，以及图片、图库和旁白服务的可选路由。
+- 新增 Provider Trace；密钥、端点或结构化输出无效时自动退回纯规则模式。
+
 ## v0.2.1-beta - 2026-07-17
 
 ### English
@@ -42,10 +60,10 @@ Hedgehog Master 采用双语版本流程。每个面向用户的版本都会在�
 
 ### English
 
-- Introduced the local AutoResearch-PPT workbench and research project contracts.
+- Introduced the local AutoResearch-Future workbench and research project contracts.
 - Added deterministic dataflow diagrams, evidence validation, SVG build, and PPTX export.
 
 ### 中文
 
-- 建立本地 AutoResearch-PPT 工作台与科研项目契约。
+- 建立本地 AutoResearch-Future 工作台与科研项目契约。
 - 实现确定性数据流图、证据校验、SVG 构建与 PPTX 导出。

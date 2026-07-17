@@ -12,7 +12,7 @@ description: >
 
 **Core Pipeline**: `Sources -> Claims -> Semantic Storyboard -> Diagram IR -> Registered Layouts -> Quality Gates -> SVG/PPTX`
 
-## AutoResearch-PPT Route
+## AutoResearch-Future Route
 
 Formal research presentations and publication-oriented flowcharts use the deterministic route in [`references/academic-research-workflow.md`](references/academic-research-workflow.md). In this route, the agent owns source interpretation and structured semantics only. Diagram geometry, slide composition, and export are compiler responsibilities.
 
@@ -49,7 +49,7 @@ python3 hedgehog.py export <project>
 > 6. **NO SUB-AGENT SVG GENERATION** — Executor Step 6 SVG generation is context-dependent and MUST be completed by the current main agent end-to-end. Delegating page SVG generation to sub-agents is FORBIDDEN
 > 7. **SEQUENTIAL PAGE GENERATION ONLY** — In Executor Step 6, after the global design context is confirmed, SVG pages MUST be generated sequentially page by page in one continuous pass. Grouped page batches (for example, 5 pages at a time) are FORBIDDEN
 > 8. **SPEC_LOCK RE-READ PER PAGE** — Before generating each SVG page, Executor MUST `read_file <project_path>/spec_lock.md`. All colors / fonts / icons / images MUST come from this file — no values from memory or invented on the fly. Executor MUST also read `pptx_structure.mode`, the current page's `page_rhythm` (`anchor` / `dense` / `breathing`), and `page_charts`. Only a deck/layout template route (`mode: structured`) looks up `page_layouts` (the input template SVG), `page_pptx_layouts` (the page assignment), `pptx_masters`, `pptx_layouts` (the unique reusable roster), and `template_adherence`; free-design and brand-only routes use `mode: flat` and omit those sections. This rule exists to resist context-compression drift on long decks and to break the uniform "every page is a card grid" default
-> 9. **ROUTE-OWNED SVG AUTHORING** — The AutoResearch-PPT route MUST generate diagrams and slides through `hedgehog.py` from validated semantic artifacts; the agent MUST NOT hand-write final flowchart geometry or layout code there. Free-design SVG routes remain sequential, context-aware authoring tasks owned by the main agent. `preset_shape_svg.py` remains a narrow fragment helper for those free-design routes.
+> 9. **ROUTE-OWNED SVG AUTHORING** — The AutoResearch-Future route MUST generate diagrams and slides through `hedgehog.py` from validated semantic artifacts; the agent MUST NOT hand-write final flowchart geometry or layout code there. Free-design SVG routes remain sequential, context-aware authoring tasks owned by the main agent. `preset_shape_svg.py` remains a narrow fragment helper for those free-design routes.
 > 10. **FOLLOW DETERMINISTIC ROUTING RULES** — Do not add blocking routing questions when this skill defines a route. If the user request violates a route precondition, state the required prerequisite and stop that route instead of asking the user to choose around the rule. Ordinary finite options, stylistic preferences, and recoverable details are surfaced with a recommended value plus alternatives at the next existing confirmation gate.
 
 > [!IMPORTANT]

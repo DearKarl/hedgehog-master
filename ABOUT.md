@@ -13,12 +13,12 @@ Hedgehog Master focuses on four outputs:
 3. Publication-oriented vector diagrams
 4. Editable PowerPoint files for continued collaboration
 
-The AutoResearch-PPT route deliberately limits the role of general-purpose models. An agent may organize semantic specifications, but it does not own final diagram geometry or academic layout code. Deterministic compilers and registered profiles own those surfaces.
+The AutoResearch-Future route deliberately limits the role of general-purpose models. A selected Content Provider may organize evidence-linked semantic specifications, but it does not own final diagram geometry or academic layout code. Deterministic compilers and registered profiles own those surfaces.
 
 ## Repository Identity
 
 - Product: Hedgehog Master
-- Research workflow: AutoResearch-PPT
+- Research workflow: AutoResearch-Future
 - Repository: `DearKarl/hedgehog-master`
 - Runtime: local-first
 - Primary outputs: SVG and PPTX
