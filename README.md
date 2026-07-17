@@ -46,9 +46,17 @@ On Windows PowerShell, activate Python with `.venv\Scripts\Activate.ps1`.
 python3 hedgehog.py serve --port 4173
 ```
 
-Open [http://127.0.0.1:4173](http://127.0.0.1:4173). A new project accepts a PPTX template, a presentation brief, research documents, code files, and pasted code in one intake. The local planner extracts page-aware evidence, creates the source and claim registries, derives a storyboard, selects a Diagram IR type, and registers formula and image assets. `Plan`, `Validate`, `Build SVG`, and `Export PPTX` are repeatable project operations.
+Open [http://127.0.0.1:4173](http://127.0.0.1:4173). A new project accepts a PPTX template, a presentation brief, research documents, code files, and pasted code in one intake. The planner extracts page-aware evidence, creates the source and claim registries, derives a storyboard, selects a Diagram IR type, and registers formula and image assets. `Plan`, `Validate`, `Build SVG`, and `Export PPTX` are repeatable project operations.
 
-The workbench can switch between English and Chinese from the header and remembers the selection in the local browser. `Guide` explains the complete project workflow, while `Updates` displays the bilingual release history. The lower-left version is read from [`VERSION`](./VERSION); release notes are maintained in [`CHANGELOG.md`](./CHANGELOG.md).
+The workbench can switch between English and Chinese from the header and remembers the selection in the local browser. `Settings` configures provider routing, models, endpoints, and optional API keys. `Guide` explains the complete project workflow, while `Updates` displays the bilingual release history. The lower-left version is read from [`VERSION`](./VERSION); release notes are maintained in [`CHANGELOG.md`](./CHANGELOG.md).
+
+## Content and Diagram Providers
+
+Hedgehog Master runs in rules mode without an API key. In `Settings`, content planning and scientific diagram planning can independently use OpenAI, Gemini, Qwen, Zhipu, a local OpenAI-compatible LLM, or an external Agent endpoint. Model names and base URLs remain editable so users are not locked to a hard-coded model release.
+
+Provider output is deliberately constrained. A content model returns page IDs, text, evidence IDs, counts, and confidence; a diagram model returns Diagram IR v0.2. The Harness rejects unknown evidence, invalid identifiers, excessive text, broken graph references, and unregistered layouts. Models never return slide coordinates or final SVG. Valid Diagram IR is compiled locally and inserted into the PPT storyboard automatically.
+
+Credentials are stored only on the local computer in `~/.hedgehog-master/settings.json` with user-only file permissions. The settings API returns masked status rather than secret values. Project manifests record provider and model names for reproducibility but never store API keys. When a provider cannot run or violates the contract, planning falls back to the deterministic rules engine and records the reason in `analysis/provider_trace.json`.
 
 ### macOS one-click launcher
 
@@ -116,7 +124,9 @@ projects/<project-id>/
 ├── template/
 │   ├── template.json               # semantic layout bindings and slot constraints
 │   └── workspace/                  # recovered Master, Layout, theme, and SVG layers
-├── analysis/plan.json              # planner result, counts, warnings, and selected diagram type
+├── analysis/
+│   ├── plan.json                   # planner result, counts, warnings, and selected diagram type
+│   └── provider_trace.json         # provider/model route, guardrails, fallback, and warnings
 ├── images/
 │   ├── formula_manifest.json       # LaTeX, source locator, render mode, and slide bindings
 │   └── image_prompts.json          # auditable external-image prompts and status
@@ -138,7 +148,7 @@ The default `academic-conference` profile permits only five layouts: `cover`, `s
 
 The default formula mode converts a conservative LaTeX subset to editable PowerPoint text using a math font. Select `raster` for transparent publication PNG output through the configured formula provider chain. Editable text is not native OMML; complex equations should currently use the raster path.
 
-External images are generated only when the brief requests a visual and the project policy is `auto`. The generated prompt remains in `images/image_prompts.json`. For the bundled OpenAI-compatible backend:
+External images are generated only when the brief requests a visual and the project policy is `auto`. The generated prompt remains in `images/image_prompts.json`. The preferred path is to select OpenAI, Gemini, Qwen, Zhipu, or MiniMax under `Settings`; the saved provider configuration is forwarded to the existing image build. Environment variables remain available for automation:
 
 ```bash
 export IMAGE_BACKEND=openai
@@ -147,7 +157,7 @@ export OPENAI_MODEL="gpt-image-2"  # optional; this is the repository default
 python3 hedgehog.py build reliable-research-decks
 ```
 
-Other registered image backends remain available through `image_gen.py`. Manual mode writes the same auditable Manifest but never calls an external API.
+Other registered image backends remain available through `image_gen.py`. Pexels/Pixabay credentials and ElevenLabs/MiniMax/Qwen narration credentials can also be stored in `Settings`; they are optional and do not affect the base evaluation path. Manual image mode writes the same auditable Manifest but never calls an external API.
 
 ## Compile a Standalone Research Diagram
 
@@ -167,7 +177,7 @@ The same valid input produces byte-stable SVG output. Invalid input returns expl
 
 ## Model Boundary
 
-For the AutoResearch-PPT route, a semantic planner or agent may edit:
+For the AutoResearch-Future route, a semantic planner or agent may edit:
 
 - `project.json`
 - `research/sources.json`
@@ -189,7 +199,7 @@ The repository also retains mature local tools for source normalization, templat
 
 ## Architecture and Research
 
-- [AutoResearch-PPT architecture](./docs/architecture/autoresearch-ppt.md)
+- [AutoResearch-Future architecture](./docs/architecture/autoresearch-future.md)
 - [Reference-system research](./docs/research/reference-systems.md)
 - [Diagram IR v0.2 specification](./packages/diagram-ir/docs/ir-spec-v0.2.md)
 - [Getting started](./docs/getting-started.md)
@@ -198,7 +208,7 @@ The repository also retains mature local tools for source normalization, templat
 ## Development Checks
 
 ```bash
-python3 -m py_compile hedgehog.py skills/hedgehog-master/scripts/research_harness.py skills/hedgehog-master/scripts/research_planner.py
+python3 -m py_compile hedgehog.py skills/hedgehog-master/scripts/research_harness.py skills/hedgehog-master/scripts/research_planner.py skills/hedgehog-master/scripts/provider_settings.py skills/hedgehog-master/scripts/content_provider.py
 python3 -m unittest tests.test_research_harness
 python3 hedgehog.py validate <project-id>
 pnpm --dir packages/diagram-ir check

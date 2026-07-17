@@ -235,6 +235,23 @@
     .checkbox input { width: 17px; height: 17px; accent-color: var(--accent); }
     .dialog-actions { position: sticky; bottom: 0; z-index: 2; display: flex; justify-content: flex-end; gap: 8px; margin: 0 -20px -20px; padding: 14px 20px 20px; border-top: 1px solid var(--line); background: var(--paper); }
 
+    .settings-form { padding-top: 4px; }
+    .settings-section { padding: 18px 0 4px; border-bottom: 1px solid var(--line); }
+    .settings-section:last-of-type { border-bottom: 0; }
+    .settings-section h3 { margin: 0 0 14px; font-size: 15px; }
+    .settings-note { margin: -4px 0 14px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .provider-details { border-top: 1px solid var(--line); }
+    .provider-details:last-child { border-bottom: 1px solid var(--line); }
+    .provider-details summary { min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 10px; cursor: pointer; font-size: 13px; font-weight: 700; list-style: none; }
+    .provider-details summary::-webkit-details-marker { display: none; }
+    .provider-details summary::after { content: '+'; color: var(--accent); font-size: 18px; font-weight: 500; }
+    .provider-details[open] summary::after { content: '−'; }
+    .provider-fields { padding: 2px 0 4px; }
+    .credential-state { margin-left: auto; color: var(--muted); font-size: 11px; font-weight: 600; }
+    .credential-state.configured { color: var(--accent); }
+    .checkbox.compact { margin: 0 0 15px; color: var(--muted); font-size: 12px; }
+    .checkbox.full { grid-column: 1 / -1; }
+
     .info-body { padding: 2px 24px 28px; line-height: 1.65; }
     .info-body section { padding: 20px 0; border-bottom: 1px solid var(--line); }
     .info-body section:last-child { border-bottom: 0; }
@@ -257,7 +274,7 @@
       .brand { display: flex; align-items: center; gap: 12px; padding: 0 0 14px; }
       .brand-mark { width: 32px; height: 32px; margin: 0; }
       .brand-mode { margin-top: 3px; }
-      .nav { grid-template-columns: repeat(5, minmax(0, 1fr)); margin-top: 12px; }
+      .nav { grid-template-columns: repeat(6, minmax(0, 1fr)); margin-top: 12px; }
       .nav button { justify-content: center; }
       .version { display: none; }
       main { padding: 22px 20px 32px; }
@@ -274,6 +291,7 @@
       .metric:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
       th:nth-child(3), td:nth-child(3), th:nth-child(4), td:nth-child(4) { display: none; }
       th:first-child { width: 58%; }
+      .nav { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .nav button { padding: 0 6px; font-size: 12px; }
       .nav-icon { display: none; }
       h1 { font-size: 24px; }
@@ -289,24 +307,25 @@
         <a class="brand-mark" href="/" aria-label="Open workbench" data-i18n-aria="homeLink"><img src="/assets/branding/hedgehog-master-mark.png" alt=""></a>
         <div>
           <div class="brand-name">Hedgehog Master</div>
-          <div class="brand-mode">AutoResearch-PPT</div>
+          <div class="brand-mode">AutoResearch-Future</div>
         </div>
       </div>
       <nav class="nav" aria-label="Workbench views" data-i18n-aria="navLabel">
         <button class="active" type="button"><span class="nav-icon">01</span><span data-i18n="projectsNav">Projects</span></button>
         <button type="button" disabled><span class="nav-icon">02</span><span data-i18n="profilesNav">Profiles</span></button>
         <button type="button" disabled><span class="nav-icon">03</span><span data-i18n="qualityNav">Quality</span></button>
+        <button id="open-settings" type="button"><span class="nav-icon">API</span><span data-i18n="settingsNav">Settings</span></button>
         <button id="open-help" type="button"><span class="nav-icon">?</span><span data-i18n="helpNav">Guide</span></button>
         <button id="open-changelog" type="button"><span class="nav-icon">&#916;</span><span data-i18n="changelogNav">Updates</span></button>
       </nav>
-      <div class="version"><span data-i18n="versionLabel">Beta version</span><strong id="app-version">v0.2.1-beta</strong></div>
+      <div class="version"><span data-i18n="versionLabel">Beta version</span><strong id="app-version">v0.3.0-beta</strong></div>
     </aside>
 
     <main>
       <header class="topbar">
         <div>
-          <p class="kicker" data-i18n="kicker">Research operations</p>
-          <h1 data-i18n="workbenchTitle">Presentation workbench</h1>
+          <p class="kicker">Hedgehog Master</p>
+          <h1 data-i18n="workbenchTitle">Workbench</h1>
         </div>
         <div class="actions">
           <div class="language-switch" role="group" aria-label="Language" data-i18n-aria="languageLabel">
@@ -356,6 +375,8 @@
         <div class="field"><label for="project-venue" data-i18n="venue">Venue</label><input id="project-venue" name="venue" value="Lab meeting" data-i18n-placeholder="venuePlaceholder"></div>
         <div class="field"><label for="project-profile" data-i18n="academicProfile">Academic profile</label><select id="project-profile" name="profile"></select></div>
         <div class="field"><label for="project-image-generation" data-i18n="imageGeneration">Image generation</label><select id="project-image-generation" name="image_generation"><option value="manual" data-i18n="manualApproval">Manual approval</option><option value="auto" data-i18n="automaticBuild">Automatic on build</option></select></div>
+        <div class="field"><label for="project-content-provider" data-i18n="contentProvider">Content provider</label><select id="project-content-provider" name="content_provider"></select></div>
+        <div class="field"><label for="project-diagram-provider" data-i18n="diagramProvider">Diagram provider</label><select id="project-diagram-provider" name="diagram_provider"></select></div>
         <div class="field full"><label for="project-brief" data-i18n="presentationBrief">Presentation brief</label><textarea id="project-brief" name="brief" required placeholder="State the research question, required sections, conclusions, and presentation constraints." data-i18n-placeholder="briefPlaceholder"></textarea></div>
         <div class="field"><label for="project-template" data-i18n="pptxTemplate">PPTX template</label><input id="project-template" name="template" type="file" accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation"></div>
         <div class="field"><label for="project-papers" data-i18n="papersSources">Papers and research sources</label><input id="project-papers" name="papers" type="file" multiple accept=".pdf,.docx,.md,.txt,.tex"></div>
@@ -369,11 +390,102 @@
     </form>
   </dialog>
 
+  <dialog id="settings-dialog">
+    <div class="dialog-head"><h2 data-i18n="settingsTitle">Provider settings</h2><button class="close" data-dialog-close="settings-dialog" type="button" aria-label="Close" title="Close" data-i18n-aria="close" data-i18n-title="close">&times;</button></div>
+    <form class="settings-form" id="settings-form">
+      <section class="settings-section">
+        <h3 data-i18n="routingTitle">Task routing</h3>
+        <p class="settings-note" data-i18n="routingNote">Rules mode works without a key. Model providers return semantic JSON; local compilation still controls layout.</p>
+        <div class="form-grid">
+          <div class="field"><label for="settings-content" data-i18n="contentProvider">Content provider</label><select id="settings-content" data-route="content"></select></div>
+          <div class="field"><label for="settings-diagram" data-i18n="diagramProvider">Diagram provider</label><select id="settings-diagram" data-route="diagram"></select></div>
+          <div class="field"><label for="settings-image" data-i18n="imageProvider">Image provider</label><select id="settings-image" data-route="image"></select></div>
+          <div class="field"><label for="settings-stock" data-i18n="stockProvider">Stock image provider</label><select id="settings-stock" data-route="stock"></select></div>
+          <div class="field"><label for="settings-narration" data-i18n="narrationProvider">Narration provider</label><select id="settings-narration" data-route="narration"></select></div>
+        </div>
+      </section>
+
+      <section class="settings-section">
+        <h3 data-i18n="intelligenceServices">Content and diagram services</h3>
+        <details class="provider-details" data-provider-details="openai"><summary><span>OpenAI</span><span class="credential-state" data-service-status="openai"></span></summary><div class="provider-fields form-grid">
+          <div class="field full"><label data-i18n="apiKey">API key</label><input type="password" autocomplete="new-password" data-service="openai" data-field="api_key" placeholder="sk-..."></div>
+          <div class="field"><label data-i18n="contentModel">Content model</label><input data-service="openai" data-field="content_model"></div>
+          <div class="field"><label data-i18n="diagramModel">Diagram model</label><input data-service="openai" data-field="diagram_model"></div>
+          <div class="field"><label data-i18n="imageModel">Image model</label><input data-service="openai" data-field="image_model"></div>
+          <div class="field"><label data-i18n="baseUrl">Base URL</label><input type="url" data-service="openai" data-field="base_url"></div>
+          <label class="checkbox compact full"><input type="checkbox" data-clear-service="openai"><span data-i18n="removeKey">Remove saved key</span></label>
+        </div></details>
+        <details class="provider-details" data-provider-details="gemini"><summary><span>Gemini</span><span class="credential-state" data-service-status="gemini"></span></summary><div class="provider-fields form-grid">
+          <div class="field full"><label data-i18n="apiKey">API key</label><input type="password" autocomplete="new-password" data-service="gemini" data-field="api_key"></div>
+          <div class="field"><label data-i18n="contentModel">Content model</label><input data-service="gemini" data-field="content_model"></div>
+          <div class="field"><label data-i18n="diagramModel">Diagram model</label><input data-service="gemini" data-field="diagram_model"></div>
+          <div class="field"><label data-i18n="imageModel">Image model</label><input data-service="gemini" data-field="image_model"></div>
+          <div class="field"><label data-i18n="baseUrl">Base URL</label><input type="url" data-service="gemini" data-field="base_url"></div>
+          <label class="checkbox compact full"><input type="checkbox" data-clear-service="gemini"><span data-i18n="removeKey">Remove saved key</span></label>
+        </div></details>
+        <details class="provider-details" data-provider-details="qwen"><summary><span>Qwen</span><span class="credential-state" data-service-status="qwen"></span></summary><div class="provider-fields form-grid">
+          <div class="field full"><label data-i18n="apiKey">API key</label><input type="password" autocomplete="new-password" data-service="qwen" data-field="api_key"></div>
+          <div class="field"><label data-i18n="contentModel">Content model</label><input data-service="qwen" data-field="content_model"></div>
+          <div class="field"><label data-i18n="diagramModel">Diagram model</label><input data-service="qwen" data-field="diagram_model"></div>
+          <div class="field"><label data-i18n="imageModel">Image model</label><input data-service="qwen" data-field="image_model"></div>
+          <div class="field"><label data-i18n="baseUrl">Base URL</label><input type="url" data-service="qwen" data-field="base_url"></div>
+          <label class="checkbox compact full"><input type="checkbox" data-clear-service="qwen"><span data-i18n="removeKey">Remove saved key</span></label>
+        </div></details>
+        <details class="provider-details" data-provider-details="zhipu"><summary><span>Zhipu</span><span class="credential-state" data-service-status="zhipu"></span></summary><div class="provider-fields form-grid">
+          <div class="field full"><label data-i18n="apiKey">API key</label><input type="password" autocomplete="new-password" data-service="zhipu" data-field="api_key"></div>
+          <div class="field"><label data-i18n="contentModel">Content model</label><input data-service="zhipu" data-field="content_model"></div>
+          <div class="field"><label data-i18n="diagramModel">Diagram model</label><input data-service="zhipu" data-field="diagram_model"></div>
+          <div class="field"><label data-i18n="imageModel">Image model</label><input data-service="zhipu" data-field="image_model"></div>
+          <div class="field"><label data-i18n="baseUrl">Base URL</label><input type="url" data-service="zhipu" data-field="base_url"></div>
+          <label class="checkbox compact full"><input type="checkbox" data-clear-service="zhipu"><span data-i18n="removeKey">Remove saved key</span></label>
+        </div></details>
+        <details class="provider-details" data-provider-details="local"><summary><span data-i18n="localLlm">Local LLM</span><span class="credential-state configured" data-i18n="noKeyRequired">No key required</span></summary><div class="provider-fields form-grid">
+          <div class="field"><label data-i18n="contentModel">Content model</label><input data-service="local" data-field="content_model"></div>
+          <div class="field"><label data-i18n="diagramModel">Diagram model</label><input data-service="local" data-field="diagram_model"></div>
+          <div class="field full"><label data-i18n="baseUrl">Base URL</label><input type="url" data-service="local" data-field="base_url"></div>
+        </div></details>
+        <details class="provider-details" data-provider-details="external-agent"><summary><span data-i18n="externalAgent">External Agent</span><span class="credential-state" data-service-status="external-agent"></span></summary><div class="provider-fields form-grid">
+          <div class="field full"><label data-i18n="apiKeyOptional">API key (optional)</label><input type="password" autocomplete="new-password" data-service="external-agent" data-field="api_key"></div>
+          <div class="field"><label data-i18n="contentModel">Content model</label><input data-service="external-agent" data-field="content_model"></div>
+          <div class="field"><label data-i18n="diagramModel">Diagram model</label><input data-service="external-agent" data-field="diagram_model"></div>
+          <div class="field full"><label data-i18n="compatibleEndpoint">OpenAI-compatible endpoint</label><input type="url" data-service="external-agent" data-field="base_url"></div>
+          <label class="checkbox compact full"><input type="checkbox" data-clear-service="external-agent"><span data-i18n="removeKey">Remove saved key</span></label>
+        </div></details>
+      </section>
+
+      <section class="settings-section">
+        <h3 data-i18n="assetServices">Optional asset services</h3>
+        <p class="settings-note" data-i18n="assetServicesNote">These providers are optional for base evaluation. Editable formulas remain local; raster formulas use the existing no-key online chain.</p>
+        <details class="provider-details"><summary><span>MiniMax</span><span class="credential-state" data-service-status="minimax"></span></summary><div class="provider-fields form-grid">
+          <div class="field full"><label data-i18n="apiKey">API key</label><input type="password" autocomplete="new-password" data-service="minimax" data-field="api_key"></div>
+          <div class="field"><label data-i18n="imageModel">Image model</label><input data-service="minimax" data-field="image_model"></div>
+          <div class="field"><label data-i18n="narrationModel">Narration model</label><input data-service="minimax" data-field="narration_model"></div>
+          <label class="checkbox compact full"><input type="checkbox" data-clear-service="minimax"><span data-i18n="removeKey">Remove saved key</span></label>
+        </div></details>
+        <details class="provider-details"><summary><span>Pexels / Pixabay</span></summary><div class="provider-fields form-grid">
+          <div class="field"><label>Pexels API key</label><input type="password" autocomplete="new-password" data-service="pexels" data-field="api_key"></div>
+          <div class="field"><label>Pixabay API key</label><input type="password" autocomplete="new-password" data-service="pixabay" data-field="api_key"></div>
+          <label class="checkbox compact"><input type="checkbox" data-clear-service="pexels"><span data-i18n="removePexelsKey">Remove Pexels key</span></label>
+          <label class="checkbox compact"><input type="checkbox" data-clear-service="pixabay"><span data-i18n="removePixabayKey">Remove Pixabay key</span></label>
+        </div></details>
+        <details class="provider-details"><summary><span>ElevenLabs / Qwen TTS</span></summary><div class="provider-fields form-grid">
+          <div class="field"><label>ElevenLabs API key</label><input type="password" autocomplete="new-password" data-service="elevenlabs" data-field="api_key"></div>
+          <div class="field"><label data-i18n="narrationModel">Narration model</label><input data-service="elevenlabs" data-field="narration_model"></div>
+          <div class="field"><label>Qwen TTS API key</label><input type="password" autocomplete="new-password" data-service="qwen-narration" data-field="api_key"></div>
+          <div class="field"><label data-i18n="narrationModel">Narration model</label><input data-service="qwen-narration" data-field="narration_model"></div>
+          <label class="checkbox compact"><input type="checkbox" data-clear-service="elevenlabs"><span data-i18n="removeElevenLabsKey">Remove ElevenLabs key</span></label>
+          <label class="checkbox compact"><input type="checkbox" data-clear-service="qwen-narration"><span data-i18n="removeQwenKey">Remove Qwen TTS key</span></label>
+        </div></details>
+      </section>
+      <div class="dialog-actions"><button class="button" type="button" data-dialog-close="settings-dialog" data-i18n="cancel">Cancel</button><button class="button primary" type="submit" data-i18n="saveSettings">Save settings</button></div>
+    </form>
+  </dialog>
+
   <dialog id="help-dialog">
     <div class="dialog-head"><h2 data-i18n="guideTitle">How to use Hedgehog Master</h2><button class="close" data-dialog-close="help-dialog" type="button" aria-label="Close" title="Close" data-i18n-aria="close" data-i18n-title="close">&times;</button></div>
     <div class="info-body">
       <section><h3 data-i18n="guidePrepareTitle">1. Prepare the research inputs</h3><p data-i18n="guidePrepareBody">Start with a clear brief. Add an optional PPTX template, papers or research documents, and code or pseudocode. The template controls the visual background; sources and code ground the scientific content.</p></section>
-      <section><h3 data-i18n="guideCreateTitle">2. Create and plan</h3><p data-i18n="guideCreateBody">Create the project with automatic planning enabled. The local planner registers sources, extracts cited claims, builds a storyboard, selects a Diagram IR type, and records formula and image tasks.</p></section>
+      <section><h3 data-i18n="guideCreateTitle">2. Create and plan</h3><p data-i18n="guideCreateBody">Choose rules mode or a configured provider, then create the project with automatic planning enabled. The Harness validates evidence-linked content and Diagram IR before layout.</p></section>
       <section><h3 data-i18n="guideReviewTitle">3. Review the evidence</h3><p data-i18n="guideReviewBody">Open the project inspector and check source, claim, diagram, formula, and image counts. Plan can be rerun after changing the brief or replacing inputs.</p></section>
       <section><h3 data-i18n="guideBuildTitle">4. Validate, build, and export</h3><ol><li data-i18n="guidePlan">Plan updates the semantic research model.</li><li data-i18n="guideValidate">Validate checks schemas, citations, files, and asset references.</li><li data-i18n="guideBuild">Build SVG compiles deterministic diagrams and slide visuals.</li><li data-i18n="guideExport">Export PPTX creates the editable presentation in the project exports folder.</li></ol></section>
       <section><h3 data-i18n="guideImageTitle">External image generation</h3><p data-i18n="guideImageBody">Choose automatic image generation only when an image backend and API key are configured. Manual mode keeps an auditable prompt manifest without calling a paid service.</p></section>
@@ -384,6 +496,10 @@
     <div class="dialog-head"><h2 data-i18n="changelogTitle">Release notes</h2><button class="close" data-dialog-close="changelog-dialog" type="button" aria-label="Close" title="Close" data-i18n-aria="close" data-i18n-title="close">&times;</button></div>
     <div class="info-body">
       <section>
+        <div class="release-head"><h3>v0.3.0-beta</h3><span class="release-date">2026-07-17</span></div>
+        <ul><li data-i18n="change030a">Added local multi-provider settings with masked credentials.</li><li data-i18n="change030b">Added constrained content and Diagram IR providers with evidence and format validation.</li><li data-i18n="change030c">Connected provider-generated scientific diagrams to the deterministic PPT build.</li><li data-i18n="change030d">Added optional image, stock library, and narration provider routing.</li></ul>
+      </section>
+      <section>
         <div class="release-head"><h3>v0.2.1-beta</h3><span class="release-date">2026-07-17</span></div>
         <ul><li data-i18n="change021a">Added the HM application icon, favicon, and workbench home link.</li><li data-i18n="change021b">Added a one-click macOS launcher for the local workbench.</li><li data-i18n="change021c">Added reproducible source packaging, setup, integrity manifests, and bilingual handoff instructions.</li></ul>
       </section>
@@ -393,7 +509,7 @@
       </section>
       <section>
         <div class="release-head"><h3>v0.1.0-alpha</h3><span class="release-date">2026-07-16</span></div>
-        <ul><li data-i18n="change010a">Introduced the local AutoResearch-PPT workbench and project contracts.</li><li data-i18n="change010b">Added deterministic dataflow diagrams, evidence validation, SVG build, and PPTX export.</li></ul>
+        <ul><li data-i18n="change010a">Introduced the local AutoResearch-Future workbench and project contracts.</li><li data-i18n="change010b">Added deterministic dataflow diagrams, evidence validation, SVG build, and PPTX export.</li></ul>
       </section>
     </div>
   </dialog>
@@ -403,48 +519,50 @@
   <script>
     const translations = {
       en: {
-        documentTitle: 'Hedgehog Master Workbench', homeLink: 'Open workbench', navLabel: 'Workbench views', projectsNav: 'Projects', profilesNav: 'Profiles', qualityNav: 'Quality', helpNav: 'Guide', changelogNav: 'Updates',
-        versionLabel: 'Beta version', kicker: 'Research operations', workbenchTitle: 'Presentation workbench', languageLabel: 'Language', refresh: 'Refresh projects', newProject: 'New project',
+        documentTitle: 'Hedgehog Master Workbench', homeLink: 'Open workbench', navLabel: 'Workbench views', projectsNav: 'Projects', profilesNav: 'Profiles', qualityNav: 'Quality', settingsNav: 'Settings', helpNav: 'Guide', changelogNav: 'Updates',
+        versionLabel: 'Beta version', workbenchTitle: 'Workbench', languageLabel: 'Language', refresh: 'Refresh projects', newProject: 'New project',
         metricsLabel: 'Repository metrics', projectsMetric: 'Projects', slidesMetric: 'Slides', claimsMetric: 'Verified claims', exportsMetric: 'PPTX exports', researchProjects: 'Research projects',
         projectColumn: 'Project', statusColumn: 'Status', slidesColumn: 'Slides', claimsColumn: 'Claims', diagramsColumn: 'Diagrams', emptyTitle: 'No research projects', emptyBody: 'Create a project to open the structured pipeline.',
         inspectorTitle: 'Project inspector', inspectorBody: 'Select a project to inspect artifacts and quality state.', noPreview: 'No preview selected', previewAlt: 'First slide preview', previewBuild: 'Build the project to generate a preview',
         newResearchProject: 'New research project', close: 'Close', projectId: 'Project ID', presentationTitle: 'Presentation title', presentationTitlePlaceholder: 'Reliable Research Communication',
         audience: 'Audience', audienceDefault: 'Research engineers and academic collaborators', audiencePlaceholder: 'Research engineers and academic collaborators', venue: 'Venue', venueDefault: 'Lab meeting', venuePlaceholder: 'Lab meeting',
-        academicProfile: 'Academic profile', academicConferenceProfile: 'Academic conference', imageGeneration: 'Image generation', manualApproval: 'Manual approval', automaticBuild: 'Automatic on build',
+        academicProfile: 'Academic profile', academicConferenceProfile: 'Academic conference', imageGeneration: 'Image generation', manualApproval: 'Manual approval', automaticBuild: 'Automatic on build', contentProvider: 'Content provider', diagramProvider: 'Diagram provider',
         presentationBrief: 'Presentation brief', briefPlaceholder: 'State the research question, required sections, conclusions, and presentation constraints.', pptxTemplate: 'PPTX template', papersSources: 'Papers and research sources',
         codeFiles: 'Code files', codePseudocode: 'Code or pseudocode', codePlaceholder: 'Paste an algorithm, pipeline, or pseudocode block.', formulaRendering: 'Formula rendering', editableMath: 'Editable mathematical text', transparentImage: 'Transparent publication image',
         autoPlan: 'Derive the research plan on creation', seedDemo: 'Seed the demonstration project', cancel: 'Cancel', createProject: 'Create project',
+        settingsTitle: 'Provider settings', routingTitle: 'Task routing', routingNote: 'Rules mode works without a key. Model providers return semantic JSON; local compilation still controls layout.', imageProvider: 'Image provider', stockProvider: 'Stock image provider', narrationProvider: 'Narration provider', intelligenceServices: 'Content and diagram services', apiKey: 'API key', apiKeyOptional: 'API key (optional)', contentModel: 'Content model', diagramModel: 'Diagram model', imageModel: 'Image model', narrationModel: 'Narration model', baseUrl: 'Base URL', compatibleEndpoint: 'OpenAI-compatible endpoint', removeKey: 'Remove saved key', removePexelsKey: 'Remove Pexels key', removePixabayKey: 'Remove Pixabay key', removeElevenLabsKey: 'Remove ElevenLabs key', removeQwenKey: 'Remove Qwen TTS key', localLlm: 'Local LLM', externalAgent: 'External Agent', noKeyRequired: 'No key required', assetServices: 'Optional asset services', assetServicesNote: 'These providers are optional for base evaluation. Editable formulas remain local; raster formulas use the existing no-key online chain.', saveSettings: 'Save settings', settingsSaved: 'Provider settings saved', configured: 'Configured', notConfigured: 'Not configured', rulesMode: 'Rules / no model', manualMode: 'Manual', noneProvider: 'None', edgeNarration: 'Edge local voice',
         guideTitle: 'How to use Hedgehog Master', guidePrepareTitle: '1. Prepare the research inputs', guidePrepareBody: 'Start with a clear brief. Add an optional PPTX template, papers or research documents, and code or pseudocode. The template controls the visual background; sources and code ground the scientific content.',
-        guideCreateTitle: '2. Create and plan', guideCreateBody: 'Create the project with automatic planning enabled. The local planner registers sources, extracts cited claims, builds a storyboard, selects a Diagram IR type, and records formula and image tasks.',
+        guideCreateTitle: '2. Create and plan', guideCreateBody: 'Choose rules mode or a configured provider, then create the project with automatic planning enabled. The Harness validates evidence-linked content and Diagram IR before layout.',
         guideReviewTitle: '3. Review the evidence', guideReviewBody: 'Open the project inspector and check source, claim, diagram, formula, and image counts. Plan can be rerun after changing the brief or replacing inputs.',
         guideBuildTitle: '4. Validate, build, and export', guidePlan: 'Plan updates the semantic research model.', guideValidate: 'Validate checks schemas, citations, files, and asset references.', guideBuild: 'Build SVG compiles deterministic diagrams and slide visuals.', guideExport: 'Export PPTX creates the editable presentation in the project exports folder.',
         guideImageTitle: 'External image generation', guideImageBody: 'Choose automatic image generation only when an image backend and API key are configured. Manual mode keeps an auditable prompt manifest without calling a paid service.',
-        changelogTitle: 'Release notes', change021a: 'Added the HM application icon, favicon, and workbench home link.', change021b: 'Added a one-click macOS launcher for the local workbench.', change021c: 'Added reproducible source packaging, setup, integrity manifests, and bilingual handoff instructions.', change020a: 'Added persistent English and Chinese workbench modes.', change020b: 'Added automatic Brief, paper, and code planning with cited claims and storyboards.', change020c: 'Integrated formula and image manifests into the unified build.', change020d: 'Expanded Diagram IR with cycle, comparison, architecture, and timeline layouts.', change020e: 'Added the in-app guide, release notes, and centralized version reporting.',
-        change010a: 'Introduced the local AutoResearch-PPT workbench and project contracts.', change010b: 'Added deterministic dataflow diagrams, evidence validation, SVG build, and PPTX export.',
+        changelogTitle: 'Release notes', change030a: 'Added local multi-provider settings with masked credentials.', change030b: 'Added constrained content and Diagram IR providers with evidence and format validation.', change030c: 'Connected provider-generated scientific diagrams to the deterministic PPT build.', change030d: 'Added optional image, stock library, and narration provider routing.', change021a: 'Added the HM application icon, favicon, and workbench home link.', change021b: 'Added a one-click macOS launcher for the local workbench.', change021c: 'Added reproducible source packaging, setup, integrity manifests, and bilingual handoff instructions.', change020a: 'Added persistent English and Chinese workbench modes.', change020b: 'Added automatic Brief, paper, and code planning with cited claims and storyboards.', change020c: 'Integrated formula and image manifests into the unified build.', change020d: 'Expanded Diagram IR with cycle, comparison, architecture, and timeline layouts.', change020e: 'Added the in-app guide, release notes, and centralized version reporting.',
+        change010a: 'Introduced the local AutoResearch-Future workbench and project contracts.', change010b: 'Added deterministic dataflow diagrams, evidence validation, SVG build, and PPTX export.',
         recordCount: '{count} record{suffix}', sources: 'Sources', verifiedClaims: 'Verified claims', slides: 'Slides', exports: 'Exports', template: 'Template', papers: 'Papers', codeInputs: 'Code inputs', canvas: 'Canvas', diagramTypes: 'Diagram types', formulas: 'Formulas', images: 'Images', planner: 'Planner', none: 'None', notRun: 'Not run', templateCanvas: 'Template',
         actionPlan: 'Plan', actionValidate: 'Validate', actionBuild: 'Build SVG', actionExport: 'Export PPTX', statusReady: 'Ready', statusNeedsAttention: 'Needs attention', statusError: 'Error',
         diagramDataflow: 'Dataflow', diagramCycle: 'Cycle', diagramComparison: 'Comparison', diagramArchitecture: 'Architecture', diagramTimeline: 'Timeline',
         actionComplete: '{action} complete', exportReady: 'PPTX ready: {path}', createdProject: 'Created {id}'
       },
       zh: {
-        documentTitle: 'Hedgehog Master 科研演示工作台', homeLink: '打开工作台', navLabel: '工作台视图', projectsNav: '项目', profilesNav: '配置', qualityNav: '质量', helpNav: '说明', changelogNav: '更新',
-        versionLabel: '测试版本', kicker: '科研演示流程', workbenchTitle: '科研演示工作台', languageLabel: '界面语言', refresh: '刷新项目', newProject: '新建项目',
+        documentTitle: 'Hedgehog Master 工作台', homeLink: '打开工作台', navLabel: '工作台视图', projectsNav: '项目', profilesNav: '配置', qualityNav: '质量', settingsNav: '设置', helpNav: '说明', changelogNav: '更新',
+        versionLabel: '测试版本', workbenchTitle: '工作台', languageLabel: '界面语言', refresh: '刷新项目', newProject: '新建项目',
         metricsLabel: '仓库指标', projectsMetric: '项目', slidesMetric: '幻灯片', claimsMetric: '已验证论点', exportsMetric: 'PPTX 导出', researchProjects: '科研项目',
         projectColumn: '项目', statusColumn: '状态', slidesColumn: '页数', claimsColumn: '论点', diagramsColumn: '图表', emptyTitle: '暂无科研项目', emptyBody: '新建项目即可启动结构化科研演示流程。',
         inspectorTitle: '项目检查器', inspectorBody: '选择项目以检查产物与质量状态。', noPreview: '尚未选择预览', previewAlt: '第一页幻灯片预览', previewBuild: '构建项目后生成预览',
         newResearchProject: '新建科研项目', close: '关闭', projectId: '项目 ID', presentationTitle: '演示文稿标题', presentationTitlePlaceholder: '可靠的科研表达',
         audience: '受众', audienceDefault: '科研工程师与学术合作者', audiencePlaceholder: '科研工程师与学术合作者', venue: '使用场景', venueDefault: '实验室组会', venuePlaceholder: '实验室组会',
-        academicProfile: '学术配置', academicConferenceProfile: '学术会议', imageGeneration: '图片生成', manualApproval: '人工审核', automaticBuild: '构建时自动生成',
+        academicProfile: '学术配置', academicConferenceProfile: '学术会议', imageGeneration: '图片生成', manualApproval: '人工审核', automaticBuild: '构建时自动生成', contentProvider: '内容 Provider', diagramProvider: '流程图 Provider',
         presentationBrief: '演示指令', briefPlaceholder: '说明研究问题、必需章节、结论与演示约束。', pptxTemplate: 'PPTX 模板', papersSources: '论文与研究来源',
         codeFiles: '代码文件', codePseudocode: '代码或伪代码', codePlaceholder: '粘贴算法、处理流程或伪代码。', formulaRendering: '公式渲染', editableMath: '可编辑数学文本', transparentImage: '透明论文级图片',
         autoPlan: '创建时自动生成科研计划', seedDemo: '填充演示项目', cancel: '取消', createProject: '创建项目',
+        settingsTitle: 'Provider 设置', routingTitle: '任务路由', routingNote: '纯规则模式不需要密钥。模型只返回语义 JSON，页面排版仍由本地编译器控制。', imageProvider: '图片 Provider', stockProvider: '图库 Provider', narrationProvider: '旁白 Provider', intelligenceServices: '内容与流程图服务', apiKey: 'API 密钥', apiKeyOptional: 'API 密钥（可选）', contentModel: '内容模型', diagramModel: '流程图模型', imageModel: '图片模型', narrationModel: '旁白模型', baseUrl: '基础 URL', compatibleEndpoint: 'OpenAI 兼容端点', removeKey: '删除已保存密钥', removePexelsKey: '删除 Pexels 密钥', removePixabayKey: '删除 Pixabay 密钥', removeElevenLabsKey: '删除 ElevenLabs 密钥', removeQwenKey: '删除 Qwen TTS 密钥', localLlm: '本地 LLM', externalAgent: '外部 Agent', noKeyRequired: '无需密钥', assetServices: '可选素材服务', assetServicesNote: '这些服务不是基础测评必需。可编辑公式在本地处理；透明公式图片继续使用现有无 Key 在线服务链。', saveSettings: '保存设置', settingsSaved: 'Provider 设置已保存', configured: '已配置', notConfigured: '未配置', rulesMode: '纯规则 / 无模型', manualMode: '人工模式', noneProvider: '无', edgeNarration: 'Edge 本地语音',
         guideTitle: 'Hedgehog Master 使用说明', guidePrepareTitle: '1. 准备科研输入', guidePrepareBody: '先写清楚演示指令。可以同时加入 PPTX 模板、论文或研究文档，以及代码或伪代码。模板控制视觉背景，论文和代码为科研内容提供依据。',
-        guideCreateTitle: '2. 创建并规划', guideCreateBody: '创建项目时保持自动规划开启。本地规划器会登记来源、提取带引用的论点、生成故事板、选择 Diagram IR 类型，并记录公式和图片任务。',
+        guideCreateTitle: '2. 创建并规划', guideCreateBody: '选择纯规则模式或已配置的 Provider，并开启自动规划。Harness 会在排版前校验带证据内容与 Diagram IR。',
         guideReviewTitle: '3. 检查证据', guideReviewBody: '在项目检查器中核对来源、论点、图表、公式和图片数量。修改指令或替换输入后，可以重新执行规划。',
         guideBuildTitle: '4. 校验、构建与导出', guidePlan: '规划用于更新结构化科研语义模型。', guideValidate: '校验用于检查 Schema、引用、文件和资产关系。', guideBuild: '构建 SVG 用于确定性编译图表和页面视觉。', guideExport: '导出 PPTX 会在项目 exports 目录生成可编辑演示文稿。',
         guideImageTitle: '外部图片生成', guideImageBody: '只有配置图片后端与 API 密钥后才建议选择自动生成。人工模式仍会保存可审计的提示词 Manifest，但不会调用付费服务。',
-        changelogTitle: '版本更新日志', change021a: '新增 HM 应用图标、浏览器图标和工作台主页链接。', change021b: '新增 macOS 本地工作台一键启动器。', change021c: '新增可复现源码封装、安装流程、完整性清单和双语交付说明。', change020a: '新增可持久化的中英文工作台模式。', change020b: '新增 Brief、论文和代码自动规划，可生成带引用论点与故事板。', change020c: '将公式与图片 Manifest 接入统一构建流程。', change020d: 'Diagram IR 新增循环图、对比图、系统架构图和时间线。', change020e: '新增界面使用说明、更新日志与统一版本信息。',
-        change010a: '建立本地 AutoResearch-PPT 工作台与科研项目契约。', change010b: '实现确定性数据流图、证据校验、SVG 构建与 PPTX 导出。',
+        changelogTitle: '版本更新日志', change030a: '新增本地多 Provider 设置与密钥遮蔽存储。', change030b: '新增受约束的内容与 Diagram IR Provider，并校验证据与格式。', change030c: '模型生成的科研流程图已接入确定性 PPT 构建。', change030d: '新增可选图片、图库与旁白 Provider 路由。', change021a: '新增 HM 应用图标、浏览器图标和工作台主页链接。', change021b: '新增 macOS 本地工作台一键启动器。', change021c: '新增可复现源码封装、安装流程、完整性清单和双语交付说明。', change020a: '新增可持久化的中英文工作台模式。', change020b: '新增 Brief、论文和代码自动规划，可生成带引用论点与故事板。', change020c: '将公式与图片 Manifest 接入统一构建流程。', change020d: 'Diagram IR 新增循环图、对比图、系统架构图和时间线。', change020e: '新增界面使用说明、更新日志与统一版本信息。',
+        change010a: '建立本地 AutoResearch-Future 工作台与科研项目契约。', change010b: '实现确定性数据流图、证据校验、SVG 构建与 PPTX 导出。',
         recordCount: '共 {count} 条记录', sources: '来源', verifiedClaims: '已验证论点', slides: '幻灯片', exports: '导出', template: '模板', papers: '论文', codeInputs: '代码输入', canvas: '画布', diagramTypes: '图表类型', formulas: '公式', images: '图片', planner: '规划器', none: '无', notRun: '未运行', templateCanvas: '模板',
         actionPlan: '规划', actionValidate: '校验', actionBuild: '构建 SVG', actionExport: '导出 PPTX', statusReady: '就绪', statusNeedsAttention: '需要处理', statusError: '错误',
         diagramDataflow: '数据流图', diagramCycle: '循环图', diagramComparison: '对比图', diagramArchitecture: '系统架构图', diagramTimeline: '时间线',
@@ -454,7 +572,7 @@
 
     const storedLanguage = window.localStorage.getItem('hedgehog-language');
     const detectedLanguage = navigator.language.toLowerCase().startsWith('zh') ? 'zh' : 'en';
-    const state = { projects: [], profiles: [], selected: null, busy: false, language: storedLanguage || detectedLanguage };
+    const state = { projects: [], profiles: [], settings: null, selected: null, busy: false, language: storedLanguage || detectedLanguage };
     const rows = document.getElementById('project-rows');
     const inspector = document.getElementById('inspector');
     const empty = document.getElementById('empty-state');
@@ -474,6 +592,14 @@
 
     function diagramLabel(kind) {
       return t({ dataflow: 'diagramDataflow', cycle: 'diagramCycle', comparison: 'diagramComparison', architecture: 'diagramArchitecture', timeline: 'diagramTimeline' }[kind] || kind);
+    }
+
+    function providerLabel(provider) {
+      return ({
+        rules: t('rulesMode'), manual: t('manualMode'), none: t('noneProvider'), edge: t('edgeNarration'),
+        openai: 'OpenAI', gemini: 'Gemini', qwen: 'Qwen', zhipu: 'Zhipu', local: t('localLlm'),
+        'external-agent': t('externalAgent'), minimax: 'MiniMax', pexels: 'Pexels', pixabay: 'Pixabay', elevenlabs: 'ElevenLabs'
+      })[provider] || provider;
     }
 
     function notify(message, isError = false) {
@@ -595,6 +721,54 @@
       renderProfiles();
     }
 
+    function fillProviderSelect(select, providers, selected) {
+      if (!select) return;
+      select.innerHTML = providers.map((provider) => `<option value="${escapeHtml(provider)}">${escapeHtml(providerLabel(provider))}</option>`).join('');
+      if (providers.includes(selected)) select.value = selected;
+    }
+
+    function renderProviderSettings() {
+      if (!state.settings) return;
+      document.querySelectorAll('[data-route]').forEach((select) => {
+        const route = select.dataset.route;
+        fillProviderSelect(select, state.settings.catalog[route] || [], state.settings.routing[route]);
+      });
+      fillProviderSelect(document.getElementById('project-content-provider'), state.settings.catalog.content, state.settings.routing.content);
+      fillProviderSelect(document.getElementById('project-diagram-provider'), state.settings.catalog.diagram, state.settings.routing.diagram);
+      document.querySelectorAll('[data-service][data-field]').forEach((input) => {
+        const config = state.settings.services[input.dataset.service] || {};
+        if (input.dataset.field !== 'api_key') input.value = config[input.dataset.field] || '';
+        else input.value = '';
+      });
+      document.querySelectorAll('[data-service-status]').forEach((status) => {
+        const config = state.settings.services[status.dataset.service] || {};
+        status.textContent = config.configured ? `${t('configured')} ${config.key_hint || ''}`.trim() : t('notConfigured');
+        status.classList.toggle('configured', Boolean(config.configured));
+      });
+      document.querySelectorAll('[data-clear-service]').forEach((input) => { input.checked = false; });
+    }
+
+    async function loadSettings() {
+      state.settings = await request('/api/settings');
+      renderProviderSettings();
+    }
+
+    function settingsPayload() {
+      const routing = {};
+      document.querySelectorAll('[data-route]').forEach((select) => { routing[select.dataset.route] = select.value; });
+      const services = {};
+      document.querySelectorAll('[data-service][data-field]').forEach((input) => {
+        services[input.dataset.service] ||= {};
+        services[input.dataset.service][input.dataset.field] = input.value;
+      });
+      document.querySelectorAll('[data-clear-service]').forEach((input) => {
+        if (!input.checked) return;
+        services[input.dataset.clearService] ||= {};
+        services[input.dataset.clearService].clear_api_key = true;
+      });
+      return { routing, services };
+    }
+
     function renderProfiles() {
       const select = document.getElementById('project-profile');
       const current = select.value;
@@ -621,6 +795,7 @@
       if ([translations.en.audienceDefault, translations.zh.audienceDefault].includes(audience.value)) audience.value = t('audienceDefault');
       if ([translations.en.venueDefault, translations.zh.venueDefault].includes(venue.value)) venue.value = t('venueDefault');
       renderProfiles();
+      renderProviderSettings();
       totals();
       renderRows();
       if (state.selected) selectProject(state.selected);
@@ -630,10 +805,28 @@
     document.getElementById('open-create').addEventListener('click', () => dialog.showModal());
     document.getElementById('close-create').addEventListener('click', () => dialog.close());
     document.getElementById('cancel-create').addEventListener('click', () => dialog.close());
+    document.getElementById('open-settings').addEventListener('click', async () => {
+      try {
+        await loadSettings();
+        document.getElementById('settings-dialog').showModal();
+      } catch (error) {
+        notify(error.message, true);
+      }
+    });
     document.getElementById('open-help').addEventListener('click', () => document.getElementById('help-dialog').showModal());
     document.getElementById('open-changelog').addEventListener('click', () => document.getElementById('changelog-dialog').showModal());
     document.querySelectorAll('[data-dialog-close]').forEach((button) => button.addEventListener('click', () => document.getElementById(button.dataset.dialogClose).close()));
     document.querySelectorAll('[data-language]').forEach((button) => button.addEventListener('click', () => applyLanguage(button.dataset.language)));
+    document.getElementById('settings-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      try {
+        state.settings = await request('/api/settings', { method: 'POST', body: JSON.stringify(settingsPayload()) });
+        renderProviderSettings();
+        notify(t('settingsSaved'));
+      } catch (error) {
+        notify(error.message, true);
+      }
+    });
     document.getElementById('create-form').addEventListener('submit', async (event) => {
       event.preventDefault();
       const form = new FormData(event.currentTarget);
@@ -642,6 +835,7 @@
         dialog.close();
         event.currentTarget.reset();
         applyLanguage(state.language);
+        renderProviderSettings();
         notify(t('createdProject', { id: project.id }));
         state.selected = project.id;
         await refresh();
@@ -650,7 +844,7 @@
       }
     });
     applyLanguage(state.language);
-    Promise.all([loadProfiles(), refresh()]).catch((error) => notify(error.message, true));
+    Promise.all([loadProfiles(), loadSettings(), refresh()]).catch((error) => notify(error.message, true));
   </script>
 </body>
 </html>

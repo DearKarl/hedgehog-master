@@ -14,6 +14,15 @@ from pathlib import Path
 from typing import Any
 from xml.etree import ElementTree as ET
 
+from content_provider import generate_content, generate_diagram, write_external_request
+from provider_settings import (
+    CONTENT_PROVIDERS,
+    DIAGRAM_PROVIDERS,
+    load_settings,
+    resolve_model,
+    safe_provider_id,
+)
+
 
 SCHEMA_ROOT = "../../../skills/hedgehog-master/research/schemas"
 CLAIM_TERMS = re.compile(
@@ -490,6 +499,222 @@ def _summary_bullet(value: str, limit: int = 160) -> str:
     return (shortened or compact[: limit - 3]).strip() + "..."
 
 
+def _evidence_catalog(brief: str, claims: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    evidence = [
+        {
+            "id": "brief-1",
+            "source_id": "brief",
+            "locator": "presentation brief",
+            "excerpt": _clean_text(brief)[:1200] or "Create a formal research presentation.",
+        }
+    ]
+    seen = {"brief-1"}
+    for claim in claims:
+        for citation in claim.get("citations", []):
+            source_id = str(citation.get("source_id") or "").strip()
+            locator = str(citation.get("locator") or "evidence").strip()
+            suffix = f"p{citation['page']}" if citation.get("page") else f"l{citation.get('line', 1)}"
+            base = re.sub(r"[^A-Za-z0-9_-]+", "-", f"{source_id}-{suffix}").strip("-") or "evidence"
+            evidence_id = base
+            counter = 2
+            while evidence_id in seen:
+                evidence_id = f"{base}-{counter}"
+                counter += 1
+            seen.add(evidence_id)
+            item = {
+                "id": evidence_id,
+                "source_id": source_id,
+                "locator": locator,
+                "excerpt": str(citation.get("excerpt") or claim.get("text") or "")[:1200],
+            }
+            if citation.get("page"):
+                item["page"] = citation["page"]
+            if citation.get("line"):
+                item["line"] = citation["line"]
+            evidence.append(item)
+    return evidence[:32]
+
+
+def _provider_claims(
+    payload: dict[str, Any], evidence: list[dict[str, Any]]
+) -> tuple[list[dict[str, Any]], list[str]]:
+    evidence_by_id = {item["id"]: item for item in evidence}
+    claims: list[dict[str, Any]] = []
+    warnings: list[str] = []
+    for index, item in enumerate(payload.get("claims", []), start=1):
+        selected = [evidence_by_id[value] for value in item.get("evidence_ids", []) if value in evidence_by_id]
+        if not selected:
+            continue
+        text = str(item["text"]).strip()
+        actual_words = len(re.findall(r"\b\w+(?:[-']\w+)*\b", text))
+        actual_characters = len(re.sub(r"\s+", "", text))
+        if item.get("word_count") != actual_words or item.get("character_count") != actual_characters:
+            warnings.append(
+                f"Generated claim {index} reported {item.get('word_count')} words/{item.get('character_count')} "
+                f"characters; Harness counted {actual_words}/{actual_characters}."
+            )
+        source_ids = list(dict.fromkeys(entry["source_id"] for entry in selected))
+        citations = []
+        for entry in selected:
+            citation = {
+                "source_id": entry["source_id"],
+                "locator": entry["locator"],
+                "excerpt": entry["excerpt"],
+            }
+            if entry.get("page"):
+                citation["page"] = entry["page"]
+            if entry.get("line"):
+                citation["line"] = entry["line"]
+            citations.append(citation)
+        claims.append(
+            {
+                "id": f"claim-generated-{index}",
+                "text": text,
+                "status": "draft" if source_ids == ["brief"] else "verified",
+                "source_ids": source_ids,
+                "evidence": "Model-assisted synthesis constrained to registered evidence identifiers.",
+                "citations": citations,
+                "confidence": float(item["confidence"]),
+            }
+        )
+    return claims, warnings
+
+
+def _provider_storyboard(
+    title: str,
+    payload: dict[str, Any],
+    claims: list[dict[str, Any]],
+    diagram: dict[str, Any],
+    formulas: list[dict[str, Any]],
+    images: list[dict[str, Any]],
+) -> dict[str, Any]:
+    slides: list[dict[str, Any]] = [
+        {
+            "id": "cover",
+            "layout": "cover",
+            "title": title,
+            "subtitle": str(payload.get("summary") or "Evidence-linked scientific presentation")[:220],
+            **({"image_ids": ["cover-visual"]} if images else {}),
+        }
+    ]
+    used_ids = {"cover", "method-diagram", "formulation"}
+    for index, item in enumerate(payload.get("slides", []), start=1):
+        base = re.sub(r"[^A-Za-z0-9_-]+", "-", str(item.get("id") or f"section-{index}")).strip("-")
+        slide_id = base if base and base[0].isalpha() else f"section-{index}"
+        counter = 2
+        candidate = slide_id
+        while candidate in used_ids:
+            candidate = f"{slide_id}-{counter}"
+            counter += 1
+        slide_id = candidate
+        used_ids.add(slide_id)
+        claim_ids = [
+            claims[claim_index]["id"]
+            for claim_index in item.get("claim_indexes", [])
+            if 0 <= claim_index < len(claims)
+        ]
+        slide = {
+            "id": slide_id,
+            "layout": item["layout"],
+            "title": str(item["title"]).strip(),
+        }
+        if item.get("subtitle"):
+            slide["subtitle"] = str(item["subtitle"]).strip()
+        if item.get("bullets"):
+            slide["bullets"] = [str(value).strip() for value in item["bullets"] if str(value).strip()]
+        if claim_ids:
+            slide["claim_ids"] = claim_ids
+        slides.append(slide)
+
+    diagram_slide = {
+        "id": "method-diagram",
+        "layout": "diagram",
+        "title": diagram["title"][:110],
+        "subtitle": "The semantic structure is compiled locally into a deterministic scientific figure.",
+        "diagram": "research/diagrams/planned.diagram.json",
+        **({"claim_ids": [claims[0]["id"]]} if claims else {}),
+    }
+    closing_index = next((index for index, slide in enumerate(slides) if slide["layout"] == "closing"), len(slides))
+    slides.insert(closing_index, diagram_slide)
+    if formulas:
+        slides.insert(
+            closing_index + 1,
+            {
+                "id": "formulation",
+                "layout": "evidence",
+                "title": "The formulation states the central relationship explicitly",
+                "subtitle": "Variables and assumptions remain linked to the registered evidence.",
+                "formula_ids": [item["id"] for item in formulas[:3]],
+                **({"claim_ids": [claims[0]["id"]]} if claims else {}),
+            },
+        )
+    if not any(slide["layout"] == "closing" for slide in slides):
+        slides.append(
+            {
+                "id": "closing",
+                "layout": "closing",
+                "title": f"Implications for {title}"[:110],
+                "subtitle": "Review the evidence, limitations, and next experiment before publication.",
+                "bullets": [_summary_bullet(claim["text"]) for claim in claims[:2]],
+            }
+        )
+    return {"$schema": f"{SCHEMA_ROOT}/deck.schema.json", "schema_version": "1.1", "slides": slides}
+
+
+def _accepted_diagram(payload: dict[str, Any], evidence: list[dict[str, Any]]) -> dict[str, Any] | None:
+    expected_direction = (
+        "clockwise"
+        if payload.get("kind") == "cycle"
+        else "top-to-bottom"
+        if payload.get("kind") == "architecture"
+        else "left-to-right"
+    )
+    if payload.get("direction") != expected_direction:
+        return None
+    node_ids = [str(item.get("id") or "") for item in payload.get("nodes", [])]
+    if len(node_ids) != len(set(node_ids)) or not node_ids:
+        return None
+    if any(edge.get("from") not in node_ids or edge.get("to") not in node_ids for edge in payload.get("edges", [])):
+        return None
+    evidence_by_id = {item["id"]: item for item in evidence}
+    accepted = json.loads(json.dumps(payload))
+    used_evidence: dict[str, str] = {}
+    for edge in accepted.get("edges", []):
+        evidence_ref = edge.get("evidenceRef")
+        if not evidence_ref or evidence_ref not in evidence_by_id:
+            edge.pop("evidenceRef", None)
+        elif evidence_ref:
+            used_evidence[evidence_ref] = evidence_by_id[evidence_ref]["excerpt"][:320]
+    accepted["metadata"] = dict(accepted.get("metadata") or {})
+    accepted["metadata"]["evidence"] = used_evidence
+    return accepted
+
+
+def _requested_length_warning(brief: str, payload: dict[str, Any]) -> str | None:
+    chinese = re.search(r"(\d{2,4})\s*字", brief)
+    english = re.search(r"(\d{2,4})\s*words?", brief, flags=re.IGNORECASE)
+    if not chinese and not english:
+        return None
+    target = int((chinese or english).group(1))
+    candidates = [str(payload.get("summary") or "")]
+    candidates.extend(
+        str(bullet)
+        for slide in payload.get("slides", [])
+        for bullet in slide.get("bullets", [])
+    )
+    counts = (
+        [len(re.sub(r"\s+", "", value)) for value in candidates]
+        if chinese
+        else [len(re.findall(r"\b\w+(?:[-']\w+)*\b", value)) for value in candidates]
+    )
+    tolerance = max(3, round(target * 0.1))
+    if any(abs(count - target) <= tolerance for count in counts):
+        return None
+    unit = "characters" if chinese else "words"
+    nearest = min(counts, key=lambda count: abs(count - target)) if counts else 0
+    return f"Requested {target} {unit}; nearest generated prose block contains {nearest}."
+
+
 def _storyboard(
     title: str,
     brief: str,
@@ -675,10 +900,89 @@ def plan_project(project: Path) -> dict[str, Any]:
         )
 
     diagram, diagram_summaries = _diagram_from_inputs(brief, code_paths)
-    formula_rendering = str((manifest.get("policy") or {}).get("formula_rendering") or "editable-text")
+    policy = manifest.setdefault("policy", {})
+    settings = load_settings()
+    content_provider = safe_provider_id(
+        policy.get("content_provider", "rules"), CONTENT_PROVIDERS
+    )
+    diagram_provider = safe_provider_id(
+        policy.get("diagram_provider", "rules"), DIAGRAM_PROVIDERS
+    )
+    evidence = _evidence_catalog(brief, claims)
+    provider_context = {
+        "schema_version": "1.0",
+        "project": {
+            "id": manifest["id"],
+            "title": title,
+            "audience": manifest.get("audience"),
+            "venue": manifest.get("venue"),
+        },
+        "brief": brief,
+        "evidence": evidence,
+        "local_claims": [
+            {
+                "text": claim["text"],
+                "source_ids": claim["source_ids"],
+                "confidence": claim.get("confidence"),
+            }
+            for claim in claims[:12]
+        ],
+        "code_analysis": diagram_summaries[:16],
+        "constraints": {
+            "model_controls_geometry": False,
+            "maximum_slides": 12,
+            "allowed_diagram_kinds": ["dataflow", "cycle", "comparison", "architecture", "timeline"],
+        },
+    }
+
+    content_result = generate_content(content_provider, settings, provider_context)
+    if content_result.status == "pending":
+        write_external_request(
+            project / "analysis" / "content_request.json",
+            "content",
+            content_provider,
+            content_result.model,
+            provider_context,
+        )
+    generated_claims: list[dict[str, Any]] = []
+    content_payload = content_result.payload
+    if content_result.status == "generated" and content_payload:
+        generated_claims, count_warnings = _provider_claims(content_payload, evidence)
+        content_result.warnings.extend(count_warnings)
+        if not generated_claims:
+            content_result.status = "fallback"
+            content_result.warnings.append("No generated claim retained a registered evidence identifier.")
+        length_warning = _requested_length_warning(brief, content_payload)
+        if length_warning:
+            content_result.warnings.append(length_warning)
+    warnings.extend(content_result.warnings)
+
+    diagram_result = generate_diagram(diagram_provider, settings, provider_context)
+    if diagram_result.status == "pending":
+        write_external_request(
+            project / "analysis" / "diagram_request.json",
+            "diagram",
+            diagram_provider,
+            diagram_result.model,
+            provider_context,
+        )
+    if diagram_result.status == "generated" and diagram_result.payload:
+        generated_diagram = _accepted_diagram(diagram_result.payload, evidence)
+        if generated_diagram:
+            diagram = generated_diagram
+        else:
+            diagram_result.status = "fallback"
+            diagram_result.warnings.append("Generated Diagram IR contains invalid node or edge references.")
+    warnings.extend(diagram_result.warnings)
+
+    formula_rendering = str(policy.get("formula_rendering") or "editable-text")
     formulas = _extract_formulas(documents, brief, formula_rendering)
     images = _image_items(manifest["id"], title, brief)
-    deck = _storyboard(title, brief, claims, diagram, formulas, images)
+    if content_result.status == "generated" and content_payload and generated_claims:
+        claims = generated_claims
+        deck = _provider_storyboard(title, content_payload, claims, diagram, formulas, images)
+    else:
+        deck = _storyboard(title, brief, claims, diagram, formulas, images)
 
     _write_json(
         project / "research" / "sources.json",
@@ -720,14 +1024,42 @@ def plan_project(project: Path) -> dict[str, Any]:
             "plan": "analysis/plan.json",
         }
     )
-    policy = manifest.setdefault("policy", {})
     policy.setdefault("image_generation", "manual")
     policy.setdefault("formula_rendering", "editable-text")
+    policy["content_provider"] = content_provider
+    policy["content_model"] = resolve_model(settings, content_provider, "content")
+    policy["diagram_provider"] = diagram_provider
+    policy["diagram_model"] = resolve_model(settings, diagram_provider, "diagram")
     _write_json(manifest_path, manifest)
+
+    provider_trace = {
+        "schema_version": "1.0",
+        "generated_on": date.today().isoformat(),
+        "content": {
+            "provider": content_result.provider,
+            "model": content_result.model,
+            "status": content_result.status,
+            "warnings": content_result.warnings,
+        },
+        "diagram": {
+            "provider": diagram_result.provider,
+            "model": diagram_result.model,
+            "status": diagram_result.status,
+            "warnings": diagram_result.warnings,
+        },
+        "guardrails": {
+            "structured_output": True,
+            "evidence_ids_validated": True,
+            "text_limits_validated": True,
+            "diagram_ir_validated": True,
+            "model_controls_geometry": False,
+        },
+    }
+    _write_json(project / "analysis" / "provider_trace.json", provider_trace)
 
     report = {
         "schema_version": "1.0",
-        "planner": "hedgehog-local-v1",
+        "planner": "hedgehog-provider-v1",
         "planned_on": date.today().isoformat(),
         "brief": brief,
         "sources": len(sources),
@@ -737,6 +1069,10 @@ def plan_project(project: Path) -> dict[str, Any]:
         "formulas": len(formulas),
         "images": len(images),
         "code_analysis": diagram_summaries,
+        "content_provider": content_provider,
+        "content_status": content_result.status,
+        "diagram_provider": diagram_provider,
+        "diagram_status": diagram_result.status,
         "warnings": warnings,
     }
     _write_json(project / "analysis" / "plan.json", report)

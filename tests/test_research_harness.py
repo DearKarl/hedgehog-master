@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import os
+import stat
 import sys
 import tempfile
 import unittest
@@ -11,6 +13,9 @@ SCRIPT_DIR = Path(__file__).resolve().parents[1] / "skills" / "hedgehog-master" 
 sys.path.insert(0, str(SCRIPT_DIR))
 
 import research_harness as harness  # noqa: E402
+import content_provider  # noqa: E402
+import provider_settings  # noqa: E402
+import research_planner  # noqa: E402
 import research_template  # noqa: E402
 
 
@@ -19,9 +24,15 @@ class ResearchHarnessTests(unittest.TestCase):
         self.temp_dir = tempfile.TemporaryDirectory()
         self.original_projects_dir = harness.PROJECTS_DIR
         harness.PROJECTS_DIR = Path(self.temp_dir.name)
+        self.original_settings_file = os.environ.get("HEDGEHOG_MASTER_SETTINGS_FILE")
+        os.environ["HEDGEHOG_MASTER_SETTINGS_FILE"] = str(Path(self.temp_dir.name) / "settings.json")
 
     def tearDown(self) -> None:
         harness.PROJECTS_DIR = self.original_projects_dir
+        if self.original_settings_file is None:
+            os.environ.pop("HEDGEHOG_MASTER_SETTINGS_FILE", None)
+        else:
+            os.environ["HEDGEHOG_MASTER_SETTINGS_FILE"] = self.original_settings_file
         self.temp_dir.cleanup()
 
     def test_demo_project_has_valid_cross_file_references(self) -> None:
@@ -138,6 +149,117 @@ def export_results():
         self.assertEqual(harness.editable_formula_text(r"E = mc^2"), "E = mc²")
         self.assertEqual(harness.editable_formula_text(r"\frac{a}{b} \leq 1"), "(a)/(b) <= 1")
 
+    def test_provider_settings_store_secrets_locally_and_mask_api_output(self) -> None:
+        saved = provider_settings.save_settings(
+            {
+                "routing": {"content": "openai", "diagram": "local", "image": "openai"},
+                "services": {"openai": {"api_key": "unit-test-secret", "content_model": "test-model"}},
+            }
+        )
+        public = provider_settings.public_settings(saved)
+        mode = stat.S_IMODE(provider_settings.settings_path().stat().st_mode)
+
+        self.assertEqual(mode, 0o600)
+        self.assertEqual(public["routing"]["content"], "openai")
+        self.assertNotIn("api_key", public["services"]["openai"])
+        self.assertTrue(public["services"]["openai"]["configured"])
+        self.assertEqual(public["services"]["openai"]["key_hint"], "...cret")
+
+    def test_openai_content_provider_requires_structured_output(self) -> None:
+        settings = provider_settings.load_settings()
+        settings["services"]["openai"]["api_key"] = "unit-test-key"
+        payload = {
+            "summary": "A concise evidence-linked introduction.",
+            "claims": [{"text": "The profile emphasizes research engineering.", "word_count": 5, "character_count": 40, "evidence_ids": ["brief-1"], "confidence": 0.8}],
+            "slides": [{"id": "profile", "layout": "section", "title": "Research profile", "subtitle": "Academic focus", "bullets": ["Research engineering and reproducible systems."], "claim_indexes": [0]}],
+        }
+
+        def fake_request(method, url, **kwargs):
+            self.assertTrue(url.endswith("/responses"))
+            self.assertEqual(kwargs["json"]["text"]["format"]["type"], "json_schema")
+            return content_provider.HttpResponse(200, json.dumps({"output_text": json.dumps(payload)}).encode())
+
+        result = content_provider.generate_content("openai", settings, {"evidence": []}, request=fake_request)
+
+        self.assertEqual(result.status, "generated")
+        self.assertEqual(result.payload, payload)
+
+    def test_diagram_provider_returns_ir_without_geometry(self) -> None:
+        settings = provider_settings.load_settings()
+        settings["services"]["openai"]["api_key"] = "unit-test-key"
+        payload = {
+            "irVersion": "0.2",
+            "id": "scientific-flow",
+            "title": "Scientific evidence flow",
+            "kind": "dataflow",
+            "direction": "left-to-right",
+            "nodes": [
+                {"id": "source", "label": "Evidence", "role": "source", "group": "Input"},
+                {"id": "output", "label": "Conclusion", "role": "output", "group": "Result"},
+            ],
+            "edges": [{"id": "source-output", "from": "source", "to": "output", "label": "supports", "evidenceRef": "brief-1"}],
+            "metadata": {},
+        }
+
+        def fake_request(method, url, **kwargs):
+            schema = kwargs["json"]["text"]["format"]["schema"]
+            self.assertNotIn("x", schema["properties"]["nodes"]["items"]["properties"])
+            return content_provider.HttpResponse(200, json.dumps({"output_text": json.dumps(payload)}).encode())
+
+        result = content_provider.generate_diagram("openai", settings, {"evidence": []}, request=fake_request)
+
+        self.assertEqual(result.status, "generated")
+        self.assertEqual(result.payload["kind"], "dataflow")
+
+    def test_provider_diagram_becomes_storyboard_and_built_slide_material(self) -> None:
+        content_payload = {
+            "summary": "A research profile grounded in the supplied brief.",
+            "claims": [{"text": "The work focuses on reliable scientific systems.", "word_count": 7, "character_count": 42, "evidence_ids": ["brief-1"], "confidence": 0.75}],
+            "slides": [{"id": "profile", "layout": "section", "title": "Scientific systems define the profile", "subtitle": "Research introduction", "bullets": ["Reliable scientific systems connect evidence, models, and reproducible outputs."], "claim_indexes": [0]}],
+        }
+        diagram_payload = {
+            "irVersion": "0.2",
+            "id": "research-profile",
+            "title": "Evidence-to-output research architecture",
+            "kind": "architecture",
+            "direction": "top-to-bottom",
+            "nodes": [
+                {"id": "evidence", "label": "Registered evidence", "role": "source", "group": "Input"},
+                {"id": "analysis", "label": "Scientific analysis", "role": "model", "group": "Method"},
+                {"id": "output", "label": "Research output", "role": "output", "group": "Result"},
+            ],
+            "edges": [
+                {"id": "evidence-analysis", "from": "evidence", "to": "analysis", "evidenceRef": "brief-1"},
+                {"id": "analysis-output", "from": "analysis", "to": "output"},
+            ],
+            "metadata": {},
+        }
+        original_content = research_planner.generate_content
+        original_diagram = research_planner.generate_diagram
+        research_planner.generate_content = lambda *args, **kwargs: content_provider.ProviderResult("openai", "test-content", "generated", content_payload)
+        research_planner.generate_diagram = lambda *args, **kwargs: content_provider.ProviderResult("openai", "test-diagram", "generated", diagram_payload)
+        try:
+            project = harness.initialize_project(
+                "provider-project",
+                title="Provider Project",
+                brief="Create a formal profile from this evidence.",
+                content_provider="openai",
+                diagram_provider="openai",
+            )
+            deck = harness.load_json(project / "storyboard" / "deck.json")
+            diagram = harness.load_json(project / "research" / "diagrams" / "planned.diagram.json")
+            outputs = harness.build_project(project)
+        finally:
+            research_planner.generate_content = original_content
+            research_planner.generate_diagram = original_diagram
+
+        self.assertTrue(any(slide.get("diagram") == "research/diagrams/planned.diagram.json" for slide in deck["slides"]))
+        self.assertEqual(diagram["kind"], "architecture")
+        figure = project / "research" / "figures" / "planned.diagram.svg"
+        self.assertTrue(figure.is_file())
+        self.assertIn("Registered", figure.read_text(encoding="utf-8"))
+        self.assertTrue(any("method-diagram" in output.name for output in outputs))
+
     def test_template_contract_maps_semantic_layouts_and_slots(self) -> None:
         manifest = {
             "slideSize": {"width_px": 1280, "height_px": 720},
@@ -204,12 +326,14 @@ def export_results():
     def test_workbench_version_and_bilingual_controls_are_registered(self) -> None:
         index = (harness.REPO_ROOT / "index.html").read_text(encoding="utf-8")
 
-        self.assertEqual(harness.APP_VERSION, "0.2.1-beta")
-        self.assertEqual(harness.WorkbenchHandler.server_version, "HedgehogMaster/0.2.1-beta")
+        self.assertEqual(harness.APP_VERSION, "0.3.0-beta")
+        self.assertEqual(harness.WorkbenchHandler.server_version, "HedgehogMaster/0.3.0-beta")
         self.assertIn('data-language="en"', index)
         self.assertIn('data-language="zh"', index)
         self.assertIn('id="help-dialog"', index)
         self.assertIn('id="changelog-dialog"', index)
+        self.assertIn('id="settings-dialog"', index)
+        self.assertIn('AutoResearch-Future', index)
         self.assertIn('href="/assets/branding/hedgehog-master-mark.png"', index)
         self.assertIn('src="/assets/branding/hedgehog-master-mark.png"', index)
         self.assertIn('class="brand-mark" href="/"', index)
