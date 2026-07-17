@@ -2,7 +2,7 @@ export const projectIdentity = {
   name: "Hedgehog Master Diagram IR",
   module: "diagram-ir",
   repository: "hedgehog-master",
-  scope: "v0.1a"
+  scope: "v0.2"
 } as const;
 
 export function getProjectName(): string {
@@ -26,7 +26,7 @@ export { formatDiagnostics } from "./errors/format.js";
 export { canonicalizeDiagramIr } from "./ir/canonicalize.js";
 export { sortDiagnostics } from "./ir/diagnostics.js";
 export { parseDiagramJson } from "./ir/parse.js";
-export { DiagramIrV01aSchema } from "./ir/schema.js";
+export { DiagramIrSchema, DiagramIrV01aSchema } from "./ir/schema.js";
 export {
   schemaValidateDiagramIr,
   semanticValidateDiagramIr,

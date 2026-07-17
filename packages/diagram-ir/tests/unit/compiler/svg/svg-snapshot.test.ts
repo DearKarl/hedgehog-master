@@ -38,11 +38,11 @@ describe("simple dataflow SVG snapshot", () => {
           <polyline id="edge-metric-output" points="1195,450 1227.5,450 1227.5,450 1260,450" stroke="#334155" fill="none" marker-end="url(#arrow)" />
         </g>
         <g id="nodes">
-          <rect id="source-data" x="120" y="414" width="220" height="72" rx="12" fill="#E0F2FE" stroke="#0F172A" />
-          <rect id="clean-data" x="405" y="414" width="220" height="72" rx="12" fill="#DCFCE7" stroke="#0F172A" />
-          <rect id="train-model" x="690" y="414" width="220" height="72" rx="12" fill="#EDE9FE" stroke="#0F172A" />
-          <rect id="quality-metric" x="975" y="414" width="220" height="72" rx="12" fill="#FEF3C7" stroke="#0F172A" />
-          <rect id="report-output" x="1260" y="414" width="220" height="72" rx="12" fill="#FFE4E6" stroke="#0F172A" />
+          <rect id="source-data" x="120" y="414" width="220" height="72" rx="6" fill="#E0F2FE" stroke="#0F172A" stroke-width="1.5" />
+          <rect id="clean-data" x="405" y="414" width="220" height="72" rx="6" fill="#DCFCE7" stroke="#0F172A" stroke-width="1.5" />
+          <rect id="train-model" x="690" y="414" width="220" height="72" rx="6" fill="#EDE9FE" stroke="#0F172A" stroke-width="1.5" />
+          <rect id="quality-metric" x="975" y="414" width="220" height="72" rx="6" fill="#FEF3C7" stroke="#0F172A" stroke-width="1.5" />
+          <rect id="report-output" x="1260" y="414" width="220" height="72" rx="6" fill="#FFE4E6" stroke="#0F172A" stroke-width="1.5" />
         </g>
         <g id="labels">
           <text id="source-data-label" x="230" y="450" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" fill="#0F172A">

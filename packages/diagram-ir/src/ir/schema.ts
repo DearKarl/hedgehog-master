@@ -15,7 +15,8 @@ export const NodeV01aSchema = Type.Object(
   {
     id: SvgSafeId,
     label: NonEmptyString,
-    role: NodeRoleSchema
+    role: NodeRoleSchema,
+    group: Type.Optional(NonEmptyString)
   },
   { additionalProperties: false }
 );
@@ -33,19 +34,36 @@ export const EdgeV01aSchema = Type.Object(
 
 export const MetadataV01aSchema = Type.Record(Type.String(), Type.Unknown());
 
-export const DiagramIrV01aSchema = Type.Object(
+export const DiagramKindSchema = Type.Union([
+  Type.Literal("dataflow"),
+  Type.Literal("cycle"),
+  Type.Literal("comparison"),
+  Type.Literal("architecture"),
+  Type.Literal("timeline")
+]);
+
+export const DiagramDirectionSchema = Type.Union([
+  Type.Literal("left-to-right"),
+  Type.Literal("top-to-bottom"),
+  Type.Literal("clockwise")
+]);
+
+export const DiagramIrSchema = Type.Object(
   {
-    irVersion: Type.Literal("0.1a"),
+    irVersion: Type.Union([Type.Literal("0.1a"), Type.Literal("0.2")]),
     id: SvgSafeId,
     title: NonEmptyString,
-    kind: Type.Literal("dataflow"),
-    direction: Type.Literal("left-to-right"),
+    kind: DiagramKindSchema,
+    direction: DiagramDirectionSchema,
     nodes: Type.Array(NodeV01aSchema),
     edges: Type.Array(EdgeV01aSchema),
     metadata: MetadataV01aSchema
   },
   {
-    $id: "https://github.com/DearKarl/hedgehog-master/schemas/diagram-ir.v0.1a.schema.json",
+    $id: "https://github.com/DearKarl/hedgehog-master/schemas/diagram-ir.v0.2.schema.json",
     additionalProperties: false
   }
 );
+
+// Compatibility export for existing integrations that imported the v0.1a symbol.
+export const DiagramIrV01aSchema = DiagramIrSchema;

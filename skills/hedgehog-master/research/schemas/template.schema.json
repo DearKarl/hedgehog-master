@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/DearKarl/hedgehog-master/schemas/research-template.v1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "source", "workspace", "canvas", "theme", "layouts"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema_version": {"const": "1.0"},
+    "source": {"type": "string", "pattern": "^inputs/template/[^/]+\\.pptx$"},
+    "workspace": {"const": "template/workspace"},
+    "canvas": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["width", "height", "viewbox"],
+      "properties": {
+        "width": {"type": "integer", "minimum": 320},
+        "height": {"type": "integer", "minimum": 240},
+        "viewbox": {"type": "string", "pattern": "^0 0 [0-9]+ [0-9]+$"}
+      }
+    },
+    "theme": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["colors", "fonts"],
+      "properties": {
+        "colors": {
+          "type": "object",
+          "additionalProperties": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}$"}
+        },
+        "fonts": {
+          "type": "object",
+          "additionalProperties": {"type": "string"}
+        }
+      }
+    },
+    "layouts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cover", "section", "diagram", "evidence", "closing"],
+      "properties": {
+        "cover": {"$ref": "#/$defs/layout"},
+        "section": {"$ref": "#/$defs/layout"},
+        "diagram": {"$ref": "#/$defs/layout"},
+        "evidence": {"$ref": "#/$defs/layout"},
+        "closing": {"$ref": "#/$defs/layout"}
+      }
+    }
+  },
+  "$defs": {
+    "rect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y", "width", "height"],
+      "properties": {
+        "x": {"type": "number", "minimum": 0},
+        "y": {"type": "number", "minimum": 0},
+        "width": {"type": "number", "exclusiveMinimum": 0},
+        "height": {"type": "number", "exclusiveMinimum": 0}
+      }
+    },
+    "layout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_layout", "background_layers", "slots"],
+      "properties": {
+        "source_layout": {"type": "string", "minLength": 1},
+        "background_layers": {
+          "type": "array",
+          "items": {"type": "string", "pattern": "^template/workspace/svg/(master|layout)_[A-Za-z0-9_.-]+\\.svg$"},
+          "uniqueItems": true
+        },
+        "slots": {
+          "type": "object",
+          "additionalProperties": {"$ref": "#/$defs/rect"}
+        }
+      }
+    }
+  }
+}

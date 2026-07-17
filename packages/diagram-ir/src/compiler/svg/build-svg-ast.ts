@@ -30,7 +30,7 @@ export function buildSvgAst(layout: LayoutModel): SvgElement {
       element(
         "desc",
         [attr("id", "desc")],
-        [text("Deterministic dataflow diagram generated from LayoutModel")]
+        [text(`Deterministic ${layout.kind} diagram generated from LayoutModel`)]
       ),
       buildDefs(),
       element("rect", [
@@ -87,9 +87,10 @@ function buildNode(node: LayoutNode): SvgElement {
     attr("y", formatNumber(node.y)),
     attr("width", formatNumber(node.width)),
     attr("height", formatNumber(node.height)),
-    attr("rx", "12"),
+    attr("rx", "6"),
     attr("fill", ROLE_FILL[node.role]),
-    attr("stroke", "#0F172A")
+    attr("stroke", "#0F172A"),
+    attr("stroke-width", "1.5")
   ]);
 }
 

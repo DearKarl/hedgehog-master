@@ -83,6 +83,29 @@ describe("Diagram IR v0.1a validation", () => {
     );
   });
 
+  it("accepts an intentional v0.2 cycle", () => {
+    const result = validateDiagramIr({
+      irVersion: "0.2",
+      id: "feedback-cycle",
+      title: "Feedback cycle",
+      kind: "cycle",
+      direction: "clockwise",
+      nodes: [
+        { id: "observe", label: "Observe", role: "source" },
+        { id: "update", label: "Update", role: "model" },
+        { id: "evaluate", label: "Evaluate", role: "metric" }
+      ],
+      edges: [
+        { id: "observe-update", from: "observe", to: "update" },
+        { id: "update-evaluate", from: "update", to: "evaluate" },
+        { id: "evaluate-observe", from: "evaluate", to: "observe" }
+      ],
+      metadata: {}
+    });
+
+    expect(result.ok).toBe(true);
+  });
+
   it("returns IR_PARSE_ERROR for malformed JSON", () => {
     const result = parseDiagramJson('{"irVersion":"0.1a",');
 

@@ -23,13 +23,13 @@ function expectInvalid(document: unknown, keyword: string, instancePath: string)
   );
 }
 
-describe("Diagram IR v0.1a schema", () => {
+describe("Diagram IR v0.2 schema", () => {
   it("accepts the valid simple dataflow fixture", async () => {
     expectValid(await readFixtureJson("valid/simple-dataflow.diagram.json"));
   });
 
   it("keeps the published JSON schema consistent with the TypeBox schema", async () => {
-    const publishedSchema = await readProjectJson("schemas/diagram-ir.v0.1a.schema.json");
+    const publishedSchema = await readProjectJson("schemas/diagram-ir.v0.2.schema.json");
 
     expect(publishedSchema).toEqual(JSON.parse(JSON.stringify(DiagramIrV01aSchema)));
   });
@@ -43,7 +43,30 @@ describe("Diagram IR v0.1a schema", () => {
   });
 
   it("rejects invalid kind values", async () => {
-    expectInvalid(await readFixtureJson("invalid/invalid-kind.diagram.json"), "const", "/kind");
+    expectInvalid(await readFixtureJson("invalid/invalid-kind.diagram.json"), "anyOf", "/kind");
+  });
+
+  it("accepts the v0.2 scientific diagram kinds", async () => {
+    for (const [kind, direction] of [
+      ["cycle", "clockwise"],
+      ["comparison", "left-to-right"],
+      ["architecture", "top-to-bottom"],
+      ["timeline", "left-to-right"]
+    ]) {
+      expectValid({
+        irVersion: "0.2",
+        id: `${kind}-example`,
+        title: `${kind} example`,
+        kind,
+        direction,
+        nodes: [
+          { id: "first", label: "First", role: "source", group: "A" },
+          { id: "second", label: "Second", role: "output", group: "B" }
+        ],
+        edges: [{ id: "first-second", from: "first", to: "second" }],
+        metadata: {}
+      });
+    }
   });
 
   it("rejects invalid node roles", async () => {

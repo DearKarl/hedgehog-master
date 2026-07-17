@@ -6,14 +6,53 @@
   "required": ["schema_version", "id", "title", "audience", "venue", "language", "profile", "canvas", "policy"],
   "properties": {
     "$schema": {"type": "string"},
-    "schema_version": {"const": "1.0"},
+    "schema_version": {"enum": ["1.0", "1.1"]},
     "id": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
     "title": {"type": "string", "minLength": 1},
     "audience": {"type": "string", "minLength": 1},
     "venue": {"type": "string", "minLength": 1},
     "language": {"const": "en"},
     "profile": {"type": "string", "minLength": 1},
-    "canvas": {"const": "ppt169"},
+    "canvas": {"enum": ["ppt169", "template"]},
+    "brief": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["instructions", "path"],
+      "properties": {
+        "instructions": {"type": "string"},
+        "path": {"type": "string", "pattern": "^inputs/instructions\\.md$"}
+      }
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "path", "name"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"},
+          "kind": {"enum": ["template", "paper", "code"]},
+          "path": {"type": "string", "pattern": "^inputs/(template|papers|code)/[^/]+$"},
+          "name": {"type": "string", "minLength": 1},
+          "media_type": {"type": "string", "minLength": 1},
+          "language": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "contracts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sources", "claims", "storyboard"],
+      "properties": {
+        "sources": {"const": "research/sources.json"},
+        "claims": {"const": "research/claims.json"},
+        "storyboard": {"const": "storyboard/deck.json"},
+        "template": {"const": "template/template.json"},
+        "formulas": {"const": "images/formula_manifest.json"},
+        "images": {"const": "images/image_prompts.json"},
+        "plan": {"const": "analysis/plan.json"}
+      }
+    },
     "policy": {
       "type": "object",
       "additionalProperties": false,
@@ -21,8 +60,16 @@
       "properties": {
         "authoring_mode": {"const": "structured-semantics-only"},
         "require_claim_evidence": {"const": true},
-        "citation_style": {"enum": ["numeric", "author-year"]}
+        "citation_style": {"enum": ["numeric", "author-year"]},
+        "image_generation": {"enum": ["manual", "auto"]},
+        "formula_rendering": {"enum": ["editable-text", "raster"]}
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"schema_version": {"const": "1.1"}}},
+      "then": {"required": ["brief", "inputs", "contracts"]}
+    }
+  ]
 }
