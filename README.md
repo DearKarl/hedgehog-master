@@ -50,6 +50,18 @@ Open [http://127.0.0.1:4173](http://127.0.0.1:4173). A new project accepts a PPT
 
 The workbench can switch between English and Chinese from the header and remembers the selection in the local browser. `Guide` explains the complete project workflow, while `Updates` displays the bilingual release history. The lower-left version is read from [`VERSION`](./VERSION); release notes are maintained in [`CHANGELOG.md`](./CHANGELOG.md).
 
+### macOS one-click launcher
+
+Create an HM desktop application linked to the current checkout:
+
+```bash
+packaging/macos/build_app.sh \
+  --output "$HOME/Desktop/Hedgehog Master.app" \
+  --linked-root "$PWD"
+```
+
+Double-clicking the app starts the local service when necessary and opens the workbench. Build a portable evaluation directory and ZIP with `packaging/release/build_release.sh`. See [`packaging/README.md`](./packaging/README.md) for the delivery layout, first-run setup, exclusions, and signing boundary.
+
 ## Command-Line Workflow
 
 Create and automatically plan a research project:

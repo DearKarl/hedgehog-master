@@ -4,6 +4,22 @@ Hedgehog Master follows a bilingual release process. Every user-facing release r
 
 Hedgehog Master 采用双语版本流程。每个面向用户的版本都会在本文件和本地工作台中同步记录中英文说明。
 
+## v0.2.1-beta - 2026-07-17
+
+### English
+
+- Added the HM application icon, browser favicon, and workbench home link.
+- Added a one-click macOS launcher that starts the local service and opens the workbench.
+- Added reproducible source packaging, first-run setup, integrity manifests, and bilingual handoff instructions.
+- Reduced delivery size by excluding Git history, development environments, caches, and large examples.
+
+### 中文
+
+- 新增 HM 应用图标、浏览器图标和工作台主页链接。
+- 新增 macOS 一键启动器，可自动启动本地服务并打开工作台。
+- 新增可复现源码封装、首次安装、完整性清单和双语交付说明。
+- 交付包排除 Git 历史、开发环境、缓存和大型示例，以降低体积。
+
 ## v0.2.0-beta - 2026-07-17
 
 ### English

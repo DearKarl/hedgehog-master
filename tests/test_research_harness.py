@@ -204,12 +204,27 @@ def export_results():
     def test_workbench_version_and_bilingual_controls_are_registered(self) -> None:
         index = (harness.REPO_ROOT / "index.html").read_text(encoding="utf-8")
 
-        self.assertEqual(harness.APP_VERSION, "0.2.0-beta")
-        self.assertEqual(harness.WorkbenchHandler.server_version, "HedgehogMaster/0.2.0-beta")
+        self.assertEqual(harness.APP_VERSION, "0.2.1-beta")
+        self.assertEqual(harness.WorkbenchHandler.server_version, "HedgehogMaster/0.2.1-beta")
         self.assertIn('data-language="en"', index)
         self.assertIn('data-language="zh"', index)
         self.assertIn('id="help-dialog"', index)
         self.assertIn('id="changelog-dialog"', index)
+        self.assertIn('href="/assets/branding/hm-mark.svg"', index)
+        self.assertIn('class="brand-mark" href="/"', index)
+
+    def test_project_validation_supports_a_symlinked_projects_directory(self) -> None:
+        real_projects = Path(self.temp_dir.name) / "shared-projects"
+        linked_projects = Path(self.temp_dir.name) / "runtime" / "projects"
+        real_projects.mkdir()
+        linked_projects.parent.mkdir()
+        linked_projects.symlink_to(real_projects, target_is_directory=True)
+        harness.PROJECTS_DIR = linked_projects
+
+        project = harness.initialize_project("linked-demo", title="Linked Demo", demo=True)
+        report = harness.validate_project(project)
+
+        self.assertTrue(report.ok, report.errors)
 
 
 if __name__ == "__main__":
