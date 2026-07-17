@@ -210,7 +210,8 @@ def export_results():
         self.assertIn('data-language="zh"', index)
         self.assertIn('id="help-dialog"', index)
         self.assertIn('id="changelog-dialog"', index)
-        self.assertIn('href="/assets/branding/hm-mark.svg"', index)
+        self.assertIn('href="/assets/branding/hedgehog-master-mark.png"', index)
+        self.assertIn('src="/assets/branding/hedgehog-master-mark.png"', index)
         self.assertIn('class="brand-mark" href="/"', index)
 
     def test_project_validation_supports_a_symlinked_projects_directory(self) -> None:

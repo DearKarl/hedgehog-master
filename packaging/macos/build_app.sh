@@ -54,11 +54,9 @@ if [[ -n "$LINKED_ROOT" ]]; then
   printf '%s\n' "$(cd "$RUNTIME_ROOT/.." && pwd)/.venv/bin/python" > "$RESOURCES_DIR/python-path"
 fi
 
-ICON_SOURCE="$REPO_ROOT/assets/branding/hm-mark.svg"
+ICON_SOURCE="$REPO_ROOT/assets/branding/hedgehog-master-icon.png"
 ICONSET="$TMP_DIR/AppIcon.iconset"
-mkdir -p "$ICONSET" "$TMP_DIR/render"
-qlmanage -t -s 1024 -o "$TMP_DIR/render" "$ICON_SOURCE" >/dev/null 2>&1
-RENDERED_ICON="$TMP_DIR/render/$(basename "$ICON_SOURCE").png"
+mkdir -p "$ICONSET"
 
 for specification in \
   "16 icon_16x16.png" \
@@ -73,7 +71,7 @@ for specification in \
   "1024 icon_512x512@2x.png"; do
   size="${specification%% *}"
   filename="${specification#* }"
-  sips -z "$size" "$size" "$RENDERED_ICON" --out "$ICONSET/$filename" >/dev/null
+  sips -z "$size" "$size" "$ICON_SOURCE" --out "$ICONSET/$filename" >/dev/null
 done
 
 iconutil -c icns "$ICONSET" -o "$RESOURCES_DIR/AppIcon.icns"

@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
-  <link rel="icon" href="/assets/branding/hm-mark.svg" type="image/svg+xml">
+  <link rel="icon" href="/assets/branding/hedgehog-master-mark.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/branding/hedgehog-master-icon.png">
   <title>Hedgehog Master Workbench</title>
   <style>
     :root {
@@ -49,16 +50,16 @@
 
     .brand { padding: 4px 8px 26px; border-bottom: 1px solid #344057; }
     .brand-mark {
-      width: 36px;
-      height: 36px;
-      display: grid;
-      place-items: center;
+      width: 42px;
+      height: 42px;
+      display: block;
       margin-bottom: 14px;
-      border: 2px solid #8fd1c1;
-      color: #8fd1c1;
-      font-weight: 800;
+      overflow: hidden;
+      border: 1px solid #3a465d;
+      border-radius: 8px;
       text-decoration: none;
     }
+    .brand-mark img { display: block; width: 100%; height: 100%; object-fit: cover; }
     .brand-mark:focus-visible { outline: 2px solid #ffffff; outline-offset: 3px; }
     .brand-name { font-size: 21px; line-height: 1.15; font-weight: 760; }
     .brand-mode { margin-top: 6px; color: #aab5c7; font-size: 12px; text-transform: uppercase; }
@@ -285,7 +286,7 @@
   <div class="app">
     <aside class="sidebar">
       <div class="brand">
-        <a class="brand-mark" href="/" aria-label="Open workbench" data-i18n-aria="homeLink">HM</a>
+        <a class="brand-mark" href="/" aria-label="Open workbench" data-i18n-aria="homeLink"><img src="/assets/branding/hedgehog-master-mark.png" alt=""></a>
         <div>
           <div class="brand-name">Hedgehog Master</div>
           <div class="brand-mode">AutoResearch-PPT</div>
