@@ -50,6 +50,18 @@ python3 hedgehog.py serve --port 4173
 
 工作台右上角可以切换中英文，并会在本地浏览器中记住选择。左侧的“说明”介绍完整项目流程，“更新”展示双语版本记录。左下角版本号来自 [`VERSION`](./VERSION)，完整发布记录维护在 [`CHANGELOG.md`](./CHANGELOG.md)。
 
+### macOS 一键启动器
+
+生成一个关联当前仓库的 HM 桌面应用：
+
+```bash
+packaging/macos/build_app.sh \
+  --output "$HOME/Desktop/Hedgehog Master.app" \
+  --linked-root "$PWD"
+```
+
+双击应用后，它会在需要时启动本地服务并打开工作台。运行 `packaging/release/build_release.sh` 可以生成可移交的测试目录和 ZIP。交付结构、首次安装、排除项和签名边界详见 [`packaging/README.md`](./packaging/README.md)。
+
 ## 命令行工作流
 
 创建并自动规划科研项目：

@@ -419,6 +419,7 @@ def initialize_project(
 
 def validate_project(project: Path) -> ValidationReport:
     report = ValidationReport()
+    project_root = project.resolve()
     try:
         manifest = load_json(project / "project.json")
         sources = load_json(project / "research" / "sources.json")
@@ -437,7 +438,7 @@ def validate_project(project: Path) -> ValidationReport:
         relative = item.get("path", "")
         input_path = (project / relative).resolve()
         try:
-            input_path.relative_to(project)
+            input_path.relative_to(project_root)
         except ValueError:
             report.errors.append(f"Input {item.get('id')} escapes the project directory")
         else:
@@ -448,7 +449,7 @@ def validate_project(project: Path) -> ValidationReport:
     if template_relative:
         template_path = (project / template_relative).resolve()
         try:
-            template_path.relative_to(project)
+            template_path.relative_to(project_root)
         except ValueError:
             report.errors.append("Template contract escapes the project directory")
         else:
@@ -462,7 +463,7 @@ def validate_project(project: Path) -> ValidationReport:
                     for layer in binding.get("background_layers", []):
                         layer_path = (project / layer).resolve()
                         try:
-                            layer_path.relative_to(project)
+                            layer_path.relative_to(project_root)
                         except ValueError:
                             report.errors.append(f"Template layer escapes the project directory: {layer}")
                         else:
@@ -480,7 +481,7 @@ def validate_project(project: Path) -> ValidationReport:
             continue
         contract_path = (project / relative).resolve()
         try:
-            contract_path.relative_to(project)
+            contract_path.relative_to(project_root)
         except ValueError:
             report.errors.append(f"{contract_name.title()} contract escapes the project directory")
             continue
@@ -501,7 +502,7 @@ def validate_project(project: Path) -> ValidationReport:
             relative_file = item.get("file") or f"images/{item.get('filename', '')}"
             asset_path = (project / relative_file).resolve()
             try:
-                asset_path.relative_to(project)
+                asset_path.relative_to(project_root)
             except ValueError:
                 report.errors.append(f"Asset {item_id} escapes the project directory")
             else:
@@ -538,7 +539,7 @@ def validate_project(project: Path) -> ValidationReport:
         if diagram:
             diagram_path = (project / diagram).resolve()
             try:
-                diagram_path.relative_to(project)
+                diagram_path.relative_to(project_root)
             except ValueError:
                 report.errors.append(f"Slide {slide_id} diagram escapes the project directory")
             else:
@@ -1429,6 +1430,10 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             return
         if parsed.path in {"/", "/index.html"}:
             self.path = "/index.html"
+            super().do_GET()
+            return
+        branding_pattern = r"/assets/branding/[A-Za-z0-9_.-]+\.(?:svg|png|ico)"
+        if re.fullmatch(branding_pattern, parsed.path):
             super().do_GET()
             return
         preview_pattern = r"/projects/[a-z0-9]+(?:-[a-z0-9]+)*/(?:svg_output|svg_final)/[A-Za-z0-9_.-]+\.svg"

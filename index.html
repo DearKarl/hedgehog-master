@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
+  <link rel="icon" href="/assets/branding/hm-mark.svg" type="image/svg+xml">
   <title>Hedgehog Master Workbench</title>
   <style>
     :root {
@@ -56,7 +57,9 @@
       border: 2px solid #8fd1c1;
       color: #8fd1c1;
       font-weight: 800;
+      text-decoration: none;
     }
+    .brand-mark:focus-visible { outline: 2px solid #ffffff; outline-offset: 3px; }
     .brand-name { font-size: 21px; line-height: 1.15; font-weight: 760; }
     .brand-mode { margin-top: 6px; color: #aab5c7; font-size: 12px; text-transform: uppercase; }
 
@@ -282,7 +285,7 @@
   <div class="app">
     <aside class="sidebar">
       <div class="brand">
-        <div class="brand-mark" aria-hidden="true">HM</div>
+        <a class="brand-mark" href="/" aria-label="Open workbench" data-i18n-aria="homeLink">HM</a>
         <div>
           <div class="brand-name">Hedgehog Master</div>
           <div class="brand-mode">AutoResearch-PPT</div>
@@ -295,7 +298,7 @@
         <button id="open-help" type="button"><span class="nav-icon">?</span><span data-i18n="helpNav">Guide</span></button>
         <button id="open-changelog" type="button"><span class="nav-icon">&#916;</span><span data-i18n="changelogNav">Updates</span></button>
       </nav>
-      <div class="version"><span data-i18n="versionLabel">Beta version</span><strong id="app-version">v0.2.0-beta</strong></div>
+      <div class="version"><span data-i18n="versionLabel">Beta version</span><strong id="app-version">v0.2.1-beta</strong></div>
     </aside>
 
     <main>
@@ -380,6 +383,10 @@
     <div class="dialog-head"><h2 data-i18n="changelogTitle">Release notes</h2><button class="close" data-dialog-close="changelog-dialog" type="button" aria-label="Close" title="Close" data-i18n-aria="close" data-i18n-title="close">&times;</button></div>
     <div class="info-body">
       <section>
+        <div class="release-head"><h3>v0.2.1-beta</h3><span class="release-date">2026-07-17</span></div>
+        <ul><li data-i18n="change021a">Added the HM application icon, favicon, and workbench home link.</li><li data-i18n="change021b">Added a one-click macOS launcher for the local workbench.</li><li data-i18n="change021c">Added reproducible source packaging, setup, integrity manifests, and bilingual handoff instructions.</li></ul>
+      </section>
+      <section>
         <div class="release-head"><h3>v0.2.0-beta</h3><span class="release-date">2026-07-17</span></div>
         <ul><li data-i18n="change020a">Added persistent English and Chinese workbench modes.</li><li data-i18n="change020b">Added automatic Brief, paper, and code planning with cited claims and storyboards.</li><li data-i18n="change020c">Integrated formula and image manifests into the unified build.</li><li data-i18n="change020d">Expanded Diagram IR with cycle, comparison, architecture, and timeline layouts.</li><li data-i18n="change020e">Added the in-app guide, release notes, and centralized version reporting.</li></ul>
       </section>
@@ -395,7 +402,7 @@
   <script>
     const translations = {
       en: {
-        documentTitle: 'Hedgehog Master Workbench', navLabel: 'Workbench views', projectsNav: 'Projects', profilesNav: 'Profiles', qualityNav: 'Quality', helpNav: 'Guide', changelogNav: 'Updates',
+        documentTitle: 'Hedgehog Master Workbench', homeLink: 'Open workbench', navLabel: 'Workbench views', projectsNav: 'Projects', profilesNav: 'Profiles', qualityNav: 'Quality', helpNav: 'Guide', changelogNav: 'Updates',
         versionLabel: 'Beta version', kicker: 'Research operations', workbenchTitle: 'Presentation workbench', languageLabel: 'Language', refresh: 'Refresh projects', newProject: 'New project',
         metricsLabel: 'Repository metrics', projectsMetric: 'Projects', slidesMetric: 'Slides', claimsMetric: 'Verified claims', exportsMetric: 'PPTX exports', researchProjects: 'Research projects',
         projectColumn: 'Project', statusColumn: 'Status', slidesColumn: 'Slides', claimsColumn: 'Claims', diagramsColumn: 'Diagrams', emptyTitle: 'No research projects', emptyBody: 'Create a project to open the structured pipeline.',
@@ -411,7 +418,7 @@
         guideReviewTitle: '3. Review the evidence', guideReviewBody: 'Open the project inspector and check source, claim, diagram, formula, and image counts. Plan can be rerun after changing the brief or replacing inputs.',
         guideBuildTitle: '4. Validate, build, and export', guidePlan: 'Plan updates the semantic research model.', guideValidate: 'Validate checks schemas, citations, files, and asset references.', guideBuild: 'Build SVG compiles deterministic diagrams and slide visuals.', guideExport: 'Export PPTX creates the editable presentation in the project exports folder.',
         guideImageTitle: 'External image generation', guideImageBody: 'Choose automatic image generation only when an image backend and API key are configured. Manual mode keeps an auditable prompt manifest without calling a paid service.',
-        changelogTitle: 'Release notes', change020a: 'Added persistent English and Chinese workbench modes.', change020b: 'Added automatic Brief, paper, and code planning with cited claims and storyboards.', change020c: 'Integrated formula and image manifests into the unified build.', change020d: 'Expanded Diagram IR with cycle, comparison, architecture, and timeline layouts.', change020e: 'Added the in-app guide, release notes, and centralized version reporting.',
+        changelogTitle: 'Release notes', change021a: 'Added the HM application icon, favicon, and workbench home link.', change021b: 'Added a one-click macOS launcher for the local workbench.', change021c: 'Added reproducible source packaging, setup, integrity manifests, and bilingual handoff instructions.', change020a: 'Added persistent English and Chinese workbench modes.', change020b: 'Added automatic Brief, paper, and code planning with cited claims and storyboards.', change020c: 'Integrated formula and image manifests into the unified build.', change020d: 'Expanded Diagram IR with cycle, comparison, architecture, and timeline layouts.', change020e: 'Added the in-app guide, release notes, and centralized version reporting.',
         change010a: 'Introduced the local AutoResearch-PPT workbench and project contracts.', change010b: 'Added deterministic dataflow diagrams, evidence validation, SVG build, and PPTX export.',
         recordCount: '{count} record{suffix}', sources: 'Sources', verifiedClaims: 'Verified claims', slides: 'Slides', exports: 'Exports', template: 'Template', papers: 'Papers', codeInputs: 'Code inputs', canvas: 'Canvas', diagramTypes: 'Diagram types', formulas: 'Formulas', images: 'Images', planner: 'Planner', none: 'None', notRun: 'Not run', templateCanvas: 'Template',
         actionPlan: 'Plan', actionValidate: 'Validate', actionBuild: 'Build SVG', actionExport: 'Export PPTX', statusReady: 'Ready', statusNeedsAttention: 'Needs attention', statusError: 'Error',
@@ -419,7 +426,7 @@
         actionComplete: '{action} complete', exportReady: 'PPTX ready: {path}', createdProject: 'Created {id}'
       },
       zh: {
-        documentTitle: 'Hedgehog Master 科研演示工作台', navLabel: '工作台视图', projectsNav: '项目', profilesNav: '配置', qualityNav: '质量', helpNav: '说明', changelogNav: '更新',
+        documentTitle: 'Hedgehog Master 科研演示工作台', homeLink: '打开工作台', navLabel: '工作台视图', projectsNav: '项目', profilesNav: '配置', qualityNav: '质量', helpNav: '说明', changelogNav: '更新',
         versionLabel: '测试版本', kicker: '科研演示流程', workbenchTitle: '科研演示工作台', languageLabel: '界面语言', refresh: '刷新项目', newProject: '新建项目',
         metricsLabel: '仓库指标', projectsMetric: '项目', slidesMetric: '幻灯片', claimsMetric: '已验证论点', exportsMetric: 'PPTX 导出', researchProjects: '科研项目',
         projectColumn: '项目', statusColumn: '状态', slidesColumn: '页数', claimsColumn: '论点', diagramsColumn: '图表', emptyTitle: '暂无科研项目', emptyBody: '新建项目即可启动结构化科研演示流程。',
@@ -435,7 +442,7 @@
         guideReviewTitle: '3. 检查证据', guideReviewBody: '在项目检查器中核对来源、论点、图表、公式和图片数量。修改指令或替换输入后，可以重新执行规划。',
         guideBuildTitle: '4. 校验、构建与导出', guidePlan: '规划用于更新结构化科研语义模型。', guideValidate: '校验用于检查 Schema、引用、文件和资产关系。', guideBuild: '构建 SVG 用于确定性编译图表和页面视觉。', guideExport: '导出 PPTX 会在项目 exports 目录生成可编辑演示文稿。',
         guideImageTitle: '外部图片生成', guideImageBody: '只有配置图片后端与 API 密钥后才建议选择自动生成。人工模式仍会保存可审计的提示词 Manifest，但不会调用付费服务。',
-        changelogTitle: '版本更新日志', change020a: '新增可持久化的中英文工作台模式。', change020b: '新增 Brief、论文和代码自动规划，可生成带引用论点与故事板。', change020c: '将公式与图片 Manifest 接入统一构建流程。', change020d: 'Diagram IR 新增循环图、对比图、系统架构图和时间线。', change020e: '新增界面使用说明、更新日志与统一版本信息。',
+        changelogTitle: '版本更新日志', change021a: '新增 HM 应用图标、浏览器图标和工作台主页链接。', change021b: '新增 macOS 本地工作台一键启动器。', change021c: '新增可复现源码封装、安装流程、完整性清单和双语交付说明。', change020a: '新增可持久化的中英文工作台模式。', change020b: '新增 Brief、论文和代码自动规划，可生成带引用论点与故事板。', change020c: '将公式与图片 Manifest 接入统一构建流程。', change020d: 'Diagram IR 新增循环图、对比图、系统架构图和时间线。', change020e: '新增界面使用说明、更新日志与统一版本信息。',
         change010a: '建立本地 AutoResearch-PPT 工作台与科研项目契约。', change010b: '实现确定性数据流图、证据校验、SVG 构建与 PPTX 导出。',
         recordCount: '共 {count} 条记录', sources: '来源', verifiedClaims: '已验证论点', slides: '幻灯片', exports: '导出', template: '模板', papers: '论文', codeInputs: '代码输入', canvas: '画布', diagramTypes: '图表类型', formulas: '公式', images: '图片', planner: '规划器', none: '无', notRun: '未运行', templateCanvas: '模板',
         actionPlan: '规划', actionValidate: '校验', actionBuild: '构建 SVG', actionExport: '导出 PPTX', statusReady: '就绪', statusNeedsAttention: '需要处理', statusError: '错误',
