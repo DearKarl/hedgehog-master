@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/DearKarl/hedgehog-master/schemas/image-manifest.v1.json",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["schema_version", "items"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema_version": {"const": "1.0"},
+    "project": {"type": "string"},
+    "generated_at": {"type": "string"},
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["id", "filename", "prompt", "aspect_ratio", "status"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"},
+          "filename": {"type": "string", "minLength": 1},
+          "prompt": {"type": "string", "minLength": 1},
+          "aspect_ratio": {"type": "string", "minLength": 1},
+          "status": {"enum": ["Pending", "Generated", "Failed", "Needs-Manual"]},
+          "purpose": {"type": "string"},
+          "alt_text": {"type": "string"},
+          "slide_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+        }
+      }
+    }
+  }
+}

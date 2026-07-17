@@ -6,7 +6,7 @@
   "required": ["schema_version", "sources"],
   "properties": {
     "$schema": {"type": "string"},
-    "schema_version": {"const": "1.0"},
+    "schema_version": {"enum": ["1.0", "1.1"]},
     "sources": {
       "type": "array",
       "items": {
@@ -18,7 +18,11 @@
           "title": {"type": "string", "minLength": 1},
           "type": {"enum": ["paper", "dataset", "code", "web", "local"]},
           "locator": {"type": "string", "minLength": 1},
-          "doi": {"type": "string", "minLength": 1}
+          "doi": {"type": "string", "minLength": 1},
+          "authors": {"type": "array", "items": {"type": "string", "minLength": 1}},
+          "page_count": {"type": "integer", "minimum": 1},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "metadata": {"type": "object"}
         }
       }
     }

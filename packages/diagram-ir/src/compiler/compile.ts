@@ -4,7 +4,7 @@ import { canonicalizeDiagramIr } from "../ir/canonicalize.js";
 import { parseDiagramJson } from "../ir/parse.js";
 import type { DiagramIrV01a } from "../ir/types.js";
 import { validateDiagramIr } from "../ir/validate.js";
-import { layoutRankedDataflow } from "./ranked-layout.js";
+import { layoutSemanticDiagram } from "./semantic-layout.js";
 import { buildSvgAst } from "./svg/build-svg-ast.js";
 import { serializeSvg } from "./svg/serialize.js";
 
@@ -32,7 +32,7 @@ export function compileDiagramJsonToSvg(input: string): CompileDiagramJsonToSvgR
 }
 
 export function compileValidatedDiagramIrToSvg(document: DiagramIrV01a): string {
-  return serializeSvg(buildSvgAst(layoutRankedDataflow(canonicalizeDiagramIr(document))));
+  return serializeSvg(buildSvgAst(layoutSemanticDiagram(canonicalizeDiagramIr(document))));
 }
 
 export function checkDeterministicDiagramJsonCompile(input: string): CompileDiagramJsonToSvgResult {

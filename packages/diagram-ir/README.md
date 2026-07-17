@@ -2,7 +2,7 @@
 
 Diagram IR is the deterministic scientific-diagram compiler used by Hedgehog Master.
 
-The v0.1a contract accepts strict JSON dataflow graphs, validates schema and graph semantics, canonicalizes input, computes a ranked left-to-right layout, builds an SVG AST, and serializes byte-stable SVG. It requires no LLM, network, or interactive service.
+The v0.2 contract accepts strict JSON scientific graphs, validates schema and graph semantics, canonicalizes input, applies a registered semantic layout, builds an SVG AST, and serializes byte-stable SVG. It supports dataflow, cycle, comparison, architecture, and timeline diagrams without an LLM, network, or interactive service. v0.1a dataflow documents remain compatible.
 
 ## Development
 
@@ -26,4 +26,14 @@ Use the repository-level wrapper for normal work:
 python3 ../../hedgehog.py diagram input.diagram.json -o output.svg
 ```
 
-Current scope is intentionally narrow: `kind: dataflow`, `direction: left-to-right`, ranked layout, and SVG output. Invalid graphs produce stable diagnostics and are never silently repaired.
+Registered v0.2 combinations are:
+
+| Kind           | Direction       | Layout                 |
+| -------------- | --------------- | ---------------------- |
+| `dataflow`     | `left-to-right` | ranked                 |
+| `cycle`        | `clockwise`     | radial                 |
+| `comparison`   | `left-to-right` | grouped columns        |
+| `architecture` | `top-to-bottom` | layered system view    |
+| `timeline`     | `left-to-right` | alternating milestones |
+
+Invalid graphs produce stable diagnostics and are never silently repaired. See [Diagram IR v0.2](./docs/ir-spec-v0.2.md).

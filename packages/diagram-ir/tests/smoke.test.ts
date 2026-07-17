@@ -8,7 +8,7 @@ describe("M0 scaffold", () => {
     expect(projectIdentity).toMatchObject({
       module: "diagram-ir",
       repository: "hedgehog-master",
-      scope: "v0.1a"
+      scope: "v0.2"
     });
   });
 });

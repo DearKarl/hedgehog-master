@@ -33,6 +33,31 @@ export function semanticValidateDiagramIr(
   const nodeIds = new Set<string>();
   const edgeIds = new Set<string>();
 
+  if (document.irVersion === "0.1a" && document.kind !== "dataflow") {
+    diagnostics.push({
+      code: ErrorCodes.IR_UNSUPPORTED_KIND,
+      severity: "error",
+      path: "/kind",
+      message: "Diagram IR v0.1a only supports dataflow diagrams.",
+      hint: "Use irVersion: 0.2 for cycle, comparison, architecture, or timeline diagrams."
+    });
+  }
+
+  const expectedDirection =
+    document.kind === "cycle"
+      ? "clockwise"
+      : document.kind === "architecture"
+        ? "top-to-bottom"
+        : "left-to-right";
+  if (document.direction !== expectedDirection) {
+    diagnostics.push({
+      code: ErrorCodes.IR_UNSUPPORTED_DIRECTION,
+      severity: "error",
+      path: "/direction",
+      message: `Diagram kind '${document.kind}' requires direction '${expectedDirection}'.`
+    });
+  }
+
   document.nodes.forEach((node, index) => {
     if (nodeIds.has(node.id)) {
       diagnostics.push({
@@ -80,13 +105,13 @@ export function semanticValidateDiagramIr(
     }
   });
 
-  if (diagnostics.length === 0 && hasCycle(document)) {
+  if (diagnostics.length === 0 && document.kind !== "cycle" && hasCycle(document)) {
     diagnostics.push({
       code: ErrorCodes.IR_CYCLE_DETECTED,
       severity: "error",
       path: "/edges",
       message: "Diagram edges contain a cycle.",
-      hint: "v0.1a dataflow diagrams must be DAGs."
+      hint: "Use kind: cycle with irVersion: 0.2 when a closed feedback loop is intentional."
     });
   }
 
@@ -123,7 +148,7 @@ function mapAjvError(error: ErrorObject): Diagnostic[] {
         ErrorCodes.IR_UNKNOWN_FIELD,
         path,
         `Unknown field '${additionalProperty ?? "<unknown>"}'.`,
-        "Remove fields that are not part of Diagram IR v0.1a."
+        "Remove fields that are not part of the current Diagram IR schema."
       )
     ];
   }
@@ -139,6 +164,28 @@ function mapAjvError(error: ErrorObject): Diagnostic[] {
         ErrorCodes.IR_MISSING_REQUIRED_FIELD,
         path,
         `Missing required field '${missingProperty ?? "<unknown>"}'.`
+      )
+    ];
+  }
+
+  if (error.keyword === "anyOf" && error.instancePath === "/kind") {
+    return [
+      makeSchemaDiagnostic(
+        ErrorCodes.IR_UNSUPPORTED_KIND,
+        error.instancePath,
+        "Unsupported diagram kind.",
+        "Use one of: dataflow, cycle, comparison, architecture, timeline."
+      )
+    ];
+  }
+
+  if (error.keyword === "anyOf" && error.instancePath === "/direction") {
+    return [
+      makeSchemaDiagnostic(
+        ErrorCodes.IR_UNSUPPORTED_DIRECTION,
+        error.instancePath,
+        "Unsupported diagram direction.",
+        "Use one of: left-to-right, top-to-bottom, clockwise."
       )
     ];
   }
@@ -161,28 +208,6 @@ function mapAjvError(error: ErrorObject): Diagnostic[] {
         error.instancePath,
         "Invalid id.",
         "IDs must match ^[A-Za-z][A-Za-z0-9_-]*$."
-      )
-    ];
-  }
-
-  if (error.keyword === "const" && error.instancePath === "/kind") {
-    return [
-      makeSchemaDiagnostic(
-        ErrorCodes.IR_UNSUPPORTED_KIND,
-        error.instancePath,
-        "Unsupported diagram kind.",
-        "v0.1a only supports kind: dataflow."
-      )
-    ];
-  }
-
-  if (error.keyword === "const" && error.instancePath === "/direction") {
-    return [
-      makeSchemaDiagnostic(
-        ErrorCodes.IR_UNSUPPORTED_DIRECTION,
-        error.instancePath,
-        "Unsupported diagram direction.",
-        "v0.1a only supports direction: left-to-right."
       )
     ];
   }

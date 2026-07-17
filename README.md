@@ -9,8 +9,11 @@ The academic route does not ask a general-purpose model to write flowchart geome
 ## What It Produces
 
 - Formal English research decks for lab meetings, conference talks, and technical reviews
-- Deterministic dataflow diagrams compiled from strict Diagram IR
+- Deterministic dataflow, cycle, comparison, architecture, and timeline diagrams compiled from strict Diagram IR
 - Publication-oriented SVG figures with reproducible geometry
+- Evidence registries extracted from PDF, DOCX, Markdown, text, and LaTeX sources
+- Code structure derived from Python AST or language-neutral symbol parsing
+- Formula and generated-image manifests that participate in the same build
 - Editable PPTX output using native PowerPoint objects where supported
 - A local workbench for creating, validating, building, and exporting projects
 
@@ -43,18 +46,29 @@ On Windows PowerShell, activate Python with `.venv\Scripts\Activate.ps1`.
 python3 hedgehog.py serve --port 4173
 ```
 
-Open [http://127.0.0.1:4173](http://127.0.0.1:4173). The workbench can create a seeded research project, validate evidence links, compile SVG slides, and export PPTX.
+Open [http://127.0.0.1:4173](http://127.0.0.1:4173). A new project accepts a PPTX template, a presentation brief, research documents, code files, and pasted code in one intake. The local planner extracts page-aware evidence, creates the source and claim registries, derives a storyboard, selects a Diagram IR type, and registers formula and image assets. `Plan`, `Validate`, `Build SVG`, and `Export PPTX` are repeatable project operations.
+
+The workbench can switch between English and Chinese from the header and remembers the selection in the local browser. `Guide` explains the complete project workflow, while `Updates` displays the bilingual release history. The lower-left version is read from [`VERSION`](./VERSION); release notes are maintained in [`CHANGELOG.md`](./CHANGELOG.md).
 
 ## Command-Line Workflow
 
-Create a runnable four-slide project:
+Create and automatically plan a research project:
 
 ```bash
 python3 hedgehog.py init reliable-research-decks \
   --title "Reliable Research Communication" \
   --audience "Research engineers and academic collaborators" \
   --venue "Lab meeting" \
-  --demo
+  --brief "Explain the method, evidence, and implementation pipeline." \
+  --template path/to/lab-template.pptx \
+  --paper path/to/paper.pdf \
+  --code path/to/pipeline.py
+```
+
+Rebuild the semantic plan after editing the brief or replacing inputs:
+
+```bash
+python3 hedgehog.py plan reliable-research-decks
 ```
 
 Validate the structured research contract:
@@ -81,7 +95,19 @@ The project is stored under `projects/reliable-research-decks/`. SVG pages appea
 
 ```text
 projects/<project-id>/
-├── project.json                    # audience, venue, language, profile, policy
+├── project.json                    # brief, inputs, contracts, profile, and policy
+├── inputs/
+│   ├── instructions.md             # authoritative presentation brief
+│   ├── template/*.pptx             # optional PowerPoint template
+│   ├── papers/*                    # papers and research documents
+│   └── code/*                      # code and pasted pseudocode
+├── template/
+│   ├── template.json               # semantic layout bindings and slot constraints
+│   └── workspace/                  # recovered Master, Layout, theme, and SVG layers
+├── analysis/plan.json              # planner result, counts, warnings, and selected diagram type
+├── images/
+│   ├── formula_manifest.json       # LaTeX, source locator, render mode, and slide bindings
+│   └── image_prompts.json          # auditable external-image prompts and status
 ├── research/
 │   ├── sources.json                # papers, datasets, code, and local evidence
 │   ├── claims.json                 # verifiable statements linked to sources
@@ -94,7 +120,22 @@ projects/<project-id>/
 └── exports/                        # PPTX output
 ```
 
-The default `academic-conference` profile permits only five layouts: `cover`, `section`, `diagram`, `evidence`, and `closing`. Unregistered layouts and broken source/claim references fail validation.
+The default `academic-conference` profile permits only five layouts: `cover`, `section`, `diagram`, `evidence`, and `closing`. When a PPTX template is present, the renderer binds those semantic layouts to recovered Master/Layout backgrounds, theme colors, fonts, and placeholder geometry. Unregistered layouts, missing inputs, invalid template layers, broken citations, and unknown formula or image IDs fail validation.
+
+## Formula and Image Policies
+
+The default formula mode converts a conservative LaTeX subset to editable PowerPoint text using a math font. Select `raster` for transparent publication PNG output through the configured formula provider chain. Editable text is not native OMML; complex equations should currently use the raster path.
+
+External images are generated only when the brief requests a visual and the project policy is `auto`. The generated prompt remains in `images/image_prompts.json`. For the bundled OpenAI-compatible backend:
+
+```bash
+export IMAGE_BACKEND=openai
+export OPENAI_API_KEY="..."
+export OPENAI_MODEL="gpt-image-2"  # optional; this is the repository default
+python3 hedgehog.py build reliable-research-decks
+```
+
+Other registered image backends remain available through `image_gen.py`. Manual mode writes the same auditable Manifest but never calls an external API.
 
 ## Compile a Standalone Research Diagram
 
@@ -103,26 +144,32 @@ python3 hedgehog.py diagram path/to/pipeline.diagram.json \
   -o path/to/pipeline.svg
 ```
 
-The current Diagram IR compiler supports deterministic left-to-right dataflow diagrams. Its pipeline is:
+Diagram IR v0.2 supports `dataflow`, `cycle`, `comparison`, `architecture`, and `timeline`. Each type has a registered direction and deterministic semantic layout. Its pipeline is:
 
 ```text
 parse -> schema validate -> semantic validate -> canonicalize
-      -> ranked layout -> SVG AST -> stable serialization
+      -> semantic layout -> SVG AST -> stable serialization
 ```
 
 The same valid input produces byte-stable SVG output. Invalid input returns explicit diagnostics rather than silently repairing the graph.
 
 ## Model Boundary
 
-For the AutoResearch-PPT route, an agent may edit:
+For the AutoResearch-PPT route, a semantic planner or agent may edit:
 
 - `project.json`
 - `research/sources.json`
 - `research/claims.json`
 - `storyboard/deck.json`
 - `research/diagrams/*.diagram.json`
+- `images/formula_manifest.json`
+- `images/image_prompts.json`
 
-It must not generate final flowchart SVG, arbitrary HTML slide layouts, or DrawingML directly. This boundary keeps scientific structure inspectable and makes rendering reproducible without an LLM.
+It must not generate final diagram SVG, arbitrary HTML slide layouts, or DrawingML directly. This boundary keeps scientific structure inspectable and makes rendering reproducible without an LLM. The built-in planner is local and deterministic; optional external models may enrich semantics or generate registered raster assets, but they do not own geometry.
+
+## Current Template Boundary
+
+Template intake recovers slide size, theme tokens, Master/Layout visual layers, and placeholder geometry. The academic renderer uses those elements as constraints and backgrounds. It does not yet preserve every native PowerPoint Master behavior, transition, macro, or unsupported object as a live editable template feature.
 
 ## Existing Presentation Workflows
 
@@ -132,14 +179,15 @@ The repository also retains mature local tools for source normalization, templat
 
 - [AutoResearch-PPT architecture](./docs/architecture/autoresearch-ppt.md)
 - [Reference-system research](./docs/research/reference-systems.md)
-- [Diagram IR specification](./packages/diagram-ir/docs/ir-spec-v0.1a.md)
+- [Diagram IR v0.2 specification](./packages/diagram-ir/docs/ir-spec-v0.2.md)
 - [Getting started](./docs/getting-started.md)
 - [Security policy](./SECURITY.md)
 
 ## Development Checks
 
 ```bash
-python3 -m py_compile hedgehog.py skills/hedgehog-master/scripts/research_harness.py
+python3 -m py_compile hedgehog.py skills/hedgehog-master/scripts/research_harness.py skills/hedgehog-master/scripts/research_planner.py
+python3 -m unittest tests.test_research_harness
 python3 hedgehog.py validate <project-id>
 pnpm --dir packages/diagram-ir check
 ```

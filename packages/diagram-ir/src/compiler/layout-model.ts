@@ -1,4 +1,4 @@
-import type { NodeRole } from "../ir/types.js";
+import type { DiagramKind, NodeRole } from "../ir/types.js";
 
 export type Point = {
   x: number;
@@ -16,6 +16,7 @@ export type LayoutNode = {
   rank: number;
   order: number;
   labelLines: string[];
+  group?: string;
 };
 
 export type LayoutEdge = {
@@ -30,6 +31,7 @@ export type LayoutEdge = {
 };
 
 export type LayoutModel = {
+  kind: DiagramKind;
   canvas: {
     width: 1600;
     height: 900;

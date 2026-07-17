@@ -25,7 +25,7 @@
 
     * { box-sizing: border-box; }
     body { margin: 0; min-width: 320px; background: var(--soft); }
-    button, input, select { font: inherit; letter-spacing: 0; }
+    button, input, select, textarea { font: inherit; letter-spacing: 0; }
     button { cursor: pointer; }
     button:disabled { cursor: wait; opacity: 0.55; }
 
@@ -77,7 +77,7 @@
     .nav button.active { color: #ffffff; background: #263148; border-color: #3a465d; }
     .nav-icon { width: 20px; text-align: center; font-weight: 700; color: #8fd1c1; }
 
-    .runtime {
+    .version {
       position: absolute;
       left: 26px;
       right: 26px;
@@ -87,8 +87,8 @@
       color: #aab5c7;
       font-size: 12px;
     }
-    .runtime strong { display: block; margin-bottom: 5px; color: #ffffff; font-size: 13px; }
-    .runtime-dot { display: inline-block; width: 8px; height: 8px; margin-right: 7px; background: #62c4a8; border-radius: 50%; }
+    .version span { display: block; margin-bottom: 5px; text-transform: uppercase; }
+    .version strong { display: block; color: #ffffff; font-size: 13px; }
 
     main { min-width: 0; padding: 28px 32px 40px; }
     .topbar {
@@ -102,6 +102,26 @@
     h1 { margin: 0; font-size: 28px; line-height: 1.15; }
     .kicker { margin: 0 0 7px; color: var(--accent); font-size: 12px; font-weight: 750; text-transform: uppercase; }
     .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .language-switch {
+      min-height: 38px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(42px, 1fr));
+      padding: 3px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: var(--paper);
+    }
+    .language-switch button {
+      min-width: 42px;
+      padding: 0 9px;
+      border: 0;
+      border-radius: 2px;
+      color: var(--muted);
+      background: transparent;
+      font-size: 12px;
+      font-weight: 740;
+    }
+    .language-switch button.active { color: #ffffff; background: var(--accent); }
     .button {
       min-height: 38px;
       display: inline-flex;
@@ -188,22 +208,40 @@
     .detail { min-width: 0; padding: 12px; background: var(--paper); }
     .detail span { display: block; color: var(--muted); font-size: 11px; }
     .detail strong { display: block; margin-top: 4px; font-size: 16px; }
-    .project-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .project-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
     .project-actions .button { padding: 0 8px; font-size: 12px; }
     .error-list { margin: 14px 0 0; padding: 12px; color: var(--danger); background: #fff5f5; font-size: 12px; }
 
-    dialog { width: min(560px, calc(100vw - 32px)); padding: 0; border: 1px solid var(--line); border-radius: 6px; box-shadow: var(--shadow); }
+    dialog { width: min(780px, calc(100vw - 32px)); max-height: calc(100vh - 32px); padding: 0; border: 1px solid var(--line); border-radius: 6px; box-shadow: var(--shadow); overflow: auto; }
     dialog::backdrop { background: rgba(23, 32, 51, 0.42); }
-    .dialog-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; border-bottom: 1px solid var(--line); }
+    .dialog-head { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; border-bottom: 1px solid var(--line); background: var(--paper); }
     .dialog-head h2 { margin: 0; font-size: 18px; }
     .close { width: 32px; height: 32px; border: 0; background: transparent; color: var(--muted); font-size: 23px; }
     form { padding: 20px; }
+    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
     .field { display: grid; gap: 6px; margin-bottom: 15px; }
+    .field.full { grid-column: 1 / -1; }
     .field label { color: var(--muted); font-size: 12px; font-weight: 650; }
-    .field input, .field select { width: 100%; height: 40px; padding: 0 10px; border: 1px solid #cfd6df; border-radius: 4px; background: white; color: var(--ink); }
+    .field input, .field select, .field textarea { width: 100%; border: 1px solid #cfd6df; border-radius: 4px; background: white; color: var(--ink); }
+    .field input, .field select { height: 40px; padding: 0 10px; }
+    .field input[type="file"] { height: auto; min-height: 42px; padding: 8px 10px; }
+    .field textarea { min-height: 92px; padding: 10px; resize: vertical; line-height: 1.45; }
+    .field textarea.code { min-height: 116px; font-family: "SFMono-Regular", Consolas, monospace; font-size: 12px; }
     .checkbox { display: flex; align-items: center; gap: 9px; margin: 4px 0 20px; font-size: 13px; }
     .checkbox input { width: 17px; height: 17px; accent-color: var(--accent); }
-    .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; }
+    .dialog-actions { position: sticky; bottom: 0; z-index: 2; display: flex; justify-content: flex-end; gap: 8px; margin: 0 -20px -20px; padding: 14px 20px 20px; border-top: 1px solid var(--line); background: var(--paper); }
+
+    .info-body { padding: 2px 24px 28px; line-height: 1.65; }
+    .info-body section { padding: 20px 0; border-bottom: 1px solid var(--line); }
+    .info-body section:last-child { border-bottom: 0; }
+    .info-body h3 { margin: 0 0 8px; font-size: 15px; }
+    .info-body p { margin: 0; color: var(--muted); font-size: 13px; }
+    .info-body ol, .info-body ul { margin: 10px 0 0; padding-left: 21px; color: var(--muted); font-size: 13px; }
+    .info-body li { margin: 7px 0; padding-left: 3px; }
+    .release-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+    .release-head h3 { margin: 0; }
+    .release-date { color: var(--muted); font-size: 12px; }
+    code { padding: 1px 4px; border-radius: 3px; color: #175f52; background: #edf6f3; font-family: "SFMono-Regular", Consolas, monospace; font-size: 0.92em; }
 
     .toast { position: fixed; right: 24px; bottom: 24px; max-width: 420px; padding: 13px 16px; border-radius: 4px; color: #ffffff; background: #172033; box-shadow: var(--shadow); transform: translateY(24px); opacity: 0; pointer-events: none; transition: 180ms ease; }
     .toast.show { transform: translateY(0); opacity: 1; }
@@ -215,9 +253,9 @@
       .brand { display: flex; align-items: center; gap: 12px; padding: 0 0 14px; }
       .brand-mark { width: 32px; height: 32px; margin: 0; }
       .brand-mode { margin-top: 3px; }
-      .nav { grid-template-columns: repeat(3, 1fr); margin-top: 12px; }
+      .nav { grid-template-columns: repeat(5, minmax(0, 1fr)); margin-top: 12px; }
       .nav button { justify-content: center; }
-      .runtime { display: none; }
+      .version { display: none; }
       main { padding: 22px 20px 32px; }
       .workspace { grid-template-columns: 1fr; }
     }
@@ -226,6 +264,7 @@
       .topbar { align-items: flex-start; flex-direction: column; }
       .actions { width: 100%; }
       .actions .primary { flex: 1; }
+      .language-switch { order: 3; }
       .metrics { grid-template-columns: repeat(2, 1fr); }
       .metric:nth-child(2) { border-right: 0; }
       .metric:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
@@ -234,6 +273,8 @@
       .nav button { padding: 0 6px; font-size: 12px; }
       .nav-icon { display: none; }
       h1 { font-size: 24px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .field.full { grid-column: auto; }
     }
   </style>
 </head>
@@ -247,71 +288,165 @@
           <div class="brand-mode">AutoResearch-PPT</div>
         </div>
       </div>
-      <nav class="nav" aria-label="Workbench views">
-        <button class="active" type="button"><span class="nav-icon">01</span>Projects</button>
-        <button type="button" disabled><span class="nav-icon">02</span>Profiles</button>
-        <button type="button" disabled><span class="nav-icon">03</span>Quality</button>
+      <nav class="nav" aria-label="Workbench views" data-i18n-aria="navLabel">
+        <button class="active" type="button"><span class="nav-icon">01</span><span data-i18n="projectsNav">Projects</span></button>
+        <button type="button" disabled><span class="nav-icon">02</span><span data-i18n="profilesNav">Profiles</span></button>
+        <button type="button" disabled><span class="nav-icon">03</span><span data-i18n="qualityNav">Quality</span></button>
+        <button id="open-help" type="button"><span class="nav-icon">?</span><span data-i18n="helpNav">Guide</span></button>
+        <button id="open-changelog" type="button"><span class="nav-icon">&#916;</span><span data-i18n="changelogNav">Updates</span></button>
       </nav>
-      <div class="runtime"><strong><span class="runtime-dot"></span>Local runtime</strong><span id="runtime-address">127.0.0.1</span></div>
+      <div class="version"><span data-i18n="versionLabel">Beta version</span><strong id="app-version">v0.2.0-beta</strong></div>
     </aside>
 
     <main>
       <header class="topbar">
         <div>
-          <p class="kicker">Research operations</p>
-          <h1>Presentation workbench</h1>
+          <p class="kicker" data-i18n="kicker">Research operations</p>
+          <h1 data-i18n="workbenchTitle">Presentation workbench</h1>
         </div>
         <div class="actions">
-          <button class="button icon" id="refresh" type="button" title="Refresh projects" aria-label="Refresh projects">&#8635;</button>
-          <button class="button primary" id="open-create" type="button"><span aria-hidden="true">+</span> New project</button>
+          <div class="language-switch" role="group" aria-label="Language" data-i18n-aria="languageLabel">
+            <button type="button" data-language="en">EN</button>
+            <button type="button" data-language="zh">中文</button>
+          </div>
+          <button class="button icon" id="refresh" type="button" title="Refresh projects" aria-label="Refresh projects" data-i18n-title="refresh" data-i18n-aria="refresh">&#8635;</button>
+          <button class="button primary" id="open-create" type="button"><span aria-hidden="true">+</span><span data-i18n="newProject">New project</span></button>
         </div>
       </header>
 
-      <section class="metrics" aria-label="Repository metrics">
-        <div class="metric"><div class="metric-label">Projects</div><div class="metric-value" id="metric-projects">0</div></div>
-        <div class="metric"><div class="metric-label">Slides</div><div class="metric-value" id="metric-slides">0</div></div>
-        <div class="metric"><div class="metric-label">Verified claims</div><div class="metric-value accent" id="metric-claims">0</div></div>
-        <div class="metric"><div class="metric-label">PPTX exports</div><div class="metric-value" id="metric-exports">0</div></div>
+      <section class="metrics" aria-label="Repository metrics" data-i18n-aria="metricsLabel">
+        <div class="metric"><div class="metric-label" data-i18n="projectsMetric">Projects</div><div class="metric-value" id="metric-projects">0</div></div>
+        <div class="metric"><div class="metric-label" data-i18n="slidesMetric">Slides</div><div class="metric-value" id="metric-slides">0</div></div>
+        <div class="metric"><div class="metric-label" data-i18n="claimsMetric">Verified claims</div><div class="metric-value accent" id="metric-claims">0</div></div>
+        <div class="metric"><div class="metric-label" data-i18n="exportsMetric">PPTX exports</div><div class="metric-value" id="metric-exports">0</div></div>
       </section>
 
       <section class="workspace">
         <div class="panel">
-          <div class="panel-head"><h2>Research projects</h2><span class="count" id="project-count">0 records</span></div>
+          <div class="panel-head"><h2 data-i18n="researchProjects">Research projects</h2><span class="count" id="project-count">0 records</span></div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th style="width: 38%">Project</th><th>Status</th><th>Slides</th><th>Claims</th><th>Diagrams</th></tr></thead>
+              <thead><tr><th style="width: 38%" data-i18n="projectColumn">Project</th><th data-i18n="statusColumn">Status</th><th data-i18n="slidesColumn">Slides</th><th data-i18n="claimsColumn">Claims</th><th data-i18n="diagramsColumn">Diagrams</th></tr></thead>
               <tbody id="project-rows"></tbody>
             </table>
-            <div class="empty" id="empty-state" hidden><strong>No research projects</strong>Create a project to open the structured pipeline.</div>
+            <div class="empty" id="empty-state" hidden><strong data-i18n="emptyTitle">No research projects</strong><span data-i18n="emptyBody">Create a project to open the structured pipeline.</span></div>
           </div>
         </div>
 
         <aside class="panel inspector" id="inspector">
-          <h3>Project inspector</h3>
-          <p class="inspector-meta">Select a project to inspect artifacts and quality state.</p>
-          <div class="preview"><span class="preview-placeholder">No preview selected</span></div>
+          <h3 data-i18n="inspectorTitle">Project inspector</h3>
+          <p class="inspector-meta" data-i18n="inspectorBody">Select a project to inspect artifacts and quality state.</p>
+          <div class="preview"><span class="preview-placeholder" data-i18n="noPreview">No preview selected</span></div>
         </aside>
       </section>
     </main>
   </div>
 
   <dialog id="create-dialog">
-    <div class="dialog-head"><h2>New research project</h2><button class="close" id="close-create" type="button" aria-label="Close" title="Close">&times;</button></div>
-    <form id="create-form">
-      <div class="field"><label for="project-name">Project ID</label><input id="project-name" name="name" required pattern="[A-Za-z0-9 -]+" placeholder="reliable-research-decks"></div>
-      <div class="field"><label for="project-title">Presentation title</label><input id="project-title" name="title" required placeholder="Reliable Research Communication"></div>
-      <div class="field"><label for="project-audience">Audience</label><input id="project-audience" name="audience" value="Research engineers and academic collaborators"></div>
-      <div class="field"><label for="project-venue">Venue</label><input id="project-venue" name="venue" value="Lab meeting"></div>
-      <div class="field"><label for="project-profile">Profile</label><select id="project-profile" name="profile"></select></div>
-      <label class="checkbox"><input name="demo" type="checkbox" checked> Seed a runnable four-slide project</label>
-      <div class="dialog-actions"><button class="button" id="cancel-create" type="button">Cancel</button><button class="button primary" type="submit">Create project</button></div>
+    <div class="dialog-head"><h2 data-i18n="newResearchProject">New research project</h2><button class="close" id="close-create" type="button" aria-label="Close" title="Close" data-i18n-aria="close" data-i18n-title="close">&times;</button></div>
+    <form id="create-form" enctype="multipart/form-data">
+      <div class="form-grid">
+        <div class="field"><label for="project-name" data-i18n="projectId">Project ID</label><input id="project-name" name="name" required pattern="[A-Za-z0-9 -]+" placeholder="reliable-research-decks"></div>
+        <div class="field"><label for="project-title" data-i18n="presentationTitle">Presentation title</label><input id="project-title" name="title" required placeholder="Reliable Research Communication" data-i18n-placeholder="presentationTitlePlaceholder"></div>
+        <div class="field"><label for="project-audience" data-i18n="audience">Audience</label><input id="project-audience" name="audience" value="Research engineers and academic collaborators" data-i18n-placeholder="audiencePlaceholder"></div>
+        <div class="field"><label for="project-venue" data-i18n="venue">Venue</label><input id="project-venue" name="venue" value="Lab meeting" data-i18n-placeholder="venuePlaceholder"></div>
+        <div class="field"><label for="project-profile" data-i18n="academicProfile">Academic profile</label><select id="project-profile" name="profile"></select></div>
+        <div class="field"><label for="project-image-generation" data-i18n="imageGeneration">Image generation</label><select id="project-image-generation" name="image_generation"><option value="manual" data-i18n="manualApproval">Manual approval</option><option value="auto" data-i18n="automaticBuild">Automatic on build</option></select></div>
+        <div class="field full"><label for="project-brief" data-i18n="presentationBrief">Presentation brief</label><textarea id="project-brief" name="brief" required placeholder="State the research question, required sections, conclusions, and presentation constraints." data-i18n-placeholder="briefPlaceholder"></textarea></div>
+        <div class="field"><label for="project-template" data-i18n="pptxTemplate">PPTX template</label><input id="project-template" name="template" type="file" accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation"></div>
+        <div class="field"><label for="project-papers" data-i18n="papersSources">Papers and research sources</label><input id="project-papers" name="papers" type="file" multiple accept=".pdf,.docx,.md,.txt,.tex"></div>
+        <div class="field full"><label for="project-code-files" data-i18n="codeFiles">Code files</label><input id="project-code-files" name="code_files" type="file" multiple accept=".py,.m,.r,.ipynb,.c,.cc,.cpp,.h,.hpp,.java,.js,.ts,.rs,.go,.md,.txt"></div>
+        <div class="field full"><label for="project-code-text" data-i18n="codePseudocode">Code or pseudocode</label><textarea class="code" id="project-code-text" name="code_text" placeholder="Paste an algorithm, pipeline, or pseudocode block." data-i18n-placeholder="codePlaceholder"></textarea></div>
+        <div class="field full"><label for="project-formula-rendering" data-i18n="formulaRendering">Formula rendering</label><select id="project-formula-rendering" name="formula_rendering"><option value="editable-text" data-i18n="editableMath">Editable mathematical text</option><option value="raster" data-i18n="transparentImage">Transparent publication image</option></select></div>
+      </div>
+      <label class="checkbox"><input name="auto_plan" type="checkbox" checked><span data-i18n="autoPlan">Derive the research plan on creation</span></label>
+      <label class="checkbox"><input name="demo" type="checkbox"><span data-i18n="seedDemo">Seed the demonstration project</span></label>
+      <div class="dialog-actions"><button class="button" id="cancel-create" type="button" data-i18n="cancel">Cancel</button><button class="button primary" type="submit" data-i18n="createProject">Create project</button></div>
     </form>
+  </dialog>
+
+  <dialog id="help-dialog">
+    <div class="dialog-head"><h2 data-i18n="guideTitle">How to use Hedgehog Master</h2><button class="close" data-dialog-close="help-dialog" type="button" aria-label="Close" title="Close" data-i18n-aria="close" data-i18n-title="close">&times;</button></div>
+    <div class="info-body">
+      <section><h3 data-i18n="guidePrepareTitle">1. Prepare the research inputs</h3><p data-i18n="guidePrepareBody">Start with a clear brief. Add an optional PPTX template, papers or research documents, and code or pseudocode. The template controls the visual background; sources and code ground the scientific content.</p></section>
+      <section><h3 data-i18n="guideCreateTitle">2. Create and plan</h3><p data-i18n="guideCreateBody">Create the project with automatic planning enabled. The local planner registers sources, extracts cited claims, builds a storyboard, selects a Diagram IR type, and records formula and image tasks.</p></section>
+      <section><h3 data-i18n="guideReviewTitle">3. Review the evidence</h3><p data-i18n="guideReviewBody">Open the project inspector and check source, claim, diagram, formula, and image counts. Plan can be rerun after changing the brief or replacing inputs.</p></section>
+      <section><h3 data-i18n="guideBuildTitle">4. Validate, build, and export</h3><ol><li data-i18n="guidePlan">Plan updates the semantic research model.</li><li data-i18n="guideValidate">Validate checks schemas, citations, files, and asset references.</li><li data-i18n="guideBuild">Build SVG compiles deterministic diagrams and slide visuals.</li><li data-i18n="guideExport">Export PPTX creates the editable presentation in the project exports folder.</li></ol></section>
+      <section><h3 data-i18n="guideImageTitle">External image generation</h3><p data-i18n="guideImageBody">Choose automatic image generation only when an image backend and API key are configured. Manual mode keeps an auditable prompt manifest without calling a paid service.</p></section>
+    </div>
+  </dialog>
+
+  <dialog id="changelog-dialog">
+    <div class="dialog-head"><h2 data-i18n="changelogTitle">Release notes</h2><button class="close" data-dialog-close="changelog-dialog" type="button" aria-label="Close" title="Close" data-i18n-aria="close" data-i18n-title="close">&times;</button></div>
+    <div class="info-body">
+      <section>
+        <div class="release-head"><h3>v0.2.0-beta</h3><span class="release-date">2026-07-17</span></div>
+        <ul><li data-i18n="change020a">Added persistent English and Chinese workbench modes.</li><li data-i18n="change020b">Added automatic Brief, paper, and code planning with cited claims and storyboards.</li><li data-i18n="change020c">Integrated formula and image manifests into the unified build.</li><li data-i18n="change020d">Expanded Diagram IR with cycle, comparison, architecture, and timeline layouts.</li><li data-i18n="change020e">Added the in-app guide, release notes, and centralized version reporting.</li></ul>
+      </section>
+      <section>
+        <div class="release-head"><h3>v0.1.0-alpha</h3><span class="release-date">2026-07-16</span></div>
+        <ul><li data-i18n="change010a">Introduced the local AutoResearch-PPT workbench and project contracts.</li><li data-i18n="change010b">Added deterministic dataflow diagrams, evidence validation, SVG build, and PPTX export.</li></ul>
+      </section>
+    </div>
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
-    const state = { projects: [], selected: null, busy: false };
+    const translations = {
+      en: {
+        documentTitle: 'Hedgehog Master Workbench', navLabel: 'Workbench views', projectsNav: 'Projects', profilesNav: 'Profiles', qualityNav: 'Quality', helpNav: 'Guide', changelogNav: 'Updates',
+        versionLabel: 'Beta version', kicker: 'Research operations', workbenchTitle: 'Presentation workbench', languageLabel: 'Language', refresh: 'Refresh projects', newProject: 'New project',
+        metricsLabel: 'Repository metrics', projectsMetric: 'Projects', slidesMetric: 'Slides', claimsMetric: 'Verified claims', exportsMetric: 'PPTX exports', researchProjects: 'Research projects',
+        projectColumn: 'Project', statusColumn: 'Status', slidesColumn: 'Slides', claimsColumn: 'Claims', diagramsColumn: 'Diagrams', emptyTitle: 'No research projects', emptyBody: 'Create a project to open the structured pipeline.',
+        inspectorTitle: 'Project inspector', inspectorBody: 'Select a project to inspect artifacts and quality state.', noPreview: 'No preview selected', previewAlt: 'First slide preview', previewBuild: 'Build the project to generate a preview',
+        newResearchProject: 'New research project', close: 'Close', projectId: 'Project ID', presentationTitle: 'Presentation title', presentationTitlePlaceholder: 'Reliable Research Communication',
+        audience: 'Audience', audienceDefault: 'Research engineers and academic collaborators', audiencePlaceholder: 'Research engineers and academic collaborators', venue: 'Venue', venueDefault: 'Lab meeting', venuePlaceholder: 'Lab meeting',
+        academicProfile: 'Academic profile', academicConferenceProfile: 'Academic conference', imageGeneration: 'Image generation', manualApproval: 'Manual approval', automaticBuild: 'Automatic on build',
+        presentationBrief: 'Presentation brief', briefPlaceholder: 'State the research question, required sections, conclusions, and presentation constraints.', pptxTemplate: 'PPTX template', papersSources: 'Papers and research sources',
+        codeFiles: 'Code files', codePseudocode: 'Code or pseudocode', codePlaceholder: 'Paste an algorithm, pipeline, or pseudocode block.', formulaRendering: 'Formula rendering', editableMath: 'Editable mathematical text', transparentImage: 'Transparent publication image',
+        autoPlan: 'Derive the research plan on creation', seedDemo: 'Seed the demonstration project', cancel: 'Cancel', createProject: 'Create project',
+        guideTitle: 'How to use Hedgehog Master', guidePrepareTitle: '1. Prepare the research inputs', guidePrepareBody: 'Start with a clear brief. Add an optional PPTX template, papers or research documents, and code or pseudocode. The template controls the visual background; sources and code ground the scientific content.',
+        guideCreateTitle: '2. Create and plan', guideCreateBody: 'Create the project with automatic planning enabled. The local planner registers sources, extracts cited claims, builds a storyboard, selects a Diagram IR type, and records formula and image tasks.',
+        guideReviewTitle: '3. Review the evidence', guideReviewBody: 'Open the project inspector and check source, claim, diagram, formula, and image counts. Plan can be rerun after changing the brief or replacing inputs.',
+        guideBuildTitle: '4. Validate, build, and export', guidePlan: 'Plan updates the semantic research model.', guideValidate: 'Validate checks schemas, citations, files, and asset references.', guideBuild: 'Build SVG compiles deterministic diagrams and slide visuals.', guideExport: 'Export PPTX creates the editable presentation in the project exports folder.',
+        guideImageTitle: 'External image generation', guideImageBody: 'Choose automatic image generation only when an image backend and API key are configured. Manual mode keeps an auditable prompt manifest without calling a paid service.',
+        changelogTitle: 'Release notes', change020a: 'Added persistent English and Chinese workbench modes.', change020b: 'Added automatic Brief, paper, and code planning with cited claims and storyboards.', change020c: 'Integrated formula and image manifests into the unified build.', change020d: 'Expanded Diagram IR with cycle, comparison, architecture, and timeline layouts.', change020e: 'Added the in-app guide, release notes, and centralized version reporting.',
+        change010a: 'Introduced the local AutoResearch-PPT workbench and project contracts.', change010b: 'Added deterministic dataflow diagrams, evidence validation, SVG build, and PPTX export.',
+        recordCount: '{count} record{suffix}', sources: 'Sources', verifiedClaims: 'Verified claims', slides: 'Slides', exports: 'Exports', template: 'Template', papers: 'Papers', codeInputs: 'Code inputs', canvas: 'Canvas', diagramTypes: 'Diagram types', formulas: 'Formulas', images: 'Images', planner: 'Planner', none: 'None', notRun: 'Not run', templateCanvas: 'Template',
+        actionPlan: 'Plan', actionValidate: 'Validate', actionBuild: 'Build SVG', actionExport: 'Export PPTX', statusReady: 'Ready', statusNeedsAttention: 'Needs attention', statusError: 'Error',
+        diagramDataflow: 'Dataflow', diagramCycle: 'Cycle', diagramComparison: 'Comparison', diagramArchitecture: 'Architecture', diagramTimeline: 'Timeline',
+        actionComplete: '{action} complete', exportReady: 'PPTX ready: {path}', createdProject: 'Created {id}'
+      },
+      zh: {
+        documentTitle: 'Hedgehog Master 科研演示工作台', navLabel: '工作台视图', projectsNav: '项目', profilesNav: '配置', qualityNav: '质量', helpNav: '说明', changelogNav: '更新',
+        versionLabel: '测试版本', kicker: '科研演示流程', workbenchTitle: '科研演示工作台', languageLabel: '界面语言', refresh: '刷新项目', newProject: '新建项目',
+        metricsLabel: '仓库指标', projectsMetric: '项目', slidesMetric: '幻灯片', claimsMetric: '已验证论点', exportsMetric: 'PPTX 导出', researchProjects: '科研项目',
+        projectColumn: '项目', statusColumn: '状态', slidesColumn: '页数', claimsColumn: '论点', diagramsColumn: '图表', emptyTitle: '暂无科研项目', emptyBody: '新建项目即可启动结构化科研演示流程。',
+        inspectorTitle: '项目检查器', inspectorBody: '选择项目以检查产物与质量状态。', noPreview: '尚未选择预览', previewAlt: '第一页幻灯片预览', previewBuild: '构建项目后生成预览',
+        newResearchProject: '新建科研项目', close: '关闭', projectId: '项目 ID', presentationTitle: '演示文稿标题', presentationTitlePlaceholder: '可靠的科研表达',
+        audience: '受众', audienceDefault: '科研工程师与学术合作者', audiencePlaceholder: '科研工程师与学术合作者', venue: '使用场景', venueDefault: '实验室组会', venuePlaceholder: '实验室组会',
+        academicProfile: '学术配置', academicConferenceProfile: '学术会议', imageGeneration: '图片生成', manualApproval: '人工审核', automaticBuild: '构建时自动生成',
+        presentationBrief: '演示指令', briefPlaceholder: '说明研究问题、必需章节、结论与演示约束。', pptxTemplate: 'PPTX 模板', papersSources: '论文与研究来源',
+        codeFiles: '代码文件', codePseudocode: '代码或伪代码', codePlaceholder: '粘贴算法、处理流程或伪代码。', formulaRendering: '公式渲染', editableMath: '可编辑数学文本', transparentImage: '透明论文级图片',
+        autoPlan: '创建时自动生成科研计划', seedDemo: '填充演示项目', cancel: '取消', createProject: '创建项目',
+        guideTitle: 'Hedgehog Master 使用说明', guidePrepareTitle: '1. 准备科研输入', guidePrepareBody: '先写清楚演示指令。可以同时加入 PPTX 模板、论文或研究文档，以及代码或伪代码。模板控制视觉背景，论文和代码为科研内容提供依据。',
+        guideCreateTitle: '2. 创建并规划', guideCreateBody: '创建项目时保持自动规划开启。本地规划器会登记来源、提取带引用的论点、生成故事板、选择 Diagram IR 类型，并记录公式和图片任务。',
+        guideReviewTitle: '3. 检查证据', guideReviewBody: '在项目检查器中核对来源、论点、图表、公式和图片数量。修改指令或替换输入后，可以重新执行规划。',
+        guideBuildTitle: '4. 校验、构建与导出', guidePlan: '规划用于更新结构化科研语义模型。', guideValidate: '校验用于检查 Schema、引用、文件和资产关系。', guideBuild: '构建 SVG 用于确定性编译图表和页面视觉。', guideExport: '导出 PPTX 会在项目 exports 目录生成可编辑演示文稿。',
+        guideImageTitle: '外部图片生成', guideImageBody: '只有配置图片后端与 API 密钥后才建议选择自动生成。人工模式仍会保存可审计的提示词 Manifest，但不会调用付费服务。',
+        changelogTitle: '版本更新日志', change020a: '新增可持久化的中英文工作台模式。', change020b: '新增 Brief、论文和代码自动规划，可生成带引用论点与故事板。', change020c: '将公式与图片 Manifest 接入统一构建流程。', change020d: 'Diagram IR 新增循环图、对比图、系统架构图和时间线。', change020e: '新增界面使用说明、更新日志与统一版本信息。',
+        change010a: '建立本地 AutoResearch-PPT 工作台与科研项目契约。', change010b: '实现确定性数据流图、证据校验、SVG 构建与 PPTX 导出。',
+        recordCount: '共 {count} 条记录', sources: '来源', verifiedClaims: '已验证论点', slides: '幻灯片', exports: '导出', template: '模板', papers: '论文', codeInputs: '代码输入', canvas: '画布', diagramTypes: '图表类型', formulas: '公式', images: '图片', planner: '规划器', none: '无', notRun: '未运行', templateCanvas: '模板',
+        actionPlan: '规划', actionValidate: '校验', actionBuild: '构建 SVG', actionExport: '导出 PPTX', statusReady: '就绪', statusNeedsAttention: '需要处理', statusError: '错误',
+        diagramDataflow: '数据流图', diagramCycle: '循环图', diagramComparison: '对比图', diagramArchitecture: '系统架构图', diagramTimeline: '时间线',
+        actionComplete: '{action}完成', exportReady: 'PPTX 已生成：{path}', createdProject: '已创建 {id}'
+      }
+    };
+
+    const storedLanguage = window.localStorage.getItem('hedgehog-language');
+    const detectedLanguage = navigator.language.toLowerCase().startsWith('zh') ? 'zh' : 'en';
+    const state = { projects: [], profiles: [], selected: null, busy: false, language: storedLanguage || detectedLanguage };
     const rows = document.getElementById('project-rows');
     const inspector = document.getElementById('inspector');
     const empty = document.getElementById('empty-state');
@@ -319,6 +454,19 @@
     const dialog = document.getElementById('create-dialog');
 
     const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+
+    function t(key, values = {}) {
+      const fallback = translations.en[key] ?? key;
+      return String(translations[state.language]?.[key] ?? fallback).replace(/\{(\w+)\}/g, (_, name) => values[name] ?? '');
+    }
+
+    function statusLabel(status) {
+      return t({ ready: 'statusReady', 'needs-attention': 'statusNeedsAttention', error: 'statusError' }[status] || status);
+    }
+
+    function diagramLabel(kind) {
+      return t({ dataflow: 'diagramDataflow', cycle: 'diagramCycle', comparison: 'diagramComparison', architecture: 'diagramArchitecture', timeline: 'diagramTimeline' }[kind] || kind);
+    }
 
     function notify(message, isError = false) {
       toast.textContent = message;
@@ -328,7 +476,8 @@
     }
 
     async function request(url, options = {}) {
-      const response = await fetch(url, { headers: {'Content-Type': 'application/json'}, ...options });
+      const headers = options.body instanceof FormData ? {} : {'Content-Type': 'application/json'};
+      const response = await fetch(url, { ...options, headers: {...headers, ...(options.headers || {})} });
       const payload = await response.json();
       if (!response.ok) throw new Error(payload.error || `Request failed: ${response.status}`);
       return payload;
@@ -340,7 +489,7 @@
       document.getElementById('metric-slides').textContent = sum('slides');
       document.getElementById('metric-claims').textContent = sum('verified_claims');
       document.getElementById('metric-exports').textContent = sum('exports');
-      document.getElementById('project-count').textContent = `${state.projects.length} record${state.projects.length === 1 ? '' : 's'}`;
+      document.getElementById('project-count').textContent = t('recordCount', { count: state.projects.length, suffix: state.projects.length === 1 ? '' : 's' });
     }
 
     function renderRows() {
@@ -350,7 +499,7 @@
         const attention = project.status === 'ready' ? '' : ' attention';
         return `<tr class="${selected}" data-id="${escapeHtml(project.id)}" tabindex="0">
           <td class="project-cell">${escapeHtml(project.title)}</td>
-          <td><span class="pill${attention}">${escapeHtml(project.status)}</span></td>
+          <td><span class="pill${attention}">${escapeHtml(statusLabel(project.status))}</span></td>
           <td>${project.slides ?? 0}</td><td>${project.verified_claims ?? 0}/${project.claims ?? 0}</td><td>${project.diagrams ?? 0}</td>
         </tr>`;
       }).join('');
@@ -366,22 +515,35 @@
       const project = state.projects.find((item) => item.id === id);
       if (!project) return;
       const preview = project.preview
-        ? `<img src="/${escapeHtml(project.preview)}?v=${Date.now()}" alt="First slide preview">`
-        : '<span class="preview-placeholder">Build the project to generate a preview</span>';
+        ? `<img src="/${escapeHtml(project.preview)}?v=${Date.now()}" alt="${escapeHtml(t('previewAlt'))}">`
+        : `<span class="preview-placeholder">${escapeHtml(t('previewBuild'))}</span>`;
       const errors = project.errors?.length ? `<div class="error-list">${project.errors.map(escapeHtml).join('<br>')}</div>` : '';
       inspector.innerHTML = `<h3>${escapeHtml(project.title)}</h3>
         <p class="inspector-meta">${escapeHtml(project.id)} / ${escapeHtml(project.profile)}</p>
         <div class="preview">${preview}</div>
         <div class="detail-grid">
-          <div class="detail"><span>Sources</span><strong>${project.sources ?? 0}</strong></div>
-          <div class="detail"><span>Verified claims</span><strong>${project.verified_claims ?? 0}</strong></div>
-          <div class="detail"><span>Slides</span><strong>${project.slides ?? 0}</strong></div>
-          <div class="detail"><span>Exports</span><strong>${project.exports ?? 0}</strong></div>
+          <div class="detail"><span>${t('sources')}</span><strong>${project.sources ?? 0}</strong></div>
+          <div class="detail"><span>${t('verifiedClaims')}</span><strong>${project.verified_claims ?? 0}</strong></div>
+          <div class="detail"><span>${t('slides')}</span><strong>${project.slides ?? 0}</strong></div>
+          <div class="detail"><span>${t('exports')}</span><strong>${project.exports ?? 0}</strong></div>
+        </div>
+        <div class="detail-grid">
+          <div class="detail"><span>${t('template')}</span><strong>${project.inputs?.template ?? 0}</strong></div>
+          <div class="detail"><span>${t('papers')}</span><strong>${project.inputs?.paper ?? 0}</strong></div>
+          <div class="detail"><span>${t('codeInputs')}</span><strong>${project.inputs?.code ?? 0}</strong></div>
+          <div class="detail"><span>${t('canvas')}</span><strong>${project.template ? t('templateCanvas') : '16:9'}</strong></div>
+        </div>
+        <div class="detail-grid">
+          <div class="detail"><span>${t('diagramTypes')}</span><strong>${escapeHtml(project.diagram_kinds?.map(diagramLabel).join(', ') || t('none'))}</strong></div>
+          <div class="detail"><span>${t('formulas')}</span><strong>${project.formulas ?? 0}</strong></div>
+          <div class="detail"><span>${t('images')}</span><strong>${project.images ?? 0}</strong></div>
+          <div class="detail"><span>${t('planner')}</span><strong>${escapeHtml(project.planner || t('notRun'))}</strong></div>
         </div>
         <div class="project-actions">
-          <button class="button" data-action="validate" type="button">Validate</button>
-          <button class="button" data-action="build" type="button">Build SVG</button>
-          <button class="button primary" data-action="export" type="button">Export PPTX</button>
+          <button class="button" data-action="plan" type="button">${t('actionPlan')}</button>
+          <button class="button" data-action="validate" type="button">${t('actionValidate')}</button>
+          <button class="button" data-action="build" type="button">${t('actionBuild')}</button>
+          <button class="button primary" data-action="export" type="button">${t('actionExport')}</button>
         </div>${errors}`;
       inspector.querySelectorAll('[data-action]').forEach((button) => button.addEventListener('click', () => runAction(project.id, button.dataset.action)));
     }
@@ -392,7 +554,8 @@
       inspector.querySelectorAll('button').forEach((button) => { button.disabled = true; });
       try {
         const result = await request(`/api/projects/${encodeURIComponent(project)}/${action}`, { method: 'POST', body: '{}' });
-        notify(action === 'export' ? `PPTX ready: ${result.export}` : `${action} complete`);
+        const actionName = t({ plan: 'actionPlan', validate: 'actionValidate', build: 'actionBuild', export: 'actionExport' }[action]);
+        notify(action === 'export' ? t('exportReady', { path: result.export }) : t('actionComplete', { action: actionName }));
         await refresh();
         selectProject(project);
       } catch (error) {
@@ -407,6 +570,7 @@
       try {
         const payload = await request('/api/status');
         state.projects = payload.projects;
+        if (payload.version) document.getElementById('app-version').textContent = `v${payload.version}`;
         if (!state.selected && state.projects.length) state.selected = state.projects[0].id;
         if (state.selected && !state.projects.some((project) => project.id === state.selected)) state.selected = state.projects[0]?.id || null;
         totals();
@@ -419,30 +583,65 @@
 
     async function loadProfiles() {
       const payload = await request('/api/profiles');
-      document.getElementById('project-profile').innerHTML = payload.profiles.map((profile) => `<option value="${escapeHtml(profile.id)}">${escapeHtml(profile.name)}</option>`).join('');
+      state.profiles = payload.profiles;
+      renderProfiles();
+    }
+
+    function renderProfiles() {
+      const select = document.getElementById('project-profile');
+      const current = select.value;
+      select.innerHTML = state.profiles.map((profile) => `<option value="${escapeHtml(profile.id)}">${escapeHtml(profile.id === 'academic-conference' ? t('academicConferenceProfile') : profile.name)}</option>`).join('');
+      if (current && state.profiles.some((profile) => profile.id === current)) select.value = current;
+    }
+
+    function applyLanguage(language) {
+      state.language = language === 'zh' ? 'zh' : 'en';
+      window.localStorage.setItem('hedgehog-language', state.language);
+      document.documentElement.lang = state.language === 'zh' ? 'zh-CN' : 'en';
+      document.title = t('documentTitle');
+      document.querySelectorAll('[data-i18n]').forEach((element) => { element.textContent = t(element.dataset.i18n); });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach((element) => { element.placeholder = t(element.dataset.i18nPlaceholder); });
+      document.querySelectorAll('[data-i18n-title]').forEach((element) => { element.title = t(element.dataset.i18nTitle); });
+      document.querySelectorAll('[data-i18n-aria]').forEach((element) => { element.setAttribute('aria-label', t(element.dataset.i18nAria)); });
+      document.querySelectorAll('[data-language]').forEach((button) => {
+        const active = button.dataset.language === state.language;
+        button.classList.toggle('active', active);
+        button.setAttribute('aria-pressed', String(active));
+      });
+      const audience = document.getElementById('project-audience');
+      const venue = document.getElementById('project-venue');
+      if ([translations.en.audienceDefault, translations.zh.audienceDefault].includes(audience.value)) audience.value = t('audienceDefault');
+      if ([translations.en.venueDefault, translations.zh.venueDefault].includes(venue.value)) venue.value = t('venueDefault');
+      renderProfiles();
+      totals();
+      renderRows();
+      if (state.selected) selectProject(state.selected);
     }
 
     document.getElementById('refresh').addEventListener('click', refresh);
     document.getElementById('open-create').addEventListener('click', () => dialog.showModal());
     document.getElementById('close-create').addEventListener('click', () => dialog.close());
     document.getElementById('cancel-create').addEventListener('click', () => dialog.close());
+    document.getElementById('open-help').addEventListener('click', () => document.getElementById('help-dialog').showModal());
+    document.getElementById('open-changelog').addEventListener('click', () => document.getElementById('changelog-dialog').showModal());
+    document.querySelectorAll('[data-dialog-close]').forEach((button) => button.addEventListener('click', () => document.getElementById(button.dataset.dialogClose).close()));
+    document.querySelectorAll('[data-language]').forEach((button) => button.addEventListener('click', () => applyLanguage(button.dataset.language)));
     document.getElementById('create-form').addEventListener('submit', async (event) => {
       event.preventDefault();
       const form = new FormData(event.currentTarget);
-      const payload = Object.fromEntries(form.entries());
-      payload.demo = form.has('demo');
       try {
-        const project = await request('/api/projects', { method: 'POST', body: JSON.stringify(payload) });
+        const project = await request('/api/projects', { method: 'POST', body: form });
         dialog.close();
         event.currentTarget.reset();
-        notify(`Created ${project.id}`);
+        applyLanguage(state.language);
+        notify(t('createdProject', { id: project.id }));
         state.selected = project.id;
         await refresh();
       } catch (error) {
         notify(error.message, true);
       }
     });
-    document.getElementById('runtime-address').textContent = window.location.host || '127.0.0.1';
+    applyLanguage(state.language);
     Promise.all([loadProfiles(), refresh()]).catch((error) => notify(error.message, true));
   </script>
 </body>

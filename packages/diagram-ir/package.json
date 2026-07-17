@@ -1,9 +1,9 @@
 {
   "name": "@hedgehog-master/diagram-ir",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "Hedgehog Master Diagram IR v0.1a deterministic Diagram IR to SVG compiler.",
+  "description": "Hedgehog Master Diagram IR v0.2 deterministic scientific diagram compiler.",
   "bin": {
     "hedgehog-diagram": "./dist/cli.js"
   },

@@ -105,4 +105,38 @@ describe("compileDiagramJsonToSvg", () => {
 
     expect(result.ok).toBe(true);
   });
+
+  it("compiles every v0.2 scientific diagram kind deterministically", () => {
+    const cases = [
+      ["cycle", "clockwise"],
+      ["comparison", "left-to-right"],
+      ["architecture", "top-to-bottom"],
+      ["timeline", "left-to-right"]
+    ] as const;
+    for (const [kind, direction] of cases) {
+      const input = JSON.stringify({
+        irVersion: "0.2",
+        id: `${kind}-diagram`,
+        title: `${kind} diagram`,
+        kind,
+        direction,
+        nodes: [
+          { id: "input", label: "Input", role: "source", group: "A" },
+          { id: "process", label: "Process", role: "transform", group: "A" },
+          { id: "output", label: "Output", role: "output", group: "B" }
+        ],
+        edges: [
+          { id: "input-process", from: "input", to: "process" },
+          { id: "process-output", from: "process", to: "output" },
+          ...(kind === "cycle" ? [{ id: "output-input", from: "output", to: "input" }] : [])
+        ],
+        metadata: {}
+      });
+      const result = checkDeterministicDiagramJsonCompile(input);
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        expect(result.svg).toContain(`Deterministic ${kind} diagram`);
+      }
+    }
+  });
 });

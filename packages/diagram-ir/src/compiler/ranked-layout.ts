@@ -39,7 +39,8 @@ export function layoutRankedDataflow(document: CanonicalDiagramIrV01a): LayoutMo
       height: NODE_HEIGHT,
       rank,
       order: orderWithinRank,
-      labelLines: wrapLabel(node.label)
+      labelLines: wrapLabel(node.label),
+      ...(node.group === undefined ? {} : { group: node.group })
     };
   });
   const nodeById = new Map(layoutNodes.map((node) => [node.id, node]));
@@ -69,6 +70,7 @@ export function layoutRankedDataflow(document: CanonicalDiagramIrV01a): LayoutMo
   });
 
   return {
+    kind: document.kind,
     canvas: {
       width: CANVAS_WIDTH,
       height: CANVAS_HEIGHT
@@ -115,7 +117,7 @@ function calculateRanks(document: CanonicalDiagramIrV01a): Map<string, number> {
   }
 
   if (visitedCount !== document.nodes.length) {
-    throw new Error("Cannot layout cyclic dataflow graph. v0.1a ranked layout requires a DAG.");
+    throw new Error("Cannot apply ranked layout to a cyclic graph.");
   }
 
   return rankByNodeId;

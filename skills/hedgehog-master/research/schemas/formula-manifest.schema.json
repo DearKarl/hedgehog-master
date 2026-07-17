@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/DearKarl/hedgehog-master/schemas/formula-manifest.v1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "items"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema_version": {"const": "1.0"},
+    "providers": {"type": "array", "items": {"type": "string"}},
+    "renderer": {"type": "object"},
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["id", "latex", "display", "render_mode", "status"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"},
+          "latex": {"type": "string", "minLength": 1},
+          "display": {"enum": ["inline", "block"]},
+          "render_mode": {"enum": ["editable-text", "raster"]},
+          "filename": {"type": "string", "minLength": 1},
+          "file": {"type": "string", "pattern": "^images/[^/]+$"},
+          "status": {"enum": ["Ready", "Pending", "Rendered", "Failed", "Needs-Manual"]},
+          "source_id": {"type": "string"},
+          "locator": {"type": "string"},
+          "slide_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+        }
+      }
+    }
+  }
+}
