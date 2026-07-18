@@ -26,6 +26,8 @@ from typing import Any
 from urllib.parse import unquote, urlparse
 from xml.etree import ElementTree as ET
 
+from content_intake import compile_content_contract
+from content_spec import build_content_template, content_spec_summary, parse_content_spec
 from research_template import TemplateContractError, import_template
 from research_planner import plan_project
 from provider_settings import (
@@ -212,6 +214,7 @@ def demo_payloads(project_id: str, title: str) -> dict[str, Any]:
             "authoring_mode": "structured-semantics-only",
             "require_claim_evidence": True,
             "citation_style": "numeric",
+            "content_mode": "planner",
             "image_generation": "manual",
             "formula_rendering": "editable-text",
             "content_provider": "rules",
@@ -318,6 +321,9 @@ def initialize_project(
     formula_rendering: str = "editable-text",
     content_provider: str = "rules",
     diagram_provider: str = "rules",
+    content_spec: str = "",
+    page_image_uploads: list[UploadedFile] | None = None,
+    image_page_map: str = "",
 ) -> Path:
     project_id = slugify(name)
     project = ensure_project_path(project_id)
@@ -331,11 +337,13 @@ def initialize_project(
     content_provider = safe_provider_id(content_provider, CONTENT_PROVIDERS)
     diagram_provider = safe_provider_id(diagram_provider, DIAGRAM_PROVIDERS)
     settings = load_settings()
+    parsed_content = parse_content_spec(content_spec) if content_spec.strip() else None
 
     for relative in (
         "inputs/template",
         "inputs/papers",
         "inputs/code",
+        "inputs/content",
         "template",
         "analysis",
         "images",
@@ -352,7 +360,11 @@ def initialize_project(
         (project / relative).mkdir(parents=True, exist_ok=True)
 
     try:
-        resolved_title = title or name.replace("-", " ").title()
+        resolved_title = (
+            parsed_content["deck"]["title"]
+            if parsed_content
+            else title or name.replace("-", " ").title()
+        )
         instructions = brief.strip() or "Create a formal English academic presentation from the registered inputs."
         (project / "inputs" / "instructions.md").write_text(
             f"# Presentation Brief\n\n{instructions}\n",
@@ -362,6 +374,8 @@ def initialize_project(
         payloads["project"]["audience"] = audience
         payloads["project"]["venue"] = venue
         payloads["project"]["profile"] = profile
+        if parsed_content:
+            payloads["project"]["language"] = parsed_content["deck"]["language"]
         payloads["project"]["brief"]["instructions"] = instructions
         payloads["project"]["policy"]["image_generation"] = image_generation
         payloads["project"]["policy"]["formula_rendering"] = formula_rendering
@@ -369,6 +383,7 @@ def initialize_project(
         payloads["project"]["policy"]["content_model"] = resolve_model(settings, content_provider, "content")
         payloads["project"]["policy"]["diagram_provider"] = diagram_provider
         payloads["project"]["policy"]["diagram_model"] = resolve_model(settings, diagram_provider, "diagram")
+        payloads["project"]["policy"]["content_mode"] = "external-template" if parsed_content else "planner"
 
         if not demo:
             payloads["sources"]["sources"] = []
@@ -406,6 +421,17 @@ def initialize_project(
             payloads["sources"]["sources"].append(
                 {"id": f"code-{index}", "title": record["name"], "type": "code", "locator": record["path"]}
             )
+        if parsed_content:
+            input_records.append(
+                {
+                    "id": "content-1",
+                    "kind": "content",
+                    "path": "inputs/content/content-spec.json",
+                    "name": "Filled Hedgehog content template",
+                    "media_type": "application/json",
+                    "language": parsed_content["deck"]["language"],
+                }
+            )
         payloads["project"]["inputs"] = input_records
 
         write_json(project / "project.json", payloads["project"])
@@ -419,7 +445,15 @@ def initialize_project(
                 import_template(project, template_path)
             except TemplateContractError as exc:
                 raise HarnessError(f"Cannot analyze PPTX template: {exc}") from exc
-        should_plan = auto_plan and (
+        if parsed_content:
+            compile_content_contract(
+                project,
+                payloads["project"],
+                parsed_content,
+                page_image_uploads,
+                image_page_map,
+            )
+        should_plan = not parsed_content and auto_plan and (
             bool(brief.strip())
             or bool(paper_uploads)
             or bool(code_inputs)
@@ -673,7 +707,7 @@ def page_shell(
         chrome = (
             f'  <rect x="0" y="0" width="{width}" height="{height}" fill="{colors["background"]}"/>\n'
             f'  <rect x="0" y="0" width="{width}" height="{format_svg_number(8 * scale)}" fill="{colors["accent"]}"/>\n'
-            f'  {svg_text(56 * scale, 46 * scale, "HEDGEHOG MASTER  /  AUTORESEARCH-PPT", 13 * scale, colors["muted"], 600, font_family)}\n'
+            f'  {svg_text(56 * scale, 46 * scale, "HEDGEHOG MASTER  /  AUTORESEARCH-FUTURE", 13 * scale, colors["muted"], 600, font_family)}\n'
             f'  {svg_text(56 * scale, height - 30 * scale, project_title, 11 * scale, colors["muted"], font_family=font_family)}\n'
             f'  {svg_text(width - 80 * scale, height - 30 * scale, f"{page_number:02d}", 11 * scale, colors["muted"], 600, font_family)}\n'
         )
@@ -1079,7 +1113,7 @@ def render_slide(
     height = int(canvas["height"])
     scale = min(width / 1280, height / 720)
     font_family = profile.get("font_family", "Aptos, Arial, sans-serif")
-    title = slide["title"]
+    title = slide.get("title", "")
     subtitle = slide.get("subtitle", "")
     layout = slide["layout"]
     background = template_background(project, template, layout)
@@ -1184,58 +1218,105 @@ def render_slide(
             title_slot["x"], title_slot["y"] + title_size, title, title_size, colors["text"],
             title_slot["width"], title_size * 1.18, font_family, 2,
         )]
-        y = content_slot["y"] + 34 * scale
+        body_top = content_slot["y"]
+        body_height = content_slot["height"]
+        if subtitle:
+            parts.append(wrapped_text(
+                content_slot["x"], body_top + 20 * scale, subtitle, 16 * scale,
+                colors["muted"], content_slot["width"], 21 * scale, font_family, 2,
+            ))
+            body_top += 54 * scale
+            body_height -= 54 * scale
         formula_items = [assets_by_id[item_id] for item_id in slide.get("formula_ids", []) if item_id in assets_by_id]
         image_items = [assets_by_id[item_id] for item_id in slide.get("image_ids", []) if item_id in assets_by_id]
-        total_blocks = len(formula_items) + len(image_items) + len(slide.get("claim_ids", []))
-        card_height = min(122 * scale, max(82 * scale, content_slot["height"] / max(1, total_blocks) - 16 * scale))
+        claim_items = [claims_by_id[item_id] for item_id in slide.get("claim_ids", []) if item_id in claims_by_id]
+        bullets = slide.get("bullets", [])
+        has_media = bool(formula_items or image_items)
+        has_text = bool(bullets or claim_items)
+        gap = 24 * scale
+        media_slot = {
+            "x": content_slot["x"],
+            "y": body_top,
+            "width": content_slot["width"] * 0.55 if has_media and has_text else content_slot["width"],
+            "height": body_height,
+        }
+        text_slot = {
+            "x": media_slot["x"] + media_slot["width"] + gap,
+            "y": body_top,
+            "width": content_slot["width"] - media_slot["width"] - gap,
+            "height": body_height,
+        }
+        media_count = len(formula_items) + len(image_items)
+        media_gap = 14 * scale
+        media_height = (
+            (media_slot["height"] - media_gap * max(0, media_count - 1)) / max(1, media_count)
+            if has_media
+            else 0
+        )
+        media_y = media_slot["y"]
+        for image_item in image_items:
+            block = {"x": media_slot["x"], "y": media_y, "width": media_slot["width"], "height": media_height}
+            parts.append(f'<rect x="{format_svg_number(block["x"])}" y="{format_svg_number(block["y"])}" width="{format_svg_number(block["width"])}" height="{format_svg_number(block["height"])}" rx="{format_svg_number(4 * scale)}" fill="{colors["panel"]}"/>')
+            rendered = render_image_asset(image_item, project, block, 10 * scale)
+            if rendered:
+                parts.append(rendered)
+            else:
+                parts.append(svg_text(block["x"] + 20 * scale, block["y"] + 30 * scale, "IMAGE PENDING", 12 * scale, colors["accent"], 700, font_family))
+                parts.append(wrapped_text(
+                    block["x"] + 20 * scale, block["y"] + 62 * scale,
+                    image_item.get("alt_text") or image_item.get("prompt") or image_item["id"],
+                    16 * scale, colors["text"], block["width"] - 40 * scale,
+                    22 * scale, font_family, 5,
+                ))
+            media_y += media_height + media_gap
         for formula in formula_items:
-            parts.append(f'<rect x="{format_svg_number(content_slot["x"])}" y="{format_svg_number(y - 28 * scale)}" width="{format_svg_number(content_slot["width"])}" height="{format_svg_number(card_height)}" rx="{format_svg_number(4 * scale)}" fill="{colors["panel"]}"/>')
-            parts.append(svg_text(content_slot["x"] + 24 * scale, y, f"[{formula['id']}]  {formula.get('locator', 'registered formula')}", 12 * scale, colors["accent"], 700, font_family))
+            block = {"x": media_slot["x"], "y": media_y, "width": media_slot["width"], "height": media_height}
+            parts.append(f'<rect x="{format_svg_number(block["x"])}" y="{format_svg_number(block["y"])}" width="{format_svg_number(block["width"])}" height="{format_svg_number(block["height"])}" rx="{format_svg_number(4 * scale)}" fill="{colors["panel"]}"/>')
+            parts.append(svg_text(block["x"] + 20 * scale, block["y"] + 28 * scale, f"[{formula['id']}]  {formula.get('locator', 'registered formula')}", 11 * scale, colors["accent"], 700, font_family))
             formula_href = asset_file_href(project, formula) if formula.get("render_mode") == "raster" else None
             if formula_href:
                 formula_slot = {
-                    "x": content_slot["x"] + 22 * scale,
-                    "y": y + 12 * scale,
-                    "width": content_slot["width"] - 44 * scale,
-                    "height": card_height - 40 * scale,
+                    "x": block["x"] + 20 * scale,
+                    "y": block["y"] + 38 * scale,
+                    "width": block["width"] - 40 * scale,
+                    "height": block["height"] - 50 * scale,
                 }
                 parts.append(render_image_asset(formula, project, formula_slot))
             else:
                 parts.append(wrapped_text(
-                    content_slot["x"] + 24 * scale,
-                    y + 42 * scale,
+                    block["x"] + 20 * scale,
+                    block["y"] + 78 * scale,
                     editable_formula_text(formula["latex"]),
-                    24 * scale,
+                    22 * scale,
                     colors["text"],
-                    content_slot["width"] - 48 * scale,
-                    30 * scale,
+                    block["width"] - 40 * scale,
+                    28 * scale,
                     "Cambria Math, STIX Two Math, serif",
-                    2,
+                    3,
                 ))
-            y += card_height + 16 * scale
-        for image_item in image_items:
-            image_slot = {
-                "x": content_slot["x"],
-                "y": y - 28 * scale,
-                "width": content_slot["width"],
-                "height": card_height,
-            }
-            rendered = render_image_asset(image_item, project, image_slot, 8 * scale)
-            if rendered:
-                parts.append(rendered)
-                y += card_height + 16 * scale
-        for claim_id in slide.get("claim_ids", []):
-            claim = claims_by_id[claim_id]
-            parts.append(f'<rect x="{format_svg_number(content_slot["x"])}" y="{format_svg_number(y - 28 * scale)}" width="{format_svg_number(content_slot["width"])}" height="{format_svg_number(card_height)}" rx="{format_svg_number(4 * scale)}" fill="{colors["panel"]}"/>')
-            parts.append(svg_text(content_slot["x"] + 24 * scale, y, f"[{claim_id}]  {claim['status'].upper()}", 13 * scale, colors["accent"], 700, font_family))
-            parts.append(wrapped_text(content_slot["x"] + 24 * scale, y + 34 * scale, claim["text"], 20 * scale, colors["text"], content_slot["width"] - 48 * scale, 28 * scale, font_family, 2))
-            citations = claim.get("citations", [])
-            source_label = "; ".join(
-                f"{citation.get('source_id')} {citation.get('locator')}" for citation in citations[:2]
-            ) or ", ".join(claim.get("source_ids", []))
-            parts.append(svg_text(content_slot["x"] + 24 * scale, y + card_height - 40 * scale, f"Source: {source_label}", 12 * scale, colors["muted"], font_family=font_family))
-            y += card_height + 16 * scale
+            media_y += media_height + media_gap
+        if has_text:
+            target = text_slot if has_media else media_slot
+            text_y = target["y"] + 24 * scale
+            row_count = len(bullets) + len(claim_items)
+            row_height = min(118 * scale, max(58 * scale, target["height"] / max(1, row_count)))
+            for bullet in bullets:
+                parts.append(svg_text(target["x"], text_y, "•", 18 * scale, colors["accent"], 700, font_family))
+                parts.append(wrapped_text(
+                    target["x"] + 26 * scale, text_y, bullet, 17 * scale, colors["text"],
+                    target["width"] - 26 * scale, 23 * scale, font_family, 3,
+                ))
+                text_y += row_height
+            for claim in claim_items:
+                claim_id = claim["id"]
+                parts.append(svg_text(target["x"], text_y, f"[{claim_id}]  {claim['status'].upper()}", 11 * scale, colors["accent"], 700, font_family))
+                parts.append(wrapped_text(target["x"], text_y + 30 * scale, claim["text"], 16 * scale, colors["text"], target["width"], 22 * scale, font_family, 3))
+                citations = claim.get("citations", [])
+                source_label = "; ".join(
+                    f"{citation.get('source_id')} {citation.get('locator')}" for citation in citations[:2]
+                ) or ", ".join(claim.get("source_ids", []))
+                parts.append(svg_text(target["x"], text_y + row_height - 14 * scale, f"Source: {source_label}", 10 * scale, colors["muted"], font_family=font_family))
+                text_y += row_height
         content = "\n".join(parts)
     elif layout in {"closing", "section"}:
         title_size = 36 * scale if not template else max(24 * scale, min(46 * scale, title_slot["height"] * 0.38))
@@ -1348,7 +1429,7 @@ def project_summary(project: Path) -> dict[str, Any]:
             diagram_kinds.append(diagram_kind)
     input_counts = {
         kind: sum(1 for item in inputs if item.get("kind") == kind)
-        for kind in ("template", "paper", "code")
+        for kind in ("template", "paper", "code", "content")
     }
     return {
         "id": manifest["id"],
@@ -1488,6 +1569,22 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
                 settings = save_settings(self.read_json_body())
                 self.send_json(public_settings(settings))
                 return
+            if parsed.path == "/api/content-template":
+                payload = self.read_json_body()
+                if payload.get("action", "generate") == "validate":
+                    content = parse_content_spec(str(payload.get("content") or ""))
+                    self.send_json({"ok": True, "summary": content_spec_summary(content)})
+                else:
+                    slide_options = payload.get("slides") or []
+                    if not isinstance(slide_options, list):
+                        raise HarnessError("Template slide options must be an array")
+                    template = build_content_template(
+                        str(payload.get("title") or ""),
+                        str(payload.get("language") or "en"),
+                        slide_options,
+                    )
+                    self.send_json({"ok": True, "template": template})
+                return
             if parsed.path == "/api/projects":
                 payload, files = self.read_project_body()
                 project = initialize_project(
@@ -1507,6 +1604,9 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
                     formula_rendering=payload.get("formula_rendering", "editable-text"),
                     content_provider=payload.get("content_provider", "rules"),
                     diagram_provider=payload.get("diagram_provider", "rules"),
+                    content_spec=payload.get("content_spec", ""),
+                    page_image_uploads=files.get("page_images", []),
+                    image_page_map=payload.get("image_page_map", ""),
                 )
                 self.send_json(project_summary(project), HTTPStatus.CREATED)
                 return

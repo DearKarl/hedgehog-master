@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "id": "scientific-swiss",
+  "name": "Scientific Swiss",
+  "description": "A precise grid-led profile for methods, systems, and quantitative results.",
+  "origin": "Hedgehog Master original",
+  "layouts": ["cover", "section", "diagram", "evidence", "closing"],
+  "colors": {
+    "background": "#FFFFFF",
+    "panel": "#EEF2F4",
+    "text": "#172033",
+    "muted": "#66717E",
+    "accent": "#0B6E75",
+    "secondary": "#D1495B"
+  },
+  "constraints": {
+    "minimum_body_font_pt": 18,
+    "maximum_title_characters": 90,
+    "require_claim_ids_on_evidence_slides": true,
+    "allow_gradients": false,
+    "allow_decorative_shadows": false
+  }
+}

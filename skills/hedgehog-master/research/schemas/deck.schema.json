@@ -17,7 +17,7 @@
         "properties": {
           "id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"},
           "layout": {"enum": ["cover", "section", "diagram", "evidence", "closing"]},
-          "title": {"type": "string", "minLength": 1},
+          "title": {"type": "string"},
           "subtitle": {"type": "string"},
           "summary": {"type": "string"},
           "bullets": {"type": "array", "items": {"type": "string", "minLength": 1}, "maxItems": 6},

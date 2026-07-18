@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "id": "computational-night",
+  "name": "Computational Night",
+  "description": "A dark high-contrast profile for algorithms, AI systems, and technical demos.",
+  "origin": "Hedgehog Master original",
+  "layouts": ["cover", "section", "diagram", "evidence", "closing"],
+  "colors": {
+    "background": "#111827",
+    "panel": "#1F2937",
+    "text": "#F8FAFC",
+    "muted": "#CBD5E1",
+    "accent": "#38B2AC",
+    "secondary": "#F2C14E"
+  },
+  "constraints": {
+    "minimum_body_font_pt": 18,
+    "maximum_title_characters": 90,
+    "require_claim_ids_on_evidence_slides": true,
+    "allow_gradients": false,
+    "allow_decorative_shadows": false
+  }
+}

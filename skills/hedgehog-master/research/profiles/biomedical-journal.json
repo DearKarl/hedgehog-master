@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "id": "biomedical-journal",
+  "name": "Biomedical Journal",
+  "description": "A calm clinical profile for biomedical studies, trials, and evidence reviews.",
+  "origin": "Hedgehog Master original",
+  "layouts": ["cover", "section", "diagram", "evidence", "closing"],
+  "colors": {
+    "background": "#FFFFFF",
+    "panel": "#EEF4F2",
+    "text": "#162B32",
+    "muted": "#5E6E72",
+    "accent": "#2A7F62",
+    "secondary": "#C74F5A"
+  },
+  "constraints": {
+    "minimum_body_font_pt": 18,
+    "maximum_title_characters": 90,
+    "require_claim_ids_on_evidence_slides": true,
+    "allow_gradients": false,
+    "allow_decorative_shadows": false
+  }
+}

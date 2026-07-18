@@ -46,9 +46,20 @@ Windows PowerShell 使用 `.venv\Scripts\Activate.ps1` 激活 Python 环境。
 python3 hedgehog.py serve --port 4173
 ```
 
-打开 [http://127.0.0.1:4173](http://127.0.0.1:4173)。新建项目时可以一次性提交 PPTX 模板、演示指令、论文或文档、代码文件以及粘贴的代码。规划器会提取带页码定位的证据，生成 Sources、Claims 和 Storyboard，根据 Brief 与代码选择 Diagram IR 类型，并登记公式和图片资产。`Plan`、`Validate`、`Build SVG` 和 `Export PPTX` 都可以重复执行。
+打开 [http://127.0.0.1:4173](http://127.0.0.1:4173)。主流程不需要 API Key：在“说明 → 内容模板”中生成内容合同，让你自己的大语言模型填写，再把返回的 JSON 粘贴到“新建项目”。选择内置学术配置或上传自己的 PPTX 背景，将图片逐张分配到明确页码，然后创建项目。`Plan`、`Validate`、`Build SVG` 和 `Export PPTX` 都可以重复执行。
 
-工作台右上角可以切换中英文，并会在本地浏览器中记住选择。左侧“设置”用于选择 Provider、模型、端点和可选 API Key；“说明”介绍完整项目流程，“更新”展示双语版本记录。左下角版本号来自 [`VERSION`](./VERSION)，完整发布记录维护在 [`CHANGELOG.md`](./CHANGELOG.md)。
+工作台右上角可以切换中英文，并会在本地浏览器中记住选择。“说明”包含轻松版教程和可配置的内容模板生成器；“设置”仍保留高级自动化所需的 Provider 路由，但外部模型工作流不依赖它。“更新”展示双语版本记录。左下角版本号来自 [`VERSION`](./VERSION)，完整发布记录维护在 [`CHANGELOG.md`](./CHANGELOG.md)。
+
+## 使用你自己的大语言模型
+
+1. 打开“说明 → 内容模板”，选择 PPT 页数，并配置每一页是否需要标题、副标题、图片或公式。
+2. 生成并复制 JSON 合同。把它和你的简历、论文、笔记或要求，一起发给 ChatGPT、Claude、Gemini、Qwen、本地 LLM 或其他模型。
+3. 要求模型替换所有 `<...>` 占位符，保留 ID 与 JSON 结构，公式使用转义后的 LaTeX 字符串，并且只返回 JSON。
+4. 将完整 JSON 粘贴到“新建项目”，点击“校验模板”。
+5. 上传所需图片，将每个文件分配到明确页面；选择本地学术配置，或上传自己的 PPTX 背景。
+6. 创建、校验、构建并导出可编辑 PPTX。
+
+模型只负责填写受约束的内容；Hedgehog Master 负责校验、来源登记、公式与图片 Manifest、确定性排版、SVG 生成和 PPTX 导出。确认后的合同保存在 `inputs/content/content-spec.json`，便于检查和复现。
 
 ## 内容与流程图 Provider
 
@@ -120,13 +131,15 @@ projects/<project-id>/
 │   ├── instructions.md             # 权威演示指令
 │   ├── template/*.pptx             # 可选 PowerPoint 模板
 │   ├── papers/*                    # 论文和研究文档
-│   └── code/*                      # 代码和粘贴的伪代码
+│   ├── code/*                      # 代码和粘贴的伪代码
+│   └── content/content-spec.json   # 已确认的外部模型内容合同
 ├── template/
 │   ├── template.json               # 语义版式绑定与内容槽约束
 │   └── workspace/                  # 恢复后的 Master、Layout、主题和 SVG 图层
 ├── analysis/
 │   ├── plan.json                   # 规划器结果、数量、警告和图类型
-│   └── provider_trace.json         # Provider/模型路由、约束、回退与警告
+│   ├── image-page-map.json         # 用户图片与页面的精确映射
+│   └── provider_trace.json         # 可选 Provider/模型路由与约束
 ├── images/
 │   ├── formula_manifest.json       # LaTeX、来源定位、渲染模式和页面绑定
 │   └── image_prompts.json          # 可审计的外部图片提示词和状态
@@ -208,7 +221,7 @@ Agent 不得直接生成最终流程图 SVG、任意 HTML 幻灯片布局或 Dra
 ## 开发校验
 
 ```bash
-python3 -m py_compile hedgehog.py skills/hedgehog-master/scripts/research_harness.py skills/hedgehog-master/scripts/research_planner.py skills/hedgehog-master/scripts/provider_settings.py skills/hedgehog-master/scripts/content_provider.py
+python3 -m py_compile hedgehog.py skills/hedgehog-master/scripts/research_harness.py skills/hedgehog-master/scripts/research_planner.py skills/hedgehog-master/scripts/content_spec.py skills/hedgehog-master/scripts/content_intake.py
 python3 -m unittest tests.test_research_harness
 python3 hedgehog.py validate <project-id>
 pnpm --dir packages/diagram-ir check

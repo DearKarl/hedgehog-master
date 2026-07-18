@@ -4,6 +4,24 @@ Hedgehog Master follows a bilingual release process. Every user-facing release r
 
 Hedgehog Master 采用双语版本流程。每个面向用户的版本都会在本文件和本地工作台中同步记录中英文说明。
 
+## v0.4.0-beta - 2026-07-18
+
+### English
+
+- Added a configurable external-LLM content contract for slide titles, subtitles, body copy, LaTeX formulas, image requirements, sources, and speaker notes.
+- Added validated paste-in intake so users can write with their own language model without giving Hedgehog Master an API key.
+- Added exact slide assignment for uploaded PNG, JPEG, and WebP assets and connected those files to the image Manifest and storyboard.
+- Added original Scientific Swiss, Biomedical Journal, and Computational Night profiles while retaining custom PPTX template import.
+- Added deterministic mixed layouts for text, formulas, evidence, pending-image placeholders, and supplied images.
+
+### 中文
+
+- 新增可配置的外部大语言模型内容合同，覆盖页面标题、副标题、正文、LaTeX 公式、图片需求、来源与演讲备注。
+- 新增受校验的粘贴式输入；用户可以使用自己的大语言模型写作，无需向 Hedgehog Master 提供 API Key。
+- 新增 PNG、JPEG 与 WebP 图片的精确页码分配，并将文件接入图片 Manifest 与 Storyboard。
+- 新增原创 Scientific Swiss、Biomedical Journal 与 Computational Night 学术配置，同时保留自定义 PPTX 模板导入。
+- 新增文字、公式、证据、待补图片占位符和用户图片的确定性混合排版。
+
 ## v0.3.0-beta - 2026-07-17
 
 ### English

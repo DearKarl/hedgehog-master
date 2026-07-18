@@ -11,7 +11,7 @@
     "title": {"type": "string", "minLength": 1},
     "audience": {"type": "string", "minLength": 1},
     "venue": {"type": "string", "minLength": 1},
-    "language": {"const": "en"},
+    "language": {"enum": ["en", "zh"]},
     "profile": {"type": "string", "minLength": 1},
     "canvas": {"enum": ["ppt169", "template"]},
     "brief": {
@@ -31,8 +31,8 @@
         "required": ["id", "kind", "path", "name"],
         "properties": {
           "id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"},
-          "kind": {"enum": ["template", "paper", "code"]},
-          "path": {"type": "string", "pattern": "^inputs/(template|papers|code)/[^/]+$"},
+          "kind": {"enum": ["template", "paper", "code", "content"]},
+          "path": {"type": "string", "pattern": "^inputs/(template|papers|code|content)/[^/]+$"},
           "name": {"type": "string", "minLength": 1},
           "media_type": {"type": "string", "minLength": 1},
           "language": {"type": "string", "minLength": 1}
@@ -61,6 +61,7 @@
         "authoring_mode": {"const": "structured-semantics-only"},
         "require_claim_evidence": {"const": true},
         "citation_style": {"enum": ["numeric", "author-year"]},
+        "content_mode": {"enum": ["planner", "external-template"]},
         "image_generation": {"enum": ["manual", "auto"]},
         "formula_rendering": {"enum": ["editable-text", "raster"]},
         "content_provider": {"enum": ["rules", "openai", "gemini", "qwen", "zhipu", "local", "external-agent"]},

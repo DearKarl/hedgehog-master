@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import base64
 import json
 import os
 import stat
@@ -148,6 +149,55 @@ def export_results():
     def test_formula_text_remains_editable(self) -> None:
         self.assertEqual(harness.editable_formula_text(r"E = mc^2"), "E = mc²")
         self.assertEqual(harness.editable_formula_text(r"\frac{a}{b} \leq 1"), "(a)/(b) <= 1")
+
+    def test_external_content_contract_registers_formula_and_page_image(self) -> None:
+        png = base64.b64decode(
+            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="
+        )
+        spec = {
+            "schema_version": "1.0",
+            "generation_instructions": ["Return JSON only."],
+            "deck": {"title": "External Contract", "subtitle": "Local layout", "language": "en"},
+            "slides": [
+                {
+                    "id": "slide-01", "layout": "cover", "title": "External Contract",
+                    "subtitle": "Local layout", "body": [], "formulas": [], "images": [],
+                    "sources": [], "speaker_notes": "",
+                },
+                {
+                    "id": "slide-02", "layout": "formula", "title": "Evidence remains registered",
+                    "subtitle": "The Harness owns geometry.", "body": ["Content remains inspectable."],
+                    "formulas": [{"latex": "E = mc^2", "display": "block"}],
+                    "images": [{"id": "result-image", "prompt": "A clean scientific result plot", "alt_text": "Result plot"}],
+                    "sources": [], "speaker_notes": "Explain the model boundary.",
+                },
+            ],
+        }
+
+        project = harness.initialize_project(
+            "external-contract",
+            profile="scientific-swiss",
+            content_spec=json.dumps(spec),
+            page_image_uploads=[harness.UploadedFile("result.png", "image/png", png)],
+            image_page_map=json.dumps([{"file_index": 0, "slide_id": "slide-02"}]),
+        )
+        manifest = harness.load_json(project / "project.json")
+        deck = harness.load_json(project / "storyboard" / "deck.json")
+        images = harness.load_json(project / "images" / "image_prompts.json")
+        formulas = harness.load_json(project / "images" / "formula_manifest.json")
+        plan_before = harness.load_json(project / "analysis" / "plan.json")
+        plan_after = research_planner.plan_project(project)
+        report = harness.validate_project(project)
+        outputs = harness.build_project(project)
+
+        self.assertEqual(manifest["policy"]["content_mode"], "external-template")
+        self.assertEqual(manifest["inputs"][-1]["kind"], "content")
+        self.assertEqual(deck["slides"][1]["image_ids"], ["result-image"])
+        self.assertEqual(images["items"][0]["status"], "Generated")
+        self.assertEqual(formulas["items"][0]["latex"], "E = mc^2")
+        self.assertEqual(plan_before, plan_after)
+        self.assertTrue(report.ok, report.errors)
+        self.assertEqual(len(outputs), 2)
 
     def test_provider_settings_store_secrets_locally_and_mask_api_output(self) -> None:
         saved = provider_settings.save_settings(
@@ -326,13 +376,16 @@ def export_results():
     def test_workbench_version_and_bilingual_controls_are_registered(self) -> None:
         index = (harness.REPO_ROOT / "index.html").read_text(encoding="utf-8")
 
-        self.assertEqual(harness.APP_VERSION, "0.3.0-beta")
-        self.assertEqual(harness.WorkbenchHandler.server_version, "HedgehogMaster/0.3.0-beta")
+        self.assertEqual(harness.APP_VERSION, "0.4.0-beta")
+        self.assertEqual(harness.WorkbenchHandler.server_version, "HedgehogMaster/0.4.0-beta")
         self.assertIn('data-language="en"', index)
         self.assertIn('data-language="zh"', index)
         self.assertIn('id="help-dialog"', index)
         self.assertIn('id="changelog-dialog"', index)
         self.assertIn('id="settings-dialog"', index)
+        self.assertIn('id="content-template-output"', index)
+        self.assertIn('id="project-content-spec"', index)
+        self.assertIn('id="template-gallery"', index)
         self.assertIn('AutoResearch-Future', index)
         self.assertIn('href="/assets/branding/hedgehog-master-mark.png"', index)
         self.assertIn('src="/assets/branding/hedgehog-master-mark.png"', index)

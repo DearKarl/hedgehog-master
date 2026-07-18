@@ -252,6 +252,27 @@
     .checkbox.compact { margin: 0 0 15px; color: var(--muted); font-size: 12px; }
     .checkbox.full { grid-column: 1 / -1; }
 
+    .helper { margin: -1px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .inline-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .validation-state { color: var(--muted); font-size: 12px; }
+    .validation-state.valid { color: var(--accent); font-weight: 700; }
+    .template-gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+    .theme-option { min-width: 0; display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 12px; align-items: center; padding: 13px; border: 0; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--paper); text-align: left; }
+    .theme-option:nth-child(2n) { border-right: 0; }
+    .theme-option:nth-last-child(-n+2) { border-bottom: 0; }
+    .theme-option.selected { box-shadow: inset 0 0 0 2px var(--accent); background: #f2f7f5; }
+    .theme-swatch { width: 48px; height: 34px; display: grid; grid-template-columns: 2fr 1fr; border: 1px solid rgba(23, 32, 51, 0.18); border-radius: 3px; overflow: hidden; }
+    .theme-copy { min-width: 0; }
+    .theme-copy strong { display: block; overflow: hidden; color: var(--ink); font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+    .theme-copy span { display: block; margin-top: 3px; color: var(--muted); font-size: 11px; line-height: 1.35; }
+    .mapping-list { border-top: 1px solid var(--line); }
+    .mapping-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(150px, 0.7fr); gap: 12px; align-items: center; min-height: 48px; padding: 7px 0; border-bottom: 1px solid var(--line); }
+    .mapping-row span { overflow: hidden; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+    .mapping-row select { width: 100%; height: 34px; border: 1px solid #cfd6df; border-radius: 4px; background: white; }
+    .advanced-options { grid-column: 1 / -1; margin-bottom: 15px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .advanced-options summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; color: var(--ink); font-size: 13px; font-weight: 700; }
+    .advanced-options .form-grid { padding-top: 8px; }
+
     .info-body { padding: 2px 24px 28px; line-height: 1.65; }
     .info-body section { padding: 20px 0; border-bottom: 1px solid var(--line); }
     .info-body section:last-child { border-bottom: 0; }
@@ -259,6 +280,21 @@
     .info-body p { margin: 0; color: var(--muted); font-size: 13px; }
     .info-body ol, .info-body ul { margin: 10px 0 0; padding-left: 21px; color: var(--muted); font-size: 13px; }
     .info-body li { margin: 7px 0; padding-left: 3px; }
+    .guide-tabs { position: sticky; top: 69px; z-index: 1; display: grid; grid-template-columns: repeat(2, 1fr); padding: 10px 24px; border-bottom: 1px solid var(--line); background: var(--paper); }
+    .guide-tabs button { min-height: 38px; border: 1px solid var(--line); color: var(--muted); background: var(--paper); font-weight: 700; }
+    .guide-tabs button:first-child { border-radius: 4px 0 0 4px; }
+    .guide-tabs button:last-child { margin-left: -1px; border-radius: 0 4px 4px 0; }
+    .guide-tabs button.active { z-index: 1; color: #ffffff; border-color: var(--accent); background: var(--accent); }
+    .guide-panel[hidden] { display: none; }
+    .template-builder { padding-top: 18px; }
+    .template-builder .form-grid { padding: 0; }
+    .page-config { margin: 16px 0; border-top: 1px solid var(--line); }
+    .page-config-row { display: grid; grid-template-columns: 48px minmax(120px, 1fr) minmax(320px, 2.2fr); gap: 10px; align-items: center; min-height: 48px; border-bottom: 1px solid var(--line); font-size: 12px; }
+    .page-config-row select { width: 100%; height: 34px; border: 1px solid #cfd6df; border-radius: 4px; background: white; }
+    .page-toggle-grid { min-width: 0; display: grid; grid-template-columns: repeat(4, minmax(70px, 1fr)); gap: 8px; }
+    .page-config-row label { min-width: 0; display: flex; align-items: center; gap: 6px; color: var(--muted); white-space: nowrap; }
+    .page-config-row input { width: 16px; height: 16px; accent-color: var(--accent); }
+    .template-output { width: 100%; min-height: 300px; margin-top: 10px; padding: 12px; border: 1px solid #cfd6df; border-radius: 4px; resize: vertical; color: var(--ink); background: #f8fafb; font-family: "SFMono-Regular", Consolas, monospace; font-size: 11px; line-height: 1.5; }
     .release-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
     .release-head h3 { margin: 0; }
     .release-date { color: var(--muted); font-size: 12px; }
@@ -297,6 +333,15 @@
       h1 { font-size: 24px; }
       .form-grid { grid-template-columns: 1fr; }
       .field.full { grid-column: auto; }
+      .template-gallery { grid-template-columns: 1fr; }
+      .theme-option { border-right: 0; }
+      .theme-option:nth-last-child(2) { border-bottom: 1px solid var(--line); }
+      .mapping-row { grid-template-columns: 1fr; gap: 5px; padding: 10px 0; }
+      .page-config-row { grid-template-columns: 36px minmax(0, 1fr); align-items: start; padding: 10px 0; }
+      .page-config-row > strong { padding-top: 9px; }
+      .page-toggle-grid { grid-column: 2; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 12px; }
+      .page-config-row label { min-height: 28px; }
+      .advanced-options { grid-column: auto; }
     }
   </style>
 </head>
@@ -318,7 +363,7 @@
         <button id="open-help" type="button"><span class="nav-icon">?</span><span data-i18n="helpNav">Guide</span></button>
         <button id="open-changelog" type="button"><span class="nav-icon">&#916;</span><span data-i18n="changelogNav">Updates</span></button>
       </nav>
-      <div class="version"><span data-i18n="versionLabel">Beta version</span><strong id="app-version">v0.3.0-beta</strong></div>
+      <div class="version"><span data-i18n="versionLabel">Beta version</span><strong id="app-version">v0.4.0-beta</strong></div>
     </aside>
 
     <main>
@@ -370,19 +415,23 @@
     <form id="create-form" enctype="multipart/form-data">
       <div class="form-grid">
         <div class="field"><label for="project-name" data-i18n="projectId">Project ID</label><input id="project-name" name="name" required pattern="[A-Za-z0-9 -]+" placeholder="reliable-research-decks"></div>
-        <div class="field"><label for="project-title" data-i18n="presentationTitle">Presentation title</label><input id="project-title" name="title" required placeholder="Reliable Research Communication" data-i18n-placeholder="presentationTitlePlaceholder"></div>
+        <div class="field"><label for="project-title" data-i18n="presentationTitle">Presentation title</label><input id="project-title" name="title" placeholder="Reliable Research Communication" data-i18n-placeholder="presentationTitlePlaceholder"></div>
         <div class="field"><label for="project-audience" data-i18n="audience">Audience</label><input id="project-audience" name="audience" value="Research engineers and academic collaborators" data-i18n-placeholder="audiencePlaceholder"></div>
         <div class="field"><label for="project-venue" data-i18n="venue">Venue</label><input id="project-venue" name="venue" value="Lab meeting" data-i18n-placeholder="venuePlaceholder"></div>
-        <div class="field"><label for="project-profile" data-i18n="academicProfile">Academic profile</label><select id="project-profile" name="profile"></select></div>
-        <div class="field"><label for="project-image-generation" data-i18n="imageGeneration">Image generation</label><select id="project-image-generation" name="image_generation"><option value="manual" data-i18n="manualApproval">Manual approval</option><option value="auto" data-i18n="automaticBuild">Automatic on build</option></select></div>
-        <div class="field"><label for="project-content-provider" data-i18n="contentProvider">Content provider</label><select id="project-content-provider" name="content_provider"></select></div>
-        <div class="field"><label for="project-diagram-provider" data-i18n="diagramProvider">Diagram provider</label><select id="project-diagram-provider" name="diagram_provider"></select></div>
-        <div class="field full"><label for="project-brief" data-i18n="presentationBrief">Presentation brief</label><textarea id="project-brief" name="brief" required placeholder="State the research question, required sections, conclusions, and presentation constraints." data-i18n-placeholder="briefPlaceholder"></textarea></div>
+        <div class="field full"><label data-i18n="academicProfile">Academic profile</label><select id="project-profile" name="profile" hidden></select><div class="template-gallery" id="template-gallery"></div></div>
+        <div class="field full"><label for="project-content-spec" data-i18n="filledContentTemplate">Filled content template</label><textarea class="code" id="project-content-spec" name="content_spec" placeholder="Paste the JSON returned by your own language model here." data-i18n-placeholder="filledContentPlaceholder"></textarea><p class="helper" data-i18n="filledContentHelp">Generate the blank contract from Guide → Template, ask your model to fill it, then paste the complete JSON here.</p><div class="inline-actions"><button class="button" id="validate-content-spec" type="button" data-i18n="validateTemplate">Validate template</button><span class="validation-state" id="content-spec-summary" data-i18n="templateNotChecked">Not checked</span></div></div>
+        <div class="field full"><label for="project-page-images" data-i18n="pageImages">Page images</label><input id="project-page-images" name="page_images" type="file" multiple accept="image/png,image/jpeg,image/webp"><input id="project-image-page-map" name="image_page_map" type="hidden" value="[]"><p class="helper" data-i18n="pageImagesHelp">After selecting files, assign every image to an exact slide from the pasted content template.</p><div class="mapping-list" id="image-map-rows"></div></div>
         <div class="field"><label for="project-template" data-i18n="pptxTemplate">PPTX template</label><input id="project-template" name="template" type="file" accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation"></div>
-        <div class="field"><label for="project-papers" data-i18n="papersSources">Papers and research sources</label><input id="project-papers" name="papers" type="file" multiple accept=".pdf,.docx,.md,.txt,.tex"></div>
-        <div class="field full"><label for="project-code-files" data-i18n="codeFiles">Code files</label><input id="project-code-files" name="code_files" type="file" multiple accept=".py,.m,.r,.ipynb,.c,.cc,.cpp,.h,.hpp,.java,.js,.ts,.rs,.go,.md,.txt"></div>
-        <div class="field full"><label for="project-code-text" data-i18n="codePseudocode">Code or pseudocode</label><textarea class="code" id="project-code-text" name="code_text" placeholder="Paste an algorithm, pipeline, or pseudocode block." data-i18n-placeholder="codePlaceholder"></textarea></div>
-        <div class="field full"><label for="project-formula-rendering" data-i18n="formulaRendering">Formula rendering</label><select id="project-formula-rendering" name="formula_rendering"><option value="editable-text" data-i18n="editableMath">Editable mathematical text</option><option value="raster" data-i18n="transparentImage">Transparent publication image</option></select></div>
+        <div class="field"><label for="project-formula-rendering" data-i18n="formulaRendering">Formula rendering</label><select id="project-formula-rendering" name="formula_rendering"><option value="editable-text" data-i18n="editableMath">Editable mathematical text</option><option value="raster" data-i18n="transparentImage">Transparent publication image</option></select></div>
+        <details class="advanced-options"><summary data-i18n="advancedInputs">Advanced and legacy inputs</summary><div class="form-grid">
+          <div class="field full"><label for="project-brief" data-i18n="presentationBrief">Presentation brief</label><textarea id="project-brief" name="brief" placeholder="State the research question, required sections, conclusions, and presentation constraints." data-i18n-placeholder="briefPlaceholder"></textarea></div>
+          <div class="field"><label for="project-papers" data-i18n="papersSources">Papers and research sources</label><input id="project-papers" name="papers" type="file" multiple accept=".pdf,.docx,.md,.txt,.tex"></div>
+          <div class="field"><label for="project-code-files" data-i18n="codeFiles">Code files</label><input id="project-code-files" name="code_files" type="file" multiple accept=".py,.m,.r,.ipynb,.c,.cc,.cpp,.h,.hpp,.java,.js,.ts,.rs,.go,.md,.txt"></div>
+          <div class="field full"><label for="project-code-text" data-i18n="codePseudocode">Code or pseudocode</label><textarea class="code" id="project-code-text" name="code_text" placeholder="Paste an algorithm, pipeline, or pseudocode block." data-i18n-placeholder="codePlaceholder"></textarea></div>
+          <div class="field"><label for="project-image-generation" data-i18n="imageGeneration">Image generation</label><select id="project-image-generation" name="image_generation"><option value="manual" data-i18n="manualApproval">Manual approval</option><option value="auto" data-i18n="automaticBuild">Automatic on build</option></select></div>
+          <div class="field"><label for="project-content-provider" data-i18n="contentProvider">Content provider</label><select id="project-content-provider" name="content_provider"></select></div>
+          <div class="field"><label for="project-diagram-provider" data-i18n="diagramProvider">Diagram provider</label><select id="project-diagram-provider" name="diagram_provider"></select></div>
+        </div></details>
       </div>
       <label class="checkbox"><input name="auto_plan" type="checkbox" checked><span data-i18n="autoPlan">Derive the research plan on creation</span></label>
       <label class="checkbox"><input name="demo" type="checkbox"><span data-i18n="seedDemo">Seed the demonstration project</span></label>
@@ -483,18 +532,34 @@
 
   <dialog id="help-dialog">
     <div class="dialog-head"><h2 data-i18n="guideTitle">How to use Hedgehog Master</h2><button class="close" data-dialog-close="help-dialog" type="button" aria-label="Close" title="Close" data-i18n-aria="close" data-i18n-title="close">&times;</button></div>
-    <div class="info-body">
-      <section><h3 data-i18n="guidePrepareTitle">1. Prepare the research inputs</h3><p data-i18n="guidePrepareBody">Start with a clear brief. Add an optional PPTX template, papers or research documents, and code or pseudocode. The template controls the visual background; sources and code ground the scientific content.</p></section>
-      <section><h3 data-i18n="guideCreateTitle">2. Create and plan</h3><p data-i18n="guideCreateBody">Choose rules mode or a configured provider, then create the project with automatic planning enabled. The Harness validates evidence-linked content and Diagram IR before layout.</p></section>
-      <section><h3 data-i18n="guideReviewTitle">3. Review the evidence</h3><p data-i18n="guideReviewBody">Open the project inspector and check source, claim, diagram, formula, and image counts. Plan can be rerun after changing the brief or replacing inputs.</p></section>
-      <section><h3 data-i18n="guideBuildTitle">4. Validate, build, and export</h3><ol><li data-i18n="guidePlan">Plan updates the semantic research model.</li><li data-i18n="guideValidate">Validate checks schemas, citations, files, and asset references.</li><li data-i18n="guideBuild">Build SVG compiles deterministic diagrams and slide visuals.</li><li data-i18n="guideExport">Export PPTX creates the editable presentation in the project exports folder.</li></ol></section>
-      <section><h3 data-i18n="guideImageTitle">External image generation</h3><p data-i18n="guideImageBody">Choose automatic image generation only when an image backend and API key are configured. Manual mode keeps an auditable prompt manifest without calling a paid service.</p></section>
+    <div class="guide-tabs" role="tablist"><button class="active" type="button" data-guide-tab="tutorial" data-i18n="tutorialTab">Tutorial</button><button type="button" data-guide-tab="template" data-i18n="templateTab">Content template</button></div>
+    <div class="info-body guide-panel" data-guide-panel="tutorial">
+      <section><h3 data-i18n="guidePrepareTitle">1. Ask for a contract, not a miracle</h3><p data-i18n="guidePrepareBody">Open the Template tab, choose the page count and page ingredients, then generate a JSON contract. It is less glamorous than shouting “make my slides”, but dramatically easier to audit.</p></section>
+      <section><h3 data-i18n="guideCreateTitle">2. Let your own model do the writing</h3><p data-i18n="guideCreateBody">Send that JSON to the language model you already use. Add your resume, paper, notes, or instructions in the same conversation. Ask it to replace every placeholder and return JSON only.</p></section>
+      <section><h3 data-i18n="guideReviewTitle">3. Bring the ingredients home</h3><p data-i18n="guideReviewBody">Paste the filled JSON into New project. Upload any requested figures and assign each file to its slide. Hedgehog Master checks IDs, lengths, sources, LaTeX, and missing images before layout.</p></section>
+      <section><h3 data-i18n="guideBuildTitle">4. Build the deck without layout roulette</h3><ol><li data-i18n="guidePlan">Plan preserves the approved external content contract.</li><li data-i18n="guideValidate">Validate checks schemas, citations, files, and asset references.</li><li data-i18n="guideBuild">Build SVG compiles deterministic slide visuals.</li><li data-i18n="guideExport">Export PPTX creates the editable presentation in the project exports folder.</li></ol></section>
+    </div>
+    <div class="info-body guide-panel template-builder" data-guide-panel="template" hidden>
+      <div class="form-grid">
+        <div class="field"><label for="template-deck-title" data-i18n="presentationTitle">Presentation title</label><input id="template-deck-title" placeholder="My research presentation"></div>
+        <div class="field"><label for="template-language" data-i18n="contentLanguage">Content language</label><select id="template-language"><option value="en">English</option><option value="zh">中文</option></select></div>
+        <div class="field"><label for="template-slide-count" data-i18n="slideCount">Number of slides</label><input id="template-slide-count" type="number" min="1" max="40" value="6"></div>
+        <div class="field"><label>&nbsp;</label><button class="button" id="configure-template-pages" type="button" data-i18n="configurePages">Configure pages</button></div>
+      </div>
+      <p class="helper" data-i18n="templateBuilderHelp">Choose what each page must contain. The generated JSON is a prompt contract for your own model, not an API call from this app.</p>
+      <div class="page-config" id="template-page-config"></div>
+      <div class="inline-actions"><button class="button primary" id="generate-content-template" type="button" data-i18n="generateTemplate">Generate template</button><button class="button" id="copy-content-template" type="button" data-i18n="copyTemplate">Copy template</button></div>
+      <textarea class="template-output" id="content-template-output" readonly aria-label="Generated content template" data-i18n-aria="generatedTemplate"></textarea>
     </div>
   </dialog>
 
   <dialog id="changelog-dialog">
     <div class="dialog-head"><h2 data-i18n="changelogTitle">Release notes</h2><button class="close" data-dialog-close="changelog-dialog" type="button" aria-label="Close" title="Close" data-i18n-aria="close" data-i18n-title="close">&times;</button></div>
     <div class="info-body">
+      <section>
+        <div class="release-head"><h3>v0.4.0-beta</h3><span class="release-date">2026-07-18</span></div>
+        <ul><li data-i18n="change040a">Added an external-LLM content contract generator and validated paste-in workflow.</li><li data-i18n="change040b">Added exact slide assignment for user-supplied images and registered LaTeX formulas.</li><li data-i18n="change040c">Added original local academic themes while retaining custom PPTX template import.</li><li data-i18n="change040d">Added deterministic mixed layouts for text, formulas, evidence, and images.</li></ul>
+      </section>
       <section>
         <div class="release-head"><h3>v0.3.0-beta</h3><span class="release-date">2026-07-17</span></div>
         <ul><li data-i18n="change030a">Added local multi-provider settings with masked credentials.</li><li data-i18n="change030b">Added constrained content and Diagram IR providers with evidence and format validation.</li><li data-i18n="change030c">Connected provider-generated scientific diagrams to the deterministic PPT build.</li><li data-i18n="change030d">Added optional image, stock library, and narration provider routing.</li></ul>
@@ -526,17 +591,19 @@
         inspectorTitle: 'Project inspector', inspectorBody: 'Select a project to inspect artifacts and quality state.', noPreview: 'No preview selected', previewAlt: 'First slide preview', previewBuild: 'Build the project to generate a preview',
         newResearchProject: 'New research project', close: 'Close', projectId: 'Project ID', presentationTitle: 'Presentation title', presentationTitlePlaceholder: 'Reliable Research Communication',
         audience: 'Audience', audienceDefault: 'Research engineers and academic collaborators', audiencePlaceholder: 'Research engineers and academic collaborators', venue: 'Venue', venueDefault: 'Lab meeting', venuePlaceholder: 'Lab meeting',
-        academicProfile: 'Academic profile', academicConferenceProfile: 'Academic conference', imageGeneration: 'Image generation', manualApproval: 'Manual approval', automaticBuild: 'Automatic on build', contentProvider: 'Content provider', diagramProvider: 'Diagram provider',
-        presentationBrief: 'Presentation brief', briefPlaceholder: 'State the research question, required sections, conclusions, and presentation constraints.', pptxTemplate: 'PPTX template', papersSources: 'Papers and research sources',
+        academicProfile: 'Academic profile', academicConferenceProfile: 'Academic conference', profileAcademicDescription: 'Restrained conference typography with evidence-led accents.', profileBiomedicalDescription: 'Calm clinical styling for studies, trials, and reviews.', profileComputationalDescription: 'High-contrast styling for algorithms, AI systems, and technical demos.', profileSwissDescription: 'Precise grid-led styling for methods, systems, and quantitative results.', imageGeneration: 'Image generation', manualApproval: 'Manual approval', automaticBuild: 'Automatic on build', contentProvider: 'Content provider', diagramProvider: 'Diagram provider',
+        presentationBrief: 'Presentation brief', briefPlaceholder: 'State the research question, required sections, conclusions, and presentation constraints.', pptxTemplate: 'Custom PPTX background', papersSources: 'Papers and research sources',
         codeFiles: 'Code files', codePseudocode: 'Code or pseudocode', codePlaceholder: 'Paste an algorithm, pipeline, or pseudocode block.', formulaRendering: 'Formula rendering', editableMath: 'Editable mathematical text', transparentImage: 'Transparent publication image',
         autoPlan: 'Derive the research plan on creation', seedDemo: 'Seed the demonstration project', cancel: 'Cancel', createProject: 'Create project',
+        filledContentTemplate: 'Filled content template', filledContentPlaceholder: 'Paste the JSON returned by your own language model here.', filledContentHelp: 'Generate the blank contract from Guide → Content template, ask your model to fill it, then paste the complete JSON here.', validateTemplate: 'Validate template', templateNotChecked: 'Not checked', templateValid: '{slides} slides · {formulas} formulas · {images} images', pageImages: 'Page images', pageImagesHelp: 'After selecting files, assign every image to an exact slide from the pasted content template.', assignImage: 'Assign to slide', advancedInputs: 'Advanced and legacy inputs', missingProjectContent: 'Paste a filled content template or provide a presentation brief.', invalidContentFirst: 'Validate a filled content template before assigning page images.',
         settingsTitle: 'Provider settings', routingTitle: 'Task routing', routingNote: 'Rules mode works without a key. Model providers return semantic JSON; local compilation still controls layout.', imageProvider: 'Image provider', stockProvider: 'Stock image provider', narrationProvider: 'Narration provider', intelligenceServices: 'Content and diagram services', apiKey: 'API key', apiKeyOptional: 'API key (optional)', contentModel: 'Content model', diagramModel: 'Diagram model', imageModel: 'Image model', narrationModel: 'Narration model', baseUrl: 'Base URL', compatibleEndpoint: 'OpenAI-compatible endpoint', removeKey: 'Remove saved key', removePexelsKey: 'Remove Pexels key', removePixabayKey: 'Remove Pixabay key', removeElevenLabsKey: 'Remove ElevenLabs key', removeQwenKey: 'Remove Qwen TTS key', localLlm: 'Local LLM', externalAgent: 'External Agent', noKeyRequired: 'No key required', assetServices: 'Optional asset services', assetServicesNote: 'These providers are optional for base evaluation. Editable formulas remain local; raster formulas use the existing no-key online chain.', saveSettings: 'Save settings', settingsSaved: 'Provider settings saved', configured: 'Configured', notConfigured: 'Not configured', rulesMode: 'Rules / no model', manualMode: 'Manual', noneProvider: 'None', edgeNarration: 'Edge local voice',
-        guideTitle: 'How to use Hedgehog Master', guidePrepareTitle: '1. Prepare the research inputs', guidePrepareBody: 'Start with a clear brief. Add an optional PPTX template, papers or research documents, and code or pseudocode. The template controls the visual background; sources and code ground the scientific content.',
-        guideCreateTitle: '2. Create and plan', guideCreateBody: 'Choose rules mode or a configured provider, then create the project with automatic planning enabled. The Harness validates evidence-linked content and Diagram IR before layout.',
-        guideReviewTitle: '3. Review the evidence', guideReviewBody: 'Open the project inspector and check source, claim, diagram, formula, and image counts. Plan can be rerun after changing the brief or replacing inputs.',
-        guideBuildTitle: '4. Validate, build, and export', guidePlan: 'Plan updates the semantic research model.', guideValidate: 'Validate checks schemas, citations, files, and asset references.', guideBuild: 'Build SVG compiles deterministic diagrams and slide visuals.', guideExport: 'Export PPTX creates the editable presentation in the project exports folder.',
+        guideTitle: 'How to use Hedgehog Master', tutorialTab: 'Tutorial', templateTab: 'Content template', guidePrepareTitle: '1. Ask for a contract, not a miracle', guidePrepareBody: 'Open the Content template tab, choose the page count and page ingredients, then generate a JSON contract. It is less glamorous than shouting “make my slides”, but dramatically easier to audit.',
+        guideCreateTitle: '2. Let your own model do the writing', guideCreateBody: 'Send that JSON to the language model you already use. Add your resume, paper, notes, or instructions in the same conversation. Ask it to replace every placeholder and return JSON only.',
+        guideReviewTitle: '3. Bring the ingredients home', guideReviewBody: 'Paste the filled JSON into New project. Upload requested figures and assign each file to its slide. Hedgehog Master checks IDs, lengths, sources, LaTeX, and missing images before layout.',
+        guideBuildTitle: '4. Build the deck without layout roulette', guidePlan: 'Plan preserves the approved external content contract.', guideValidate: 'Validate checks schemas, citations, files, and asset references.', guideBuild: 'Build SVG compiles deterministic slide visuals.', guideExport: 'Export PPTX creates the editable presentation in the project exports folder.',
         guideImageTitle: 'External image generation', guideImageBody: 'Choose automatic image generation only when an image backend and API key are configured. Manual mode keeps an auditable prompt manifest without calling a paid service.',
-        changelogTitle: 'Release notes', change030a: 'Added local multi-provider settings with masked credentials.', change030b: 'Added constrained content and Diagram IR providers with evidence and format validation.', change030c: 'Connected provider-generated scientific diagrams to the deterministic PPT build.', change030d: 'Added optional image, stock library, and narration provider routing.', change021a: 'Added the HM application icon, favicon, and workbench home link.', change021b: 'Added a one-click macOS launcher for the local workbench.', change021c: 'Added reproducible source packaging, setup, integrity manifests, and bilingual handoff instructions.', change020a: 'Added persistent English and Chinese workbench modes.', change020b: 'Added automatic Brief, paper, and code planning with cited claims and storyboards.', change020c: 'Integrated formula and image manifests into the unified build.', change020d: 'Expanded Diagram IR with cycle, comparison, architecture, and timeline layouts.', change020e: 'Added the in-app guide, release notes, and centralized version reporting.',
+        contentLanguage: 'Content language', slideCount: 'Number of slides', configurePages: 'Configure pages', templateBuilderHelp: 'Choose what each page must contain. The generated JSON is a prompt contract for your own model, not an API call from this app.', generateTemplate: 'Generate template', copyTemplate: 'Copy template', generatedTemplate: 'Generated content template', templateCopied: 'Content template copied', pageLabel: 'Page {number}', pageTitleToggle: 'Title', pageSubtitleToggle: 'Subtitle', pageImageToggle: 'Image', pageFormulaToggle: 'Formula', layoutCover: 'Cover', layoutContent: 'Content', layoutEvidence: 'Evidence', layoutFormula: 'Formula', layoutClosing: 'Closing',
+        changelogTitle: 'Release notes', change040a: 'Added an external-LLM content contract generator and validated paste-in workflow.', change040b: 'Added exact slide assignment for user-supplied images and registered LaTeX formulas.', change040c: 'Added original local academic themes while retaining custom PPTX template import.', change040d: 'Added deterministic mixed layouts for text, formulas, evidence, and images.', change030a: 'Added local multi-provider settings with masked credentials.', change030b: 'Added constrained content and Diagram IR providers with evidence and format validation.', change030c: 'Connected provider-generated scientific diagrams to the deterministic PPT build.', change030d: 'Added optional image, stock library, and narration provider routing.', change021a: 'Added the HM application icon, favicon, and workbench home link.', change021b: 'Added a one-click macOS launcher for the local workbench.', change021c: 'Added reproducible source packaging, setup, integrity manifests, and bilingual handoff instructions.', change020a: 'Added persistent English and Chinese workbench modes.', change020b: 'Added automatic Brief, paper, and code planning with cited claims and storyboards.', change020c: 'Integrated formula and image manifests into the unified build.', change020d: 'Expanded Diagram IR with cycle, comparison, architecture, and timeline layouts.', change020e: 'Added the in-app guide, release notes, and centralized version reporting.',
         change010a: 'Introduced the local AutoResearch-Future workbench and project contracts.', change010b: 'Added deterministic dataflow diagrams, evidence validation, SVG build, and PPTX export.',
         recordCount: '{count} record{suffix}', sources: 'Sources', verifiedClaims: 'Verified claims', slides: 'Slides', exports: 'Exports', template: 'Template', papers: 'Papers', codeInputs: 'Code inputs', canvas: 'Canvas', diagramTypes: 'Diagram types', formulas: 'Formulas', images: 'Images', planner: 'Planner', none: 'None', notRun: 'Not run', templateCanvas: 'Template',
         actionPlan: 'Plan', actionValidate: 'Validate', actionBuild: 'Build SVG', actionExport: 'Export PPTX', statusReady: 'Ready', statusNeedsAttention: 'Needs attention', statusError: 'Error',
@@ -551,17 +618,19 @@
         inspectorTitle: '项目检查器', inspectorBody: '选择项目以检查产物与质量状态。', noPreview: '尚未选择预览', previewAlt: '第一页幻灯片预览', previewBuild: '构建项目后生成预览',
         newResearchProject: '新建科研项目', close: '关闭', projectId: '项目 ID', presentationTitle: '演示文稿标题', presentationTitlePlaceholder: '可靠的科研表达',
         audience: '受众', audienceDefault: '科研工程师与学术合作者', audiencePlaceholder: '科研工程师与学术合作者', venue: '使用场景', venueDefault: '实验室组会', venuePlaceholder: '实验室组会',
-        academicProfile: '学术配置', academicConferenceProfile: '学术会议', imageGeneration: '图片生成', manualApproval: '人工审核', automaticBuild: '构建时自动生成', contentProvider: '内容 Provider', diagramProvider: '流程图 Provider',
-        presentationBrief: '演示指令', briefPlaceholder: '说明研究问题、必需章节、结论与演示约束。', pptxTemplate: 'PPTX 模板', papersSources: '论文与研究来源',
+        academicProfile: '学术配置', academicConferenceProfile: '学术会议', profileAcademicDescription: '克制的会议排版，以证据关系和少量强调色组织内容。', profileBiomedicalDescription: '适合生物医学研究、试验与证据综述的冷静临床风格。', profileComputationalDescription: '适合算法、AI 系统与技术演示的高对比风格。', profileSwissDescription: '适合方法、系统与定量结果的精确网格风格。', imageGeneration: '图片生成', manualApproval: '人工审核', automaticBuild: '构建时自动生成', contentProvider: '内容 Provider', diagramProvider: '流程图 Provider',
+        presentationBrief: '演示指令', briefPlaceholder: '说明研究问题、必需章节、结论与演示约束。', pptxTemplate: '自定义 PPTX 背景', papersSources: '论文与研究来源',
         codeFiles: '代码文件', codePseudocode: '代码或伪代码', codePlaceholder: '粘贴算法、处理流程或伪代码。', formulaRendering: '公式渲染', editableMath: '可编辑数学文本', transparentImage: '透明论文级图片',
         autoPlan: '创建时自动生成科研计划', seedDemo: '填充演示项目', cancel: '取消', createProject: '创建项目',
+        filledContentTemplate: '已填写的内容模板', filledContentPlaceholder: '把你自己的大语言模型返回的 JSON 粘贴到这里。', filledContentHelp: '先在“说明 → 内容模板”生成空白合同，让你的模型填写，然后把完整 JSON 粘贴回来。', validateTemplate: '校验模板', templateNotChecked: '尚未校验', templateValid: '{slides} 页 · {formulas} 个公式 · {images} 张图片', pageImages: '页面图片', pageImagesHelp: '选择图片后，把每个文件明确分配到内容模板中的某一页。', assignImage: '分配到页面', advancedInputs: '高级与旧版输入', missingProjectContent: '请粘贴已填写的内容模板，或提供一段演示指令。', invalidContentFirst: '请先粘贴并校验内容模板，再分配页面图片。',
         settingsTitle: 'Provider 设置', routingTitle: '任务路由', routingNote: '纯规则模式不需要密钥。模型只返回语义 JSON，页面排版仍由本地编译器控制。', imageProvider: '图片 Provider', stockProvider: '图库 Provider', narrationProvider: '旁白 Provider', intelligenceServices: '内容与流程图服务', apiKey: 'API 密钥', apiKeyOptional: 'API 密钥（可选）', contentModel: '内容模型', diagramModel: '流程图模型', imageModel: '图片模型', narrationModel: '旁白模型', baseUrl: '基础 URL', compatibleEndpoint: 'OpenAI 兼容端点', removeKey: '删除已保存密钥', removePexelsKey: '删除 Pexels 密钥', removePixabayKey: '删除 Pixabay 密钥', removeElevenLabsKey: '删除 ElevenLabs 密钥', removeQwenKey: '删除 Qwen TTS 密钥', localLlm: '本地 LLM', externalAgent: '外部 Agent', noKeyRequired: '无需密钥', assetServices: '可选素材服务', assetServicesNote: '这些服务不是基础测评必需。可编辑公式在本地处理；透明公式图片继续使用现有无 Key 在线服务链。', saveSettings: '保存设置', settingsSaved: 'Provider 设置已保存', configured: '已配置', notConfigured: '未配置', rulesMode: '纯规则 / 无模型', manualMode: '人工模式', noneProvider: '无', edgeNarration: 'Edge 本地语音',
-        guideTitle: 'Hedgehog Master 使用说明', guidePrepareTitle: '1. 准备科研输入', guidePrepareBody: '先写清楚演示指令。可以同时加入 PPTX 模板、论文或研究文档，以及代码或伪代码。模板控制视觉背景，论文和代码为科研内容提供依据。',
-        guideCreateTitle: '2. 创建并规划', guideCreateBody: '选择纯规则模式或已配置的 Provider，并开启自动规划。Harness 会在排版前校验带证据内容与 Diagram IR。',
-        guideReviewTitle: '3. 检查证据', guideReviewBody: '在项目检查器中核对来源、论点、图表、公式和图片数量。修改指令或替换输入后，可以重新执行规划。',
-        guideBuildTitle: '4. 校验、构建与导出', guidePlan: '规划用于更新结构化科研语义模型。', guideValidate: '校验用于检查 Schema、引用、文件和资产关系。', guideBuild: '构建 SVG 用于确定性编译图表和页面视觉。', guideExport: '导出 PPTX 会在项目 exports 目录生成可编辑演示文稿。',
+        guideTitle: 'Hedgehog Master 使用说明', tutorialTab: '教程', templateTab: '内容模板', guidePrepareTitle: '1. 先要合同，别先许愿', guidePrepareBody: '打开“内容模板”，选择页数和每页要放的东西，然后生成 JSON 合同。它没有一句“帮我做得高级点”那么潇洒，但后面少改两小时格式，还是很划算。',
+        guideCreateTitle: '2. 让你自己的模型负责写稿', guideCreateBody: '把 JSON 发给你平时使用的大语言模型，并在同一段对话里附上简历、论文、笔记或要求。让它替换全部占位符，并且只返回 JSON。',
+        guideReviewTitle: '3. 把食材带回工作台', guideReviewBody: '将填好的 JSON 粘贴到“新建项目”。上传所需图片，并逐张指定页码。Hedgehog Master 会在排版前检查 ID、字数、来源、LaTeX 和缺失图片。',
+        guideBuildTitle: '4. 稳定构建，不抽排版盲盒', guidePlan: '规划会保留已经确认的外部内容合同。', guideValidate: '校验会检查 Schema、引用、文件和素材关系。', guideBuild: '构建 SVG 会确定性编译每页视觉。', guideExport: '导出 PPTX 会在项目 exports 目录生成可编辑演示文稿。',
         guideImageTitle: '外部图片生成', guideImageBody: '只有配置图片后端与 API 密钥后才建议选择自动生成。人工模式仍会保存可审计的提示词 Manifest，但不会调用付费服务。',
-        changelogTitle: '版本更新日志', change030a: '新增本地多 Provider 设置与密钥遮蔽存储。', change030b: '新增受约束的内容与 Diagram IR Provider，并校验证据与格式。', change030c: '模型生成的科研流程图已接入确定性 PPT 构建。', change030d: '新增可选图片、图库与旁白 Provider 路由。', change021a: '新增 HM 应用图标、浏览器图标和工作台主页链接。', change021b: '新增 macOS 本地工作台一键启动器。', change021c: '新增可复现源码封装、安装流程、完整性清单和双语交付说明。', change020a: '新增可持久化的中英文工作台模式。', change020b: '新增 Brief、论文和代码自动规划，可生成带引用论点与故事板。', change020c: '将公式与图片 Manifest 接入统一构建流程。', change020d: 'Diagram IR 新增循环图、对比图、系统架构图和时间线。', change020e: '新增界面使用说明、更新日志与统一版本信息。',
+        contentLanguage: '内容语言', slideCount: 'PPT 页数', configurePages: '配置页面', templateBuilderHelp: '选择每页必须包含的内容。生成的 JSON 是给你自己的模型使用的提示合同，本应用不会在这里调用 API。', generateTemplate: '生成模板', copyTemplate: '复制模板', generatedTemplate: '生成的内容模板', templateCopied: '内容模板已复制', pageLabel: '第 {number} 页', pageTitleToggle: '标题', pageSubtitleToggle: '副标题', pageImageToggle: '图片', pageFormulaToggle: '公式', layoutCover: '封面', layoutContent: '正文', layoutEvidence: '证据', layoutFormula: '公式', layoutClosing: '结尾',
+        changelogTitle: '版本更新日志', change040a: '新增外部大语言模型内容合同生成器，以及受校验的粘贴式工作流。', change040b: '新增用户图片精确分配页码，并统一登记 LaTeX 公式。', change040c: '新增原创本地学术主题，同时保留自定义 PPTX 模板导入。', change040d: '新增文字、公式、证据和图片的确定性混合排版。', change030a: '新增本地多 Provider 设置与密钥遮蔽存储。', change030b: '新增受约束的内容与 Diagram IR Provider，并校验证据与格式。', change030c: '模型生成的科研流程图已接入确定性 PPT 构建。', change030d: '新增可选图片、图库与旁白 Provider 路由。', change021a: '新增 HM 应用图标、浏览器图标和工作台主页链接。', change021b: '新增 macOS 本地工作台一键启动器。', change021c: '新增可复现源码封装、安装流程、完整性清单和双语交付说明。', change020a: '新增可持久化的中英文工作台模式。', change020b: '新增 Brief、论文和代码自动规划，可生成带引用论点与故事板。', change020c: '将公式与图片 Manifest 接入统一构建流程。', change020d: 'Diagram IR 新增循环图、对比图、系统架构图和时间线。', change020e: '新增界面使用说明、更新日志与统一版本信息。',
         change010a: '建立本地 AutoResearch-Future 工作台与科研项目契约。', change010b: '实现确定性数据流图、证据校验、SVG 构建与 PPTX 导出。',
         recordCount: '共 {count} 条记录', sources: '来源', verifiedClaims: '已验证论点', slides: '幻灯片', exports: '导出', template: '模板', papers: '论文', codeInputs: '代码输入', canvas: '画布', diagramTypes: '图表类型', formulas: '公式', images: '图片', planner: '规划器', none: '无', notRun: '未运行', templateCanvas: '模板',
         actionPlan: '规划', actionValidate: '校验', actionBuild: '构建 SVG', actionExport: '导出 PPTX', statusReady: '就绪', statusNeedsAttention: '需要处理', statusError: '错误',
@@ -771,9 +840,163 @@
 
     function renderProfiles() {
       const select = document.getElementById('project-profile');
-      const current = select.value;
+      const current = select.value || 'academic-conference';
       select.innerHTML = state.profiles.map((profile) => `<option value="${escapeHtml(profile.id)}">${escapeHtml(profile.id === 'academic-conference' ? t('academicConferenceProfile') : profile.name)}</option>`).join('');
       if (current && state.profiles.some((profile) => profile.id === current)) select.value = current;
+      const gallery = document.getElementById('template-gallery');
+      gallery.innerHTML = state.profiles.map((profile) => {
+        const colors = profile.colors || {};
+        const selected = profile.id === select.value;
+        const descriptionKey = {
+          'academic-conference': 'profileAcademicDescription',
+          'biomedical-journal': 'profileBiomedicalDescription',
+          'computational-night': 'profileComputationalDescription',
+          'scientific-swiss': 'profileSwissDescription'
+        }[profile.id];
+        const description = descriptionKey ? t(descriptionKey) : profile.description;
+        return `<button class="theme-option${selected ? ' selected' : ''}" type="button" data-profile="${escapeHtml(profile.id)}" aria-pressed="${selected}">
+          <span class="theme-swatch"><span style="background:${escapeHtml(colors.background || '#fff')}"></span><span style="background:${escapeHtml(colors.accent || '#176b5b')}"></span></span>
+          <span class="theme-copy"><strong>${escapeHtml(profile.id === 'academic-conference' ? t('academicConferenceProfile') : profile.name)}</strong><span>${escapeHtml(description || '')}</span></span>
+        </button>`;
+      }).join('');
+      gallery.querySelectorAll('[data-profile]').forEach((button) => button.addEventListener('click', () => {
+        select.value = button.dataset.profile;
+        renderProfiles();
+      }));
+    }
+
+    function stripJsonFence(value) {
+      const text = String(value || '').trim();
+      const match = text.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
+      return match ? match[1] : text;
+    }
+
+    function pastedContent() {
+      const value = document.getElementById('project-content-spec').value;
+      if (!value.trim()) return null;
+      const payload = JSON.parse(stripJsonFence(value));
+      if (!Array.isArray(payload.slides) || !payload.slides.length) throw new Error(t('invalidContentFirst'));
+      return payload;
+    }
+
+    function updateImagePageMap() {
+      const items = [...document.querySelectorAll('#image-map-rows select')].map((select) => ({
+        file_index: Number(select.dataset.fileIndex),
+        slide_id: select.value
+      }));
+      document.getElementById('project-image-page-map').value = JSON.stringify(items);
+    }
+
+    function renderImageMappings() {
+      const container = document.getElementById('image-map-rows');
+      const files = [...document.getElementById('project-page-images').files];
+      if (!files.length) {
+        container.innerHTML = '';
+        document.getElementById('project-image-page-map').value = '[]';
+        return;
+      }
+      let slides;
+      try {
+        slides = pastedContent()?.slides;
+      } catch (error) {
+        container.innerHTML = `<p class="helper">${escapeHtml(error.message)}</p>`;
+        document.getElementById('project-image-page-map').value = '[]';
+        return;
+      }
+      if (!slides) {
+        container.innerHTML = `<p class="helper">${escapeHtml(t('invalidContentFirst'))}</p>`;
+        document.getElementById('project-image-page-map').value = '[]';
+        return;
+      }
+      const preferred = slides.flatMap((slide) => (slide.images || []).map(() => slide.id));
+      container.innerHTML = files.map((file, index) => {
+        const selected = preferred[index] || slides[Math.min(index, slides.length - 1)].id;
+        const options = slides.map((slide, page) => `<option value="${escapeHtml(slide.id)}"${slide.id === selected ? ' selected' : ''}>${escapeHtml(t('pageLabel', {number: page + 1}))} · ${escapeHtml(slide.title || slide.id)}</option>`).join('');
+        return `<div class="mapping-row"><span title="${escapeHtml(file.name)}">${escapeHtml(file.name)}</span><select data-file-index="${index}" aria-label="${escapeHtml(t('assignImage'))}">${options}</select></div>`;
+      }).join('');
+      container.querySelectorAll('select').forEach((select) => select.addEventListener('change', updateImagePageMap));
+      updateImagePageMap();
+    }
+
+    async function validatePastedContent() {
+      const content = document.getElementById('project-content-spec').value;
+      const status = document.getElementById('content-spec-summary');
+      try {
+        const payload = await request('/api/content-template', {method: 'POST', body: JSON.stringify({action: 'validate', content})});
+        const summary = payload.summary;
+        status.textContent = t('templateValid', summary);
+        status.classList.add('valid');
+        renderImageMappings();
+        return true;
+      } catch (error) {
+        status.textContent = error.message;
+        status.classList.remove('valid');
+        notify(error.message, true);
+        return false;
+      }
+    }
+
+    function readPageOptions() {
+      return [...document.querySelectorAll('.page-config-row')].map((row) => ({
+        layout: row.querySelector('select').value,
+        title: row.querySelector('[data-page-field="title"]').checked,
+        subtitle: row.querySelector('[data-page-field="subtitle"]').checked,
+        image: row.querySelector('[data-page-field="image"]').checked,
+        formula: row.querySelector('[data-page-field="formula"]').checked
+      }));
+    }
+
+    function renderTemplatePages(count, previous = []) {
+      const safeCount = Math.max(1, Math.min(40, Number(count) || 1));
+      document.getElementById('template-slide-count').value = safeCount;
+      const layouts = ['cover', 'content', 'evidence', 'formula', 'closing'];
+      document.getElementById('template-page-config').innerHTML = Array.from({length: safeCount}, (_, index) => {
+        const page = index + 1;
+        const defaults = {layout: page === 1 ? 'cover' : (page === safeCount && safeCount > 1 ? 'closing' : 'content'), title: true, subtitle: page === 1, image: false, formula: false};
+        const option = previous[index] || defaults;
+        const choices = layouts.map((layout) => `<option value="${layout}"${option.layout === layout ? ' selected' : ''}>${escapeHtml(t(`layout${layout[0].toUpperCase()}${layout.slice(1)}`))}</option>`).join('');
+        const toggle = (field, checked) => `<label><input type="checkbox" data-page-field="${field}"${checked ? ' checked' : ''}><span>${escapeHtml(t(`page${field[0].toUpperCase()}${field.slice(1)}Toggle`))}</span></label>`;
+        return `<div class="page-config-row"><strong>${escapeHtml(String(page).padStart(2, '0'))}</strong><select aria-label="${escapeHtml(t('pageLabel', {number: page}))}">${choices}</select><span class="page-toggle-grid">${toggle('title', option.title)}${toggle('subtitle', option.subtitle)}${toggle('image', option.image)}${toggle('formula', option.formula)}</span></div>`;
+      }).join('');
+    }
+
+    async function generateContentTemplate() {
+      try {
+        const payload = await request('/api/content-template', {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'generate',
+            title: document.getElementById('template-deck-title').value,
+            language: document.getElementById('template-language').value,
+            slides: readPageOptions()
+          })
+        });
+        document.getElementById('content-template-output').value = payload.template;
+      } catch (error) {
+        notify(error.message, true);
+      }
+    }
+
+    async function copyContentTemplate() {
+      const output = document.getElementById('content-template-output');
+      if (!output.value) await generateContentTemplate();
+      if (!output.value) return;
+      try {
+        await navigator.clipboard.writeText(output.value);
+      } catch (_) {
+        output.select();
+        document.execCommand('copy');
+      }
+      notify(t('templateCopied'));
+    }
+
+    function showGuidePanel(name) {
+      document.querySelectorAll('[data-guide-tab]').forEach((button) => {
+        const active = button.dataset.guideTab === name;
+        button.classList.toggle('active', active);
+        button.setAttribute('aria-selected', String(active));
+      });
+      document.querySelectorAll('[data-guide-panel]').forEach((panel) => { panel.hidden = panel.dataset.guidePanel !== name; });
     }
 
     function applyLanguage(language) {
@@ -796,6 +1019,8 @@
       if ([translations.en.venueDefault, translations.zh.venueDefault].includes(venue.value)) venue.value = t('venueDefault');
       renderProfiles();
       renderProviderSettings();
+      renderTemplatePages(document.getElementById('template-slide-count').value, readPageOptions());
+      renderImageMappings();
       totals();
       renderRows();
       if (state.selected) selectProject(state.selected);
@@ -817,6 +1042,18 @@
     document.getElementById('open-changelog').addEventListener('click', () => document.getElementById('changelog-dialog').showModal());
     document.querySelectorAll('[data-dialog-close]').forEach((button) => button.addEventListener('click', () => document.getElementById(button.dataset.dialogClose).close()));
     document.querySelectorAll('[data-language]').forEach((button) => button.addEventListener('click', () => applyLanguage(button.dataset.language)));
+    document.querySelectorAll('[data-guide-tab]').forEach((button) => button.addEventListener('click', () => showGuidePanel(button.dataset.guideTab)));
+    document.getElementById('configure-template-pages').addEventListener('click', () => renderTemplatePages(document.getElementById('template-slide-count').value, readPageOptions()));
+    document.getElementById('generate-content-template').addEventListener('click', generateContentTemplate);
+    document.getElementById('copy-content-template').addEventListener('click', copyContentTemplate);
+    document.getElementById('validate-content-spec').addEventListener('click', validatePastedContent);
+    document.getElementById('project-content-spec').addEventListener('input', () => {
+      const status = document.getElementById('content-spec-summary');
+      status.textContent = t('templateNotChecked');
+      status.classList.remove('valid');
+      renderImageMappings();
+    });
+    document.getElementById('project-page-images').addEventListener('change', renderImageMappings);
     document.getElementById('settings-form').addEventListener('submit', async (event) => {
       event.preventDefault();
       try {
@@ -829,11 +1066,22 @@
     });
     document.getElementById('create-form').addEventListener('submit', async (event) => {
       event.preventDefault();
-      const form = new FormData(event.currentTarget);
+      const formElement = event.currentTarget;
+      const content = document.getElementById('project-content-spec').value.trim();
+      const brief = document.getElementById('project-brief').value.trim();
+      if (!content && !brief) {
+        notify(t('missingProjectContent'), true);
+        return;
+      }
+      if (content && !(await validatePastedContent())) return;
+      const form = new FormData(formElement);
       try {
         const project = await request('/api/projects', { method: 'POST', body: form });
         dialog.close();
-        event.currentTarget.reset();
+        formElement.reset();
+        document.getElementById('image-map-rows').innerHTML = '';
+        document.getElementById('content-spec-summary').classList.remove('valid');
+        document.getElementById('content-spec-summary').textContent = t('templateNotChecked');
         applyLanguage(state.language);
         renderProviderSettings();
         notify(t('createdProject', { id: project.id }));
@@ -843,6 +1091,8 @@
         notify(error.message, true);
       }
     });
+    renderTemplatePages(6);
+    showGuidePanel('tutorial');
     applyLanguage(state.language);
     Promise.all([loadProfiles(), loadSettings(), refresh()]).catch((error) => notify(error.message, true));
   </script>

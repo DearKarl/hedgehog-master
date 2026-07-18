@@ -46,9 +46,20 @@ On Windows PowerShell, activate Python with `.venv\Scripts\Activate.ps1`.
 python3 hedgehog.py serve --port 4173
 ```
 
-Open [http://127.0.0.1:4173](http://127.0.0.1:4173). A new project accepts a PPTX template, a presentation brief, research documents, code files, and pasted code in one intake. The planner extracts page-aware evidence, creates the source and claim registries, derives a storyboard, selects a Diagram IR type, and registers formula and image assets. `Plan`, `Validate`, `Build SVG`, and `Export PPTX` are repeatable project operations.
+Open [http://127.0.0.1:4173](http://127.0.0.1:4173). The primary workflow does not require an API key: generate a content contract in `Guide → Content template`, ask your own language model to fill it, then paste the returned JSON into `New project`. Select a built-in academic profile or upload a custom PPTX background, assign uploaded images to exact slides, and create the project. `Plan`, `Validate`, `Build SVG`, and `Export PPTX` are repeatable operations.
 
-The workbench can switch between English and Chinese from the header and remembers the selection in the local browser. `Settings` configures provider routing, models, endpoints, and optional API keys. `Guide` explains the complete project workflow, while `Updates` displays the bilingual release history. The lower-left version is read from [`VERSION`](./VERSION); release notes are maintained in [`CHANGELOG.md`](./CHANGELOG.md).
+The workbench can switch between English and Chinese from the header and remembers the selection in the local browser. `Guide` contains a light tutorial and the configurable content-template builder. `Settings` retains optional provider routing for advanced automation, but it is not required for the external-model workflow. `Updates` displays the bilingual release history. The lower-left version is read from [`VERSION`](./VERSION); release notes are maintained in [`CHANGELOG.md`](./CHANGELOG.md).
+
+## Use Your Own Language Model
+
+1. Open `Guide → Content template`, choose the number of slides, and configure whether each page needs a title, subtitle, image, or formula.
+2. Generate and copy the JSON contract. Send it to ChatGPT, Claude, Gemini, Qwen, a local LLM, or another model together with your resume, paper, notes, and instructions.
+3. Ask the model to replace every `<...>` placeholder, preserve all IDs and JSON syntax, write formulas as escaped LaTeX strings, and return JSON only.
+4. Paste the completed JSON into `New project` and select `Validate template`.
+5. Upload requested images and assign every file to an exact slide. Choose a local academic profile or upload a custom PPTX background.
+6. Create, validate, build, and export the editable PPTX.
+
+The model writes constrained content; Hedgehog Master owns validation, source registration, formula and image Manifests, deterministic layout, SVG generation, and PPTX export. A filled contract is saved at `inputs/content/content-spec.json`, so the approved content remains inspectable and reproducible.
 
 ## Content and Diagram Providers
 
@@ -120,13 +131,15 @@ projects/<project-id>/
 │   ├── instructions.md             # authoritative presentation brief
 │   ├── template/*.pptx             # optional PowerPoint template
 │   ├── papers/*                    # papers and research documents
-│   └── code/*                      # code and pasted pseudocode
+│   ├── code/*                      # code and pasted pseudocode
+│   └── content/content-spec.json   # approved external-LLM content contract
 ├── template/
 │   ├── template.json               # semantic layout bindings and slot constraints
 │   └── workspace/                  # recovered Master, Layout, theme, and SVG layers
 ├── analysis/
 │   ├── plan.json                   # planner result, counts, warnings, and selected diagram type
-│   └── provider_trace.json         # provider/model route, guardrails, fallback, and warnings
+│   ├── image-page-map.json         # uploaded image-to-slide assignments
+│   └── provider_trace.json         # optional provider/model route and guardrails
 ├── images/
 │   ├── formula_manifest.json       # LaTeX, source locator, render mode, and slide bindings
 │   └── image_prompts.json          # auditable external-image prompts and status
@@ -208,7 +221,7 @@ The repository also retains mature local tools for source normalization, templat
 ## Development Checks
 
 ```bash
-python3 -m py_compile hedgehog.py skills/hedgehog-master/scripts/research_harness.py skills/hedgehog-master/scripts/research_planner.py skills/hedgehog-master/scripts/provider_settings.py skills/hedgehog-master/scripts/content_provider.py
+python3 -m py_compile hedgehog.py skills/hedgehog-master/scripts/research_harness.py skills/hedgehog-master/scripts/research_planner.py skills/hedgehog-master/scripts/content_spec.py skills/hedgehog-master/scripts/content_intake.py
 python3 -m unittest tests.test_research_harness
 python3 hedgehog.py validate <project-id>
 pnpm --dir packages/diagram-ir check

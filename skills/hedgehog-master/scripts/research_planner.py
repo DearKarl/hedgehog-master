@@ -803,6 +803,11 @@ def plan_project(project: Path) -> dict[str, Any]:
 
     manifest_path = project / "project.json"
     manifest = _read_json(manifest_path)
+    if (manifest.get("policy") or {}).get("content_mode") == "external-template":
+        plan_path = project / "analysis" / "plan.json"
+        if plan_path.is_file():
+            return _read_json(plan_path)
+        raise ValueError("External content projects must be rebuilt from their registered content template")
     brief = str((manifest.get("brief") or {}).get("instructions") or "").strip()
     title = str(manifest.get("title") or project.name)
     warnings: list[str] = []
@@ -1026,6 +1031,7 @@ def plan_project(project: Path) -> dict[str, Any]:
     )
     policy.setdefault("image_generation", "manual")
     policy.setdefault("formula_rendering", "editable-text")
+    policy.setdefault("content_mode", "planner")
     policy["content_provider"] = content_provider
     policy["content_model"] = resolve_model(settings, content_provider, "content")
     policy["diagram_provider"] = diagram_provider
